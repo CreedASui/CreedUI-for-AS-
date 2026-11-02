@@ -1,0 +1,317 @@
+PART
+SIZE
+Boss timer settings
+Damage number settings
+Move frames
+Lock frames
+Reset positions
+Calm mode: no flowing light in the bars
+Meter and luck windows: drag them to move
+Meter and luck windows: locked
+Language: {1}
+language: {1}
+/creed language followed by one of: {1}, or auto
+drag the frames, then type /creed lock.
+frames locked.
+frames are back in their places.
+{1}: on.
+{1}: off.
+/creed (options), move, lock, reset, language, timer ..., numbers ..., or a part on/off: {1}
+error while starting: 
+ and 
+{1} are part of Creed UI now. Turn them off in Options -> AddOns; until then Creed UI leaves that part to them.
+Boss timer
+The themed bar with every boss, a countdown to the next one, and their health while up. Replaces the game's run clock.
+Boss and mini-boss bars
+Health bars under the boss timer with the real numbers. Replaces the game's boss bars.
+Damage numbers
+Your hits as calm numbers with the skill's icon. A spell hitting 3+ enemies adds up into one number a second.
+Your frame
+Your health with the real numbers, shield, energy/mana/rage, class meter and extra lives. Replaces the game's player frame.
+Target frame
+Your target's health with the real numbers, and whether it's a boss, guardian or elite. Replaces the game's target frame.
+Party frames
+Up to four friends with health bars in their class's color and the real numbers, their mana/energy/rage, and Dead or Offline when they are. Click one to target them. Replaces the game's party frames.
+Skill bar
+Your abilities with their cooldowns, your neck, rings and trinkets (hover for what they give), and your XP. Replaces the game's bar.
+Kills, gold and cache
+Kills, gold and the next cache's price with little icons, docked in the skill bar's panel (drag it away with /creed move). The cache lights up when you can afford it. Replaces the game's kills and gold box.
+Minimap
+A metal ring in the map's colors, the local time on its foot and the zone's name under it. The mouse wheel zooms.
+Clock on the minimap
+A little box on the minimap ring's foot with your local time. Hover it for the run's time and the time to the final boss.
+Chests on the minimap
+Every cache on the field as a gold chest on the minimap, or on its rim pointing the way when it's farther. A new one rings as it drops; they glow while your gold pays for one.
+Lairs on the minimap
+Every guardian's lair as a skull token on the minimap: bronze while its guardian sleeps, red while it fights, grey once empty with the time until the next guardian comes. The one to head for rings slowly. Hides the game's red flag.
+Damage meter
+Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Replaces the game's meter window.
+Luck
+Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; the clover on the minimap's edge shows or hides it.
+Chat
+No scroll buttons: the mouse wheel scrolls (Shift for the top or bottom), an arrow brings you back down. A glass behind the lines while you read or type, and a typing box in the timer's style.
+Level {1}
+{1} xp/s
+Neck
+Ring
+Trinket
+Empty: pick one from the cards.
+Racial ability
+Empty ability slot
+A new ability from the cards goes here.
+This run
+Kills
+Elites / guardians / bosses
+Gold
+Gold earned
+Next cache
+{1} gold
+You can buy one now.
+Caches opened
+Rerolls
+(next {1} gold)
+timer
+Next boss
+Victory!
+Endless
+Next boss in {1}
+Boss
+Final boss
+Up now
+Up now: {1}% health
+(enraged)
+Slain
+Comes at {1}, in {2}
+Heroic {1}
+Bolstering
+Sanguine
+Explosive
+{1}, {2} bosses
+Drag to move. Type /creed lock when done.
+ON: replaces the game's boss timer
+OFF: the game's own timer
+Theme
+Size
+Width
+Auto (matches the map)
+Zone name above the bar
+Next boss and countdown under the bar
+Minute marks
+Particles (snow, embers, leaves...)
+Flowing light in the bar
+Lock position (unlock to drag the bar)
+Hover a gem for that boss's name and time.
+Preview
+Stop preview
+Reset position
+on. The game's own timer is hidden.
+off. The game's own timer is back.
+position locked.
+drag the bar to move it, then type /creed timer lock.
+zones: 
+theme: 
+themes: 
+size {1}%
+width {1}
+position, size and width reset.
+/creed timer (options), on, off, lock, unlock, preview [zone], theme <zone|auto>, scale <50-160>, width <300-760>, reset
+error: 
+stopped after repeated errors, so the game's own timer is back. Type /reload to try again.
+Elwynn Forest
+Duskwood
+Warsong Gulch
+Un'Goro Crater
+Arathi Basin
+Feralas
+Gurubashi Arena
+Scarlet Monastery
+Alterac Valley
+Blackrock Mountain
+Gates of Ahn'Qiraj
+Debuff
+{1} stacks
+Lasts while it lives
+{1} seconds left
+Guardian
+Elite
+You
+Offline
+Dead
+Down
+Local time
+Run time
+Final boss in
+Cache
+Opens for {1} gold
+Opens for {1} gold (you have {2})
+{1} yards away
+Awake and fighting
+Asleep in its lair: it wakes when you come near
+Empty lair
+{1} comes in {2}
+{1} comes any moment
+The one to head for: the nearest held, else the next to fill
+soon
+Damage Done
+Healing Done
+Boss Damage
+Party DPS
+Damage
+Dmg
+Healing
+Heal
+Boss Dmg
+Party
+No damage yet.
+No healing yet.
+No boss fight yet.
+Not in a party.
+No run yet.
+Reset
+Reset settings
+Start this window's count again (the run's totals stay)
+Fold to the title, or open again
+Hide the meter (the swords on the minimap's edge bring it back)
+Per second
+Last 10 seconds
+Share
+Best spell
+A talent's or amulet's own damage.
+Since you pressed Reset.
++{1} more
+Click to show or hide it.
+Rare
+Epic
+Legendary
+luck
+1 in {1}
+A legendary about every {1} level-ups
+A legendary almost every level-up
+{1} yours, +{2} from level {3}
+Hide the luck window (the clover on the minimap's edge brings it back)
+Yours
+of it from your gear
+Your cards roll with
+Gained this run
+Each level adds 1%, up to 30%.
+Each card
+A level-up's three cards
+{1} or better, each card
+the luck window stopped after an error: 
+Back to the newest lines
+numbers
+Miss
+Immune
+Dodge
+Parry
+Block
+Resist
+Absorb
+Evade
+Minimal
+Clean
+Detailed
+Fewest numbers: nearby enemies share one.
+One number per enemy, counting up.
+More numbers, sooner, plus Miss and Immune.
+Style
+Font
+ON: Creed UI draws your damage
+OFF: the game's own numbers
+Skill icons (one number per skill)
+DoT totals until the enemy dies
+Short numbers (12.3K)
+One number per group of enemies
+Move overlapping numbers apart
+Show hit count (x5)
+Color by spell school
+Show Miss and Immune
+Merge a spell on 3+ enemies: one number a second
+Merge every spell: one number a second
+Type /creed numbers to open this window.
+settings reset.
+preview for 9 seconds around the middle of the screen.
+ran into a problem and skipped it: 
+this version of the game doesn't give addons its hits yet, so the game's own numbers stay on.
+too many problems, so it switched itself off and gave the game its numbers back. /creed numbers on to try again.
+Smooth Numbers is still on, so it draws the numbers. Turn it off in Options -> AddOns.
+damage number commands:
+/creed numbers - options window
+/creed numbers on | off - Creed UI's numbers or the game's own
+/creed numbers minimal | clean | detailed - pick a style
+/creed numbers size 120 - number size in percent (60 to 180)
+/creed numbers icons - skill icons on or off
+/creed numbers dots - DoT totals until the enemy dies, on or off
+/creed numbers crowd - merge a spell hitting 3+ enemies, on or off
+/creed numbers spells - merge every spell, on or off
+/creed numbers preview - show some pretend numbers
+/creed numbers reset - default settings
+on.
+off: the game's own numbers are back.
+style: 
+size %d%%.
+DoT totals on: a DoT's damage adds up until its enemy dies.
+DoT totals off: DoT ticks show like other hits.
+skill icons on.
+skill icons off.
+a spell hitting 3 or more enemies now adds up into one number a second.
+spells on crowds show on each enemy again.
+every spell now adds up into one number a second.
+spells show on each enemy again (spells on crowds still merge if that's on).
+the skill bar stopped after an error, so the game's own is back: 
+boss bars stopped after an error, so the game's own are back: 
+the chat's dress came off after an error, so it's the game's own again: 
+couldn't dress the chat: 
+the caches and lairs on the minimap stopped after an error: 
+the damage meter stopped after an error, so the game's own is back: 
+the minimap stopped after an error, so the game's own is back: 
+couldn't dress the minimap: 
+party frames stopped after an error, so the game's own are back: 
+the kills and gold strip stopped after an error, so the game's own is back: 
+unit frames stopped after an error, so the game's own are back: 
+Minimap button
+A round Creed button on the minimap's edge: click it for this menu, right-click it to move or lock the frames, drag it along the edge to place it. /creed opens the menu too.
+Click: open or close the menu
+Right-click: move the frames
+Right-click: lock the frames
+Drag: slide it along the minimap's edge
+drag the frames, then right-click the Creed button to lock them.
+the minimap button stopped after an error: 
+Character panel
+The game's character window in Creed UI's panel: each gear slot in metal, lit in its item's rarity color; your run's stats grouped beside it (the ones at nothing dimmed, a change since your last look flashing by its number).
+Run stats
+The game hasn't shown its stats yet.
+TALENTS
+None yet: they show here as you pick them.
+Rank {1}/{2}
+Rank {1}
+OFFENSE
+SURVIVAL
+AREA AND DOTS
+RUN
+OTHER
+Health
+Haste
+Crit
+Crit Dmg
+Armor
+Area
+Targets
+Echo
+Speed
+Regen
+Pickup
+Lifesteal
+Kill Heal
+Thorns
+Lives
+Experience
+Buff Power
+DoT Stacks
+DoT Haste
+Execute
+Vs Afflicted
+the character panel stopped after an error, so the game's own is back: 
+what the game tells addons:
+Talents
+The game has no talent trees for this hero.
