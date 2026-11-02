@@ -3,7 +3,8 @@
 -- rimmed with their rarity; your run's experience; and docked beside them your kills, gold and
 -- the next cache's price (Tally.lua), all on a gold-framed panel with a dragon on each end, wrapped in its wing. Hover anything for the game's own tooltip: an ability's, or what a piece of
 -- jewelry gives you. While it's on, the game's bar and build rows are tucked away; turning it
--- off brings them back.
+-- off brings them back. Each ability wears its rank in a little gold-rimmed box on its bottom
+-- right corner, which flashes when a card ranks it up.
 
 local C = CreedUI
 local DEFAULTS = { enabled = true, scale = 1 }
@@ -28,6 +29,8 @@ local root, slots, jewels, xp = nil, {}, {}, nil
 local S = { dataClock = 0, takeClock = 0, width = 0, lvl = nil, wrap = false, flashLevel = 0 }
 
 local Call = C.Call -- no stray nil arguments (see Core)
+local RANK_EVERY, RANK_SOONEST = 1, 0.25 -- the ranks are read a second apart, and soon after a spell changes
+local RANK_FLASH = 0.9
 
 ------------------------------------------------------------------------ a slot
 local function ShowTip(s)
@@ -91,6 +94,23 @@ local function NewSlot(kind, size, label)
 	C.Vis(s.glow, false)
 	C.Vis(s.shade, false)
 	C.Vis(s.edge, false)
+	if kind == "spell" then
+		-- the rank: a small dark box rimmed in gold, over the slot's bottom right corner
+		local r = CreateFrame("Frame", nil, s.top)
+		r:SetWidth(14)
+		r:SetHeight(13)
+		r:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 3, -3)
+		r:EnableMouse(false)
+		r.rim = C.Tex(r, "BACKGROUND", C.FLAT)
+		r.rim:SetAllPoints(r)
+		r.back = C.Tex(r, "BORDER", C.FLAT)
+		r.back:SetPoint("TOPLEFT", r, "TOPLEFT", 1, -1)
+		r.back:SetPoint("BOTTOMRIGHT", r, "BOTTOMRIGHT", -1, 1)
+		r.text = C.Text(r, C.FONT, 10, "OUTLINE", "CENTER", 24)
+		r.text:SetPoint("CENTER", r, "CENTER", 1, 0)
+		C.Vis(r, false)
+		s.rank = r
+	end
 	b:SetScript("OnEnter", function()
 		s.hovering = true
 		ShowTip(s)
@@ -231,6 +251,125 @@ local function ReadJewelry(cds)
 		end
 	end
 	if changed then Layout() end
+end
+
+------------------------------------------------------------------------ the abilities' ranks
+-- The game's loadout lists your abilities with their ranks and their icons: each slot finds its
+-- own by the icon it shows (or, if the game gives no icons, by its slot number).
+local function IconKey(path)
+	if type(path) ~= "string" or path == "" then return nil end
+	local p = string.lower(string.gsub(path, "/", "\\"))
+	p = string.gsub(p, "%.blp$", "")
+	local _, _, base = string.find(p, "([^\\]+)$")
+	return base
+end
+
+-- the ranks by icon and by slot; false out of a run, nil while the game can't say yet
+local function ReadRanks()
+	if type(AZS_GetMeterLoadout) ~= "function" or type(AZS_GetMeterContext) ~= "function" then return false end
+	local context = Call(AZS_GetMeterContext)
+	if type(context) ~= "table" or not context.runId then return false end
+	local l = Call(AZS_GetMeterLoadout, { apiVersion = 1, runId = context.runId })
+	if type(l) ~= "table" or type(l.abilities) ~= "table" then return nil end
+	local byIcon, bySlot, icons = {}, {}, false
+	local sources = type(l.sources) == "table" and l.sources or {}
+	for i = 1, table.getn(l.abilities) do
+		local a = l.abilities[i]
+		local rank = type(a) == "table" and tonumber(a.rank)
+		if rank and a.learned ~= false and not a.passive then
+			local src = a.sourceKey and sources[a.sourceKey]
+			local icon = type(src) == "table" and type(src.icon) == "table" and src.icon.status == "ready" and IconKey(src.icon.path)
+			if icon then
+				byIcon[icon] = rank
+				icons = true
+			end
+			if tonumber(a.slotId) then bySlot[tonumber(a.slotId)] = rank end
+		end
+	end
+	return byIcon, bySlot, icons
+end
+
+local function SetRank(s, rank)
+	local r = s.rank
+	if rank and s.rankN and rank > s.rankN and s.rankTex == s.tex then
+		r.flashDue = true -- ranked up by a card: it flashes once the bar is back from the cards
+	end
+	s.rankN, s.rankTex = rank, s.tex
+	if rank then
+		local text = tostring(rank)
+		C.SetText(r.text, text)
+		C.Width(r, 8 + 6 * string.len(text))
+	end
+	C.Vis(r, rank ~= nil)
+end
+
+local function UpdateRanks()
+	local byIcon, bySlot, icons = ReadRanks()
+	if byIcon == nil then return end
+	for i = 1, table.getn(ABILITY_SLOTS) do
+		local s = slots[i]
+		local rank = nil
+		if byIcon and s.has then
+			if icons then rank = byIcon[IconKey(s.tex) or ""] else rank = bySlot[s.action] end
+		end
+		SetRank(s, rank)
+	end
+end
+
+-- the box: dark glass in a gold rim; ranked up, it burns bright gold and cools back
+local function StepRank(s, now, pal, shown)
+	local r = s.rank
+	if not r or not s.rankN then return end
+	if r.flashDue and shown then
+		r.flashDue = nil
+		r.flashAt = now
+		s.flashAge = 0
+	end
+	local f = 0
+	if r.flashAt then
+		local age = now - r.flashAt
+		f = C.Smooth(age / 0.06) * (1 - C.Smooth((age - 0.15) / (RANK_FLASH - 0.15)))
+		if age > RANK_FLASH then r.flashAt = nil end
+	end
+	local g = pal.glow
+	C.Color(r.rim, 0.78 + 0.22 * f, 0.60 + 0.30 * f, 0.22 + 0.40 * f, 1)
+	C.Color(r.back, 0.05 + (g[1] * 0.7 - 0.05) * f, 0.04 + (g[2] * 0.55 - 0.04) * f, 0.03 + (g[3] * 0.2 - 0.03) * f, 0.92)
+	C.TextColor(r.text, 1, 0.88 + 0.12 * f, 0.55 + 0.45 * f)
+end
+
+-- /creed probe: the game's spells, the loadout's abilities, and the rank each slot found
+function C.ProbeRanks()
+	local rows = {}
+	for i = 1, table.getn(type(AZS_SPELLS) == "table" and AZS_SPELLS or {}) do
+		local r = AZS_SPELLS[i]
+		table.insert(rows, tostring(r.key) .. ":" .. tostring(r.spell) .. " r" .. tostring(r.rank))
+	end
+	C.Print("AZS_SPELLS: " .. (table.getn(rows) > 0 and table.concat(rows, ", ") or "-"))
+	local context = Call(AZS_GetMeterContext)
+	local l, err
+	if type(context) == "table" and context.runId and type(AZS_GetMeterLoadout) == "function" then
+		local ok
+		ok, l, err = pcall(AZS_GetMeterLoadout, { apiVersion = 1, runId = context.runId })
+	end
+	if type(l) == "table" and type(l.abilities) == "table" then
+		rows = {}
+		for i = 1, table.getn(l.abilities) do
+			local a = l.abilities[i]
+			local src = type(l.sources) == "table" and l.sources[a.sourceKey or ""]
+			local icon = type(src) == "table" and type(src.icon) == "table" and src.icon.path
+			table.insert(rows, tostring(a.sourceKey) .. " r" .. tostring(a.rank) .. " slot" .. tostring(a.slotId)
+				.. (a.passive and " passive" or "") .. " " .. tostring(IconKey(icon)))
+		end
+		C.Print("loadout: " .. (table.getn(rows) > 0 and table.concat(rows, ", ") or "-"))
+	else
+		C.Print("loadout: " .. (type(err) == "table" and tostring(err.code) or "-"))
+	end
+	rows = {}
+	for i = 1, table.getn(ABILITY_SLOTS) do
+		local s = slots[i]
+		table.insert(rows, tostring(s.action) .. "=" .. tostring(IconKey(s.tex)) .. " r" .. tostring(s.rankN))
+	end
+	C.Print("bar: " .. table.concat(rows, ", "))
 end
 
 ------------------------------------------------------------------------ drawing
@@ -458,7 +597,17 @@ local function Step(dt)
 		Theme(pal)
 		for i = 1, table.getn(jewels) do jewels[i].palStamp = nil end
 	end
-	for i = 1, 7 do StepSlot(slots[i], now, dt, pal) end
+	-- the ranks: a second apart, and soon after the game's spells change (a card ranked one up)
+	S.rankClock = (S.rankClock or 0) - dt
+	if S.rankClock <= 0 or (AZS_SPELLS_UPDATED ~= S.spellsSeen and S.rankClock <= RANK_EVERY - RANK_SOONEST) then
+		S.rankClock = RANK_EVERY
+		S.spellsSeen = AZS_SPELLS_UPDATED
+		UpdateRanks()
+	end
+	for i = 1, 7 do
+		StepSlot(slots[i], now, dt, pal)
+		StepRank(slots[i], real, pal, k > 0.6)
+	end
 	for i = 1, table.getn(jewels) do
 		local j = jewels[i]
 		if j.visible then
@@ -487,6 +636,7 @@ local function Levels()
 	for i = 1, 7 do
 		slots[i].button:SetFrameLevel(base + 2)
 		slots[i].top:SetFrameLevel(base + 3)
+		if slots[i].rank then slots[i].rank:SetFrameLevel(base + 4) end
 	end
 	for i = 1, table.getn(jewels) do
 		jewels[i].button:SetFrameLevel(base + 2)

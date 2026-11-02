@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10.0
+- Each ability on the skill bar shows its rank in a little gold-rimmed box on its bottom right corner. When a card ranks one up, the box and the ability flash gold as you come back from the cards.
+- `/creed probe` also shows the game's spells, their ranks and the rank each slot found.
+
 ## 1.9.0
 - A skull floats over each boss, wherever it is on the screen, without a target or a nameplate: large when the boss is near, small when it's far, glowing gold over the final boss. It fades away when the boss falls. Mini-bosses have none. Turn it off or size it in the options (Boss skulls).
 - The options window has two columns now, so it fits on any screen.

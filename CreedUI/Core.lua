@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.9.0"
+C.VERSION = "1.10.0"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -1337,6 +1337,7 @@ local function Slash(msg)
 	elseif cmd == "probe" then
 		if C.Probe then C.Probe() end
 		if C.ProbeAnchors then C.ProbeAnchors() end
+		if C.ProbeRanks then C.ProbeRanks() end
 	elseif cmd == "move" or cmd == "unlock" then
 		C.SetUnlocked(true)
 		C.Print(C.L("drag the frames, then type /creed lock."))
