@@ -763,6 +763,30 @@ local function InstallAPI()
 		M.snapshots = (M.snapshots or 0) + 1
 		return snap
 	end
+	-- the hero's loadout, from M.loadout: { abilities = { { key, rank, slotId, icon, passive, learned } } };
+	-- as the game's: one plain query table with apiVersion, runId and ownerId only
+	function AZS_GetMeterLoadout(...)
+		if arg.n ~= 1 then M.Problem("AZS_GetMeterLoadout called with " .. arg.n .. " arguments"); return nil, { code = "INVALID_ARGUMENT" } end
+		local q = arg[1]
+		if type(q) ~= "table" then M.Problem("loadout query must be a plain table"); return nil, { code = "INVALID_ARGUMENT" } end
+		for k in pairs(q) do
+			if k ~= "apiVersion" and k ~= "runId" and k ~= "ownerId" then M.Problem("loadout query: unknown key " .. tostring(k)); return nil, { code = "INVALID_ARGUMENT" } end
+		end
+		if q.apiVersion ~= 1 then return nil, { code = "UNSUPPORTED_VERSION" } end
+		if not M.meter then return nil, { code = "NO_RUN", retryable = true } end
+		if q.runId ~= (M.meterRun or "run1") then return nil, { code = "RUN_MISMATCH" } end
+		if not M.loadout then return nil, { code = "NOT_READY", retryable = true } end
+		M.loadoutReads = (M.loadoutReads or 0) + 1
+		local out = { apiVersion = 1, complete = true, context = AZS_GetMeterContext(), ownerId = "H1", loadoutRevision = "l1",
+			equipment = {}, abilities = {}, talents = {}, runJewelry = {}, sources = {}, actors = {} }
+		for i = 1, table.getn(M.loadout.abilities or {}) do
+			local a = M.loadout.abilities[i]
+			table.insert(out.abilities, { sourceKey = a.key, learned = a.learned ~= false, selected = true, passive = a.passive and true or false,
+				rank = a.rank, slotId = a.slotId, effectSourceKeys = {} })
+			out.sources[a.key] = { sourceKey = a.key, name = a.key, icon = a.icon and { status = "ready", path = a.icon } or { status = "missing" } }
+		end
+		return out, nil
+	end
 	function AZS_CreateMeterCheckpoint(runId)
 		if runId ~= (M.meterRun or "run1") then return nil, { code = "RUN_MISMATCH" } end
 		M.checkpoints = M.checkpoints or {}
@@ -798,6 +822,7 @@ local function RemoveAPI()
 	AZS_GetPhase, AZS_GetRunTime, AZS_GetRunLength, AZS_GetBosses, AZS_GetUpcomingBosses = nil, nil, nil, nil, nil
 	AZS_SetHudShown, AZS_IsHudShown, AZS_SetOnTopOfScreens = nil, nil, nil
 	AZS_GetMeterContext, AZS_GetMeterSnapshot, AZS_CreateMeterCheckpoint, AZS_ReleaseMeterCheckpoint, AZS_SetMeterPortrait = nil, nil, nil, nil, nil
+	AZS_GetMeterLoadout = nil
 	AZS_STATS = nil
 	for name in pairs(M.waAPI or {}) do setglobal(name, nil) end
 	AZS_ZONE, AZS_RUN, AZS_SCHEDULE, AZS_ZONE_UPDATED = nil, nil, nil, nil

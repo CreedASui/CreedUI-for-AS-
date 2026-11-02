@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.9.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.10.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -36,7 +36,7 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
   Skulls.lua        a skull over each boss (world anchors), sized by distance
   Party.lua         party frames                   Chat.lua     dressed chat, kept clear of the dragon
-  Bar.lua           skill bar, jewelry, XP/s, the gold panel with its two dragons
+  Bar.lua           skill bar, each ability's rank box, jewelry, XP/s, the gold panel with its two dragons
   Tally.lua         kills / gold / cache, docked inside the bar's panel
   Minimap.lua       metal ring, local clock, zone name
   MinimapButton.lua C.EdgeButton (draggable round buttons on the minimap's edge) and the C button
@@ -101,7 +101,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 447 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 462 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
@@ -133,6 +133,10 @@ before using an API. Known:
   `meterSourceKey` (the meter line a hit counts toward) and now a distance from the hero.
 - **Meter API v1:** `AZS_GetMeterContext`, `AZS_GetMeterSnapshot(query)` (strict query keys;
   `sources` carry names and icons), checkpoints. Also summons, totems, bosses and guardians getters.
+  `AZS_GetMeterLoadout({ apiVersion = 1, runId [, ownerId] })` (those keys only): `abilities` (`sourceKey`,
+  `rank`, `slotId`, `learned`, `passive`), `equipment`, `talents`, `runJewelry`, and `sources[key].icon`.
+  The skill bar's rank boxes match each slot to its ability by icon (by `slotId` if there are none).
+- **Spells:** `AZS_SPELLS` (+ `AZS_SPELLS_UPDATED`): `{ key, spell, rank, cd, cdmax }` each, no slot.
 - **World anchors (API 0.139.2):** read from the game's own code (below), mirrored in the stand-in.
   - `AZS_GetWorldAnchorCapabilities()`: kinds `enemy`, `elite`, `guardian`, `boss`, `finalBoss`,
     `cache`, `guardianLair`, `downedPartyMember`; attachments `position`, `overhead`; 256 a call.

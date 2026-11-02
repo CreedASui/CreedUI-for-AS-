@@ -8,7 +8,7 @@ A clean, smooth HUD for **Azeroth Survivors** ([wow.aethus.pl](https://wow.aethu
 - **Boss and mini-boss bars:** red bars with real health numbers and the debuffs on them.
 - **Boss skulls:** a skull floating over each boss wherever it is on the screen, large when it's near and small when it's far (gold over the final boss).
 - **Your frame, your target and your party:** in class colors, portraits in metal rings.
-- **Skill bar:** your abilities and jewelry, your XP a second, on a gold-framed panel guarded by two dragons wrapped in their wings.
+- **Skill bar:** your abilities (each with its rank, flashing when a card ranks it up) and jewelry, your XP a second, on a gold-framed panel guarded by two dragons wrapped in their wings.
 - **Kills, gold and cache:** in the panel; hover for what each gives.
 - **Damage meter:** Damage Done, Healing Done, Boss Damage and Party DPS, with icons, per second and shares. Resizable from any edge.
 - **Luck medallion:** your luck and the odds of a Rare, Epic or Legendary card.

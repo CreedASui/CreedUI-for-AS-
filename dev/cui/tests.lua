@@ -2339,6 +2339,112 @@ do
 	problems("boss skulls")
 end
 
+------------------------------------------------------------------ 11d. the abilities' ranks
+do
+	-- the slot showing an icon, and the rank written in its box (nil: no box)
+	local function slotOf(pat)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, pat, 1, true) and under(o, CreedUIBar)
+				and o.__parent.__kind == "Button" then return o.__parent end
+		end
+	end
+	local function rankOf(pat)
+		local b = slotOf(pat)
+		if not b then return "no slot" end
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "FontString" and under(o, b) and o.__text and o.__text ~= "" and visibleAlpha(o) > 0.5
+				and string.find(o.__text, "^%d+$") then
+				local l, bt, r, tp = M.Rect(o)
+				local bl, bb, br, btp = M.Rect(b)
+				if (l + r) / 2 > (bl + br) / 2 and (bt + tp) / 2 < (bb + btp) / 2 then return o.__text end
+			end
+		end
+		return nil
+	end
+	local SS, BF, BS, EV, AM = "Spell_Shadow_RitualOfSacrifice", "Ability_Warrior_PunishingBlow", "Ability_BackStab",
+		"Ability_Warrior_Challange", "Ability_Ambush"
+	if not CreedUIBar.__shown then M.Slash("bar on") end
+	for _, a in pairs(M.actions) do a.start, a.dur = 0, 0 end
+	M.meter = M.meter or { damage = {} }
+	-- listed in another order than the bar, slot numbers that don't match: the icons decide
+	M.loadout = { abilities = {
+		{ key = "ability:bs", rank = 2, slotId = 9, icon = "Interface\\Icons\\" .. BS },
+		{ key = "ability:ss", rank = 3, slotId = 8, icon = "Interface/Icons/" .. string.lower(SS) .. ".blp" },
+		{ key = "ability:ev", rank = 5, slotId = 7, icon = "Interface\\Icons\\" .. EV },
+		{ key = "ability:bf", rank = 1, slotId = 6, icon = "Interface\\Icons\\" .. BF },
+		{ key = "passive:x", rank = 4, slotId = 1, passive = true, icon = "Interface\\Icons\\" .. AM },
+	} }
+	frames(40)
+	check(rankOf(SS) == "3" and rankOf(BF) == "1" and rankOf(BS) == "2" and rankOf(EV) == "5",
+		"each ability's rank in a box on its bottom right, found by its icon (" .. tostring(rankOf(SS)) .. tostring(rankOf(BF))
+		.. tostring(rankOf(BS)) .. tostring(rankOf(EV)) .. ")")
+	check(rankOf(AM) == nil, "the racial has no rank box (and a passive is never shown)")
+	-- a card ranks one up: soon after the game's spells change, the box shows it and flashes
+	local glowBefore = countTex(slotOf(BF), "Art\\Glow", 0.2)
+	M.loadout.abilities[4].rank = 2
+	AZS_SPELLS_UPDATED = M.now
+	frames(10)
+	check(rankOf(BF) == "2", "a rank up shows within a third of a second (" .. tostring(rankOf(BF)) .. ")")
+	local rim
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex == CreedUI.FLAT and under(o, slotOf(BF)) and o.__vc and o.__vc[4] == 1 and M.Visible(o) then
+			local l, b, r, t = M.Rect(o)
+			if r - l < 30 then rim = o end
+		end
+	end
+	check(glowBefore == 0 and countTex(slotOf(BF), "Art\\Glow", 0.2) == 1 and rim and rim.__vc[1] > 0.9,
+		"and it flashes gold")
+	frames(60)
+	check(rim and rim.__vc[1] < 0.8 and countTex(slotOf(BF), "Art\\Glow", 0.2) == 0, "then cools back")
+	-- ranked up while the cards are up: the flash waits for the bar to come back
+	M.phase = "choosing"
+	frames(40)
+	M.loadout.abilities[4].rank = 3
+	AZS_SPELLS_UPDATED = M.now
+	frames(40)
+	check(rankOf(BF) == nil or CreedUI.cardsFade > 0.9, "the bar is away while the cards are up")
+	M.phase = "playing"
+	frames(12)
+	check(rankOf(BF) == "3" and rim and rim.__vc[1] > 0.9, "back from the cards, the new rank flashes then")
+	frames(60)
+	-- two digits fit
+	M.loadout.abilities[2].rank = 12
+	frames(40)
+	local b = slotOf(SS)
+	local box
+	for _, o in ipairs(M.All()) do if o.__kind == "Frame" and under(o, b) and o.__w and o.__w > 15 and o.__w < 30 then box = o end end
+	check(rankOf(SS) == "12" and box ~= nil, "a two-digit rank widens its box")
+	-- no icons from the game: the slot numbers decide
+	M.loadout = { abilities = { { key = "a1", rank = 4, slotId = 1 }, { key = "a2", rank = 7, slotId = 2 } } }
+	frames(40)
+	check(rankOf(SS) == "4" and rankOf(BF) == "7" and rankOf(BS) == nil, "without icons, by slot number")
+	-- the game not ready yet keeps them; out of a run they go
+	M.loadout = nil
+	frames(40)
+	check(rankOf(SS) == "4", "a loadout not in yet keeps the ranks shown")
+	local meter = M.meter
+	M.meter = nil
+	frames(40)
+	check(rankOf(SS) == nil and rankOf(BF) == nil, "out of a run, no ranks")
+	M.meter = meter
+	-- a game without the loadout: nothing breaks
+	local loadout = AZS_GetMeterLoadout
+	AZS_GetMeterLoadout = nil
+	frames(40)
+	check(rankOf(SS) == nil, "no loadout in the game: no boxes")
+	AZS_GetMeterLoadout = loadout
+	-- the loadout isn't read every frame
+	M.loadout = { abilities = { { key = "a1", rank = 4, slotId = 1 } } }
+	M.loadoutReads = 0
+	frames(90)
+	check(M.loadoutReads >= 2 and M.loadoutReads <= 4, "the loadout is read about once a second (" .. M.loadoutReads .. " in 3 s)")
+	M.chat = {}
+	M.Slash("probe")
+	check(chatHas(": loadout: a1 r4 slot1") and chatHas(": bar: 1=spell_shadow_ritualofsacrifice r4"), "/creed probe shows the spells' ranks and what each slot found")
+	M.loadout = nil
+	problems("ranks")
+end
+
 ------------------------------------------------------------------ 12. no API at all
 M.RemoveAPI()
 AZS_TARGET = nil
