@@ -318,4 +318,7 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["what the game tells addons:"] = "게임이 애드온에 알려 주는 것:",
 	["Talents"] = "특성",
 	["The game has no talent trees for this hero."] = "이 영웅의 특성 트리가 없습니다.",
+	["Boss skulls"] = "보스 해골",
+	["A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses."] = "화면 어디에 있든 각 보스 위에 해골: 가까우면 크게, 멀면 작게. 미니 보스에는 없습니다.",
+	["the boss skulls stopped after an error: "] = "보스 해골이 오류로 멈췄습니다: ",
 })

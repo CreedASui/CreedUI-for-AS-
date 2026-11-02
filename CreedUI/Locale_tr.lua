@@ -318,4 +318,7 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["what the game tells addons:"] = "oyunun eklentilere verdikleri:",
 	["Talents"] = "Yetenekler",
 	["The game has no talent trees for this hero."] = "Oyunda bu kahraman için yetenek ağacı yok.",
+	["Boss skulls"] = "Boss kafatasları",
+	["A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses."] = "Ekranın neresinde olursa olsun her boss'un üstünde bir kafatası: yakınken büyük, uzaktayken küçük. Mini boss'ların üstünde değil.",
+	["the boss skulls stopped after an error: "] = "boss kafatasları bir hatadan sonra durdu: ",
 })

@@ -13,16 +13,15 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.8.3**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.9.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
-## 2. First thing to do
+## 2. Releases
 
-The repository may still be empty: the user hadn't uploaded yet. If so, the user attaches
-`CreedUI-for-AS-github-upload.zip`. Its folder `CreedUI-for-AS-/` *is* the repository: put its
-contents at the repo root, commit ("Creed UI 1.8.3"), push, tag `v1.8.3`, and make a GitHub release
-**Creed UI 1.8.3** with the 1.8.3 entry of `CHANGELOG.md` as its text and `CreedUi-1.8.3.zip`
-attached (a zip of the `CreedUI` folder; rebuild it from the repo if the user didn't attach it).
+The repository holds everything since 1.8.3. Claude Code sessions here may push only their own
+branch and can't make tags or GitHub releases: the user makes each release on GitHub's website
+(tag `v<version>`, title **Creed UI <version>**, the version's `CHANGELOG.md` entry as text, and
+`CreedUi-<version>.zip` attached). Give them those steps and the zip.
 
 ## 3. Layout
 
@@ -35,6 +34,7 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Timer.lua         the boss timer (DON'T TOUCH: the user loves it as it is)
   Numbers.lua       floating damage numbers (combat text API)
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
+  Skulls.lua        a skull over each boss (world anchors), sized by distance
   Party.lua         party frames                   Chat.lua     dressed chat, kept clear of the dragon
   Bar.lua           skill bar, jewelry, XP/s, the gold panel with its two dragons
   Tally.lua         kills / gold / cache, docked inside the bar's panel
@@ -92,8 +92,8 @@ README.md, CHANGELOG.md
   can be turned off (giving back the game's own UI exactly), and wraps its OnUpdate in `pcall`. After
   an error it turns itself off with a translated message.
 - Comments are plain English prose describing what the player sees. Keep that voice.
-- The options hub grows 26 px per part: at 17 parts it's 732 px tall, close to the 768 px screen.
-  A new part needs a new hub layout (two columns or scrolling).
+- The options hub lays the parts out in two columns (the first half on the left) and grows 26 px
+  per two parts: at 19 parts it's 432 px tall. A test keeps it under 700 px.
 
 ## 5. Checking before shipping
 
@@ -101,7 +101,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 423 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 447 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
@@ -133,28 +133,46 @@ before using an API. Known:
   `meterSourceKey` (the meter line a hit counts toward) and now a distance from the hero.
 - **Meter API v1:** `AZS_GetMeterContext`, `AZS_GetMeterSnapshot(query)` (strict query keys;
   `sources` carry names and icons), checkpoints. Also summons, totems, bosses and guardians getters.
-- **New in API 0.139.2, docs not obtained yet:** `AZS_GetDownedPartyMembers` (where each downed friend
-  can be revived, on every map), `AZS_GetWorldAnchors` + `AZS_ProjectWorldAnchors` (markers on any
-  enemy, its corpse spot, a cache, guardian, boss or lair, lifted N yards; no target or nameplate
-  needed).
+- **World anchors (API 0.139.2):** read from the game's own code (below), mirrored in the stand-in.
+  - `AZS_GetWorldAnchorCapabilities()`: kinds `enemy`, `elite`, `guardian`, `boss`, `finalBoss`,
+    `cache`, `guardianLair`, `downedPartyMember`; attachments `position`, `overhead`; 256 a call.
+  - `AZS_GetWorldAnchors(query, cursor, limit)`: query nil or `{ kinds = {...}, states = {...} }` (no
+    other keys), cursor nil or a string, limit 1 to 256. Answers `{ apiVersion, catalogId, entries,
+    hasMore, nextCursor, overflowed }`; each entry has `anchorId`, `kind`, a state (`alive`, `dead`,
+    `downed`, `asleep`, `awake`, `empty`...), `attachments`, `positionAvailable`, `x/y/z`, ids
+    (`unitId`, `cacheId`, `lairIndex`, `memberId`). Errors `NOT_READY`, `CATALOG_CHANGED` (read again
+    from the start), `INVALID_ARGUMENT`.
+  - `AZS_ProjectWorldAnchors(requests)`: each `{ anchorId, attachment = "position"|"overhead", offset =
+    { x, y, z } }` in yards. Answers `{ cameraSampleId, frameCurrent, entries }`; each entry `state`
+    (`onScreen`, `offscreen`, `behindCamera`, `clipped`, `notReady`, `expired`, `unknownAnchor`,
+    `worldChanged`, `unsupportedAttachment`), `targetState`, `x`, `y` (WorldFrame's bottom left, as
+    combat text), `cameraDepth`, `uiUnitsPerYard`, `playerDistance`.
+  - `AZS_RegisterWorldAnchorFrameHandler(fn)`: called each frame after the camera, as combat text's.
+  - `AZS_GetDownedPartyMembers()`: no arguments; a list of `{ id, name, positionAvailable, anchorStatus,
+    anchorId, x, y, z, mapId, runId, spaceId }` (nil and an error before the run's lines come).
+    `AZS_GetRevive()` / `AZS_REVIVE`: `{ down, share, by, reviving, rshare }` (your own revive and
+    the friend you stand over). `AZS_DOWNED` + `AZS_DOWNED_UPDATED` are the raw list.
+  - The exact nesting of the answers is the one thing not seen live: `/creed probe` prints them.
+- **Where the API is written down:** the game's Lua for every `AZS_*` function, with comments, is
+  inside its client, `https://wow.aethus.pl/wenilla_bg.wasm` (about 90 MB): `strings -n 3` it and
+  search for `function AZS_`. The native side's field names and error messages are there too.
 - `/creed probe` prints `AZS_STATS`, `AZS_RUN` and the stats the character panel found. Ask the user
   for its output when you need field names.
 
 ## 7. Next
 
-1. **GitHub:** upload and release 1.8.3 if it isn't done (section 2).
-2. **Boss skull:** a skull marker floating over each **boss** (not guardians), sized by distance, using
-   the world anchors. Blocked on the API docs: ask the user to paste the addon-author section of the
-   0.139.2 notes, or to run a dump of what those functions return.
-3. **Downed party member** (co-op: you revive someone by standing on them):
+1. **Boss skulls (1.9.0):** done, not yet seen in the real client. Ask the user for a screenshot in a
+   boss fight and the output of `/creed probe` there; adjust `Skulls.lua` and the stand-in if the
+   answers are nested differently.
+2. **Downed party member** (co-op: you revive someone by standing on them):
    - a banner and a sound when someone in the party goes down;
-   - a marker on the spot where they can be revived;
+   - a marker on the spot where they can be revived (world anchor kind `downedPartyMember`);
    - an arrow at the screen's edge with the distance while they're off-screen.
 
-   Needs `AZS_GetDownedPartyMembers`'s docs.
-4. **Run talents strip** (removed in 1.8.1, code in `dev/attic`): wait until the game says where it
+   The API is known now (section 6); `Skulls.lua` shows how to read and draw world anchors.
+3. **Run talents strip** (removed in 1.8.1, code in `dev/attic`): wait until the game says where it
    keeps the run's talents (`/creed probe`).
-5. **Not yet confirmed in the real client:**
+4. **Not yet confirmed in the real client:**
    - the bundled TTFs loading from the addon folder, and CJK rendering;
    - `SetCursor` taking an addon texture (the resize arrow; if it fails, the drawn arrow comes back);
    - the character window's assumptions: stats are read as "Label:" with the value on the same row,

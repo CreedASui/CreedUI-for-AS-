@@ -124,4 +124,7 @@ T = {
 315: "oyunun eklentilere verdikleri:",
 316: "Yetenekler",
 317: "Oyunda bu kahraman için yetenek ağacı yok.",
+318: "Boss kafatasları",
+319: "Ekranın neresinde olursa olsun her boss'un üstünde bir kafatası: yakınken büyük, uzaktayken küçük. Mini boss'ların üstünde değil.",
+320: "boss kafatasları bir hatadan sonra durdu: ",
 }

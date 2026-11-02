@@ -318,4 +318,7 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["what the game tells addons:"] = "что игра сообщает аддонам:",
 	["Talents"] = "Таланты",
 	["The game has no talent trees for this hero."] = "У игры нет деревьев талантов для этого героя.",
+	["Boss skulls"] = "Черепа боссов",
+	["A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses."] = "Череп над каждым боссом, где бы он ни был на экране: большой, когда он близко, маленький, когда далеко. Не над мини-боссами.",
+	["the boss skulls stopped after an error: "] = "черепа боссов остановились после ошибки: ",
 })

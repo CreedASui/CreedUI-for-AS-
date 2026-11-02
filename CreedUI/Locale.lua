@@ -602,6 +602,23 @@ local ROWS = {
 		"El juego no tiene árboles de talentos para este héroe.",
 		"O jogo não tem árvores de talentos para este herói." },
 
+	-- the boss skulls
+	{ "Boss skulls",
+		"Crânes des boss",
+		"Boss-Schädel",
+		"Calaveras de jefes",
+		"Caveiras de chefes" },
+	{ "A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses.",
+		"Un crâne au-dessus de chaque boss, où qu'il soit à l'écran : grand quand il est près, petit quand il est loin. Pas sur les mini-boss.",
+		"Ein Schädel über jedem Boss, wo er auch auf dem Bildschirm ist: groß, wenn er nah ist, klein, wenn er fern ist. Nicht über Mini-Bossen.",
+		"Una calavera sobre cada jefe, esté donde esté en la pantalla: grande cuando está cerca, pequeña cuando está lejos. No sobre los minijefes.",
+		"Uma caveira sobre cada chefe, onde quer que esteja na tela: grande quando está perto, pequena quando está longe. Não sobre os minichefes." },
+	{ "the boss skulls stopped after an error: ",
+		"les crânes des boss se sont arrêtés après une erreur : ",
+		"die Boss-Schädel haben nach einem Fehler gestoppt: ",
+		"las calaveras de jefes se detuvieron tras un error: ",
+		"as caveiras de chefes pararam após um erro: " },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },

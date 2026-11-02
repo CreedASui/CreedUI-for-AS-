@@ -315,3 +315,6 @@ the character panel stopped after an error, so the game's own is back:
 what the game tells addons:
 Talents
 The game has no talent trees for this hero.
+Boss skulls
+A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses.
+the boss skulls stopped after an error: 

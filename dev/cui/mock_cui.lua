@@ -785,6 +785,7 @@ local function InstallAPI()
 		tex.__tex = "Portrait:" .. tostring(key)
 		return true
 	end
+	for name, fn in pairs(M.waAPI or {}) do setglobal(name, fn) end
 	function AZS_SetHudShown(part, shown) M.hud[part] = shown and true or false; M.hudWrites = (M.hudWrites or 0) + 1 end
 	function AZS_IsHudShown(part) return M.hud[part] ~= false end
 	function AZS_SetOnTopOfScreens(frame, on)
@@ -798,6 +799,7 @@ local function RemoveAPI()
 	AZS_SetHudShown, AZS_IsHudShown, AZS_SetOnTopOfScreens = nil, nil, nil
 	AZS_GetMeterContext, AZS_GetMeterSnapshot, AZS_CreateMeterCheckpoint, AZS_ReleaseMeterCheckpoint, AZS_SetMeterPortrait = nil, nil, nil, nil, nil
 	AZS_STATS = nil
+	for name in pairs(M.waAPI or {}) do setglobal(name, nil) end
 	AZS_ZONE, AZS_RUN, AZS_SCHEDULE, AZS_ZONE_UPDATED = nil, nil, nil, nil
 end
 M.InstallAPI, M.RemoveAPI = InstallAPI, RemoveAPI
@@ -824,7 +826,7 @@ function M.Frame(dt)
 	end
 end
 
-M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Bosses.lua", "Units.lua", "Party.lua", "Bar.lua", "Tally.lua", "Minimap.lua", "MinimapButton.lua",
+M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Bar.lua", "Tally.lua", "Minimap.lua", "MinimapButton.lua",
 	"Chests.lua", "Meter.lua", "Luck.lua", "Character.lua", "Chat.lua" }
 function M.Load(dir)
 	for i = 1, table.getn(M.files) do
@@ -843,7 +845,7 @@ function M.Reload(dir, fireLogout)
 	local saved = CreedUIDB
 	all, updaters, eventFrames = {}, {}, {}
 	for _, name in ipairs({ "CreedUITimerFrame", "CreedUIOptions", "CreedUITimerOptions", "CreedUINumbersOptions",
-		"CreedUIBosses", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
+		"CreedUIBosses", "CreedUISkulls", "CreedUISkullsDriver", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
 		"CreedUIParty", "CreedUITally", "CreedUIMinimap", "CreedUIMenuGuard", "GameMenuFrame", "Minimap", "CreedUIMeter",
 		"CreedUILuck", "CreedUIMeterToggle", "CreedUIChatGlass", "CreedUIChatDown", "ChatFrame1", "ChatFrame2", "CreedUIChests", "CreedUIMinimapClock", "CreedUIMeterSizer", "CreedUILuckSizer", "CreedUILuckToggle",
 		"ChatFrameEditBox", "ChatFrameMenuButton" }) do
@@ -862,7 +864,7 @@ function M.Reload(dir, fireLogout)
 		M.MakeCharacter()
 		CharacterFrame:Hide()
 	end
-	M.ctHandler = nil
+	M.ctHandler, M.waHandler = nil, nil
 	M.Load(dir)
 end
 
@@ -1099,12 +1101,153 @@ function M.Hit(e, amount, skill, periodic, crit)
 		spellId = sk.spellId, abilityName = sk.abilityName, icon = sk.icon }
 end
 
--- the game calls the combat text handler every frame, after the camera moves
+-- the game calls the combat text and world anchor handlers every frame, after the camera moves
 local frameBase = M.Frame
 function M.Frame(dt)
 	frameBase(dt)
 	if M.ctHandler then M.ctHandler() end
+	if M.waHandler then M.waHandler() end
 end
+
+------------------------------------------------------------------ the world anchors API (the game's 0.139.2)
+-- Checked as the game's client checks it (its own error messages): the catalog holds a handle on
+-- each boss of M.bosses (finalBoss for the last) and guardian of M.guardians. Boss i stands at
+-- world (i * 10 - 15, 6) unless M.waSpots[name] says else; M.waNear[name] scales its yards on
+-- screen (nearer: more), M.waOff[name] puts it off the screen, M.waNoHead[name] has no overhead.
+M.waSpots, M.waNear, M.waOff, M.waNoHead = {}, {}, {}, {}
+M.waCalls = { list = 0, project = 0, requests = 0 }
+local WA_KINDS = { enemy = true, elite = true, guardian = true, boss = true, finalBoss = true, cache = true,
+	guardianLair = true, downedPartyMember = true }
+local function WAErr(code, message) return nil, { code = code, message = message } end
+local function WABad(message)
+	Problem("world anchors: " .. message)
+	return WAErr("INVALID_ARGUMENT", message)
+end
+local function WACatalog()
+	local out = {}
+	for i = 1, table.getn(M.bosses or {}) do
+		local b = M.bosses[i]
+		table.insert(out, { anchorId = "boss:" .. b.name, kind = b.final and "finalBoss" or "boss", name = b.name,
+			entityState = (b.hp or 1) > 0 and "alive" or "dead", attachments = { "position", "overhead" },
+			positionAvailable = true, x = i * 10 - 15, y = 6, z = 0, index = i })
+	end
+	for i = 1, table.getn(M.guardians or {}) do
+		local g = M.guardians[i]
+		table.insert(out, { anchorId = "guardian:" .. g.id, kind = "guardian", name = g.name, entityState = "alive",
+			attachments = { "position", "overhead" }, positionAvailable = true, x = -20, y = -4, z = 0 })
+	end
+	return out
+end
+local function Finite(v) return type(v) == "number" and not BadNumber(v) end
+M.waAPI = {}
+M.waAPI.AZS_GetWorldAnchorCapabilities = function(...)
+	if arg.n ~= 0 then return WABad("AZS_GetWorldAnchorCapabilities takes no arguments") end
+	return { apiVersion = 1, kinds = { "enemy", "elite", "guardian", "boss", "finalBoss", "cache", "guardianLair", "downedPartyMember" },
+		attachments = { "position", "overhead" }, frameProjection = true, frameHandler = true, playerDistanceMetrics = true,
+		occlusion = false, worldOffsets = true, maxEntriesPerCall = 256, maxProjectionsPerCall = 256 }, nil
+end
+M.waAPI.AZS_GetWorldAnchors = function(...)
+	if arg.n > 3 then return WABad("AZS_GetWorldAnchors takes a query, a cursor and a limit") end
+	M.waCalls.list = M.waCalls.list + 1
+	if M.waThrows then error("boom") end
+	if M.waNotReady then return WAErr("NOT_READY", "the catalog starts with the first frame") end
+	local q, cursor, limit = arg[1], arg[2], arg[3]
+	if q ~= nil and type(q) ~= "table" then return WABad("query must be nil or a table") end
+	local want
+	if q then
+		for k in pairs(q) do
+			if k ~= "kinds" and k ~= "states" then return WABad("query takes kinds and states") end
+		end
+		if q.kinds ~= nil then
+			if type(q.kinds) ~= "table" then return WABad("kinds must be an array") end
+			want = {}
+			for i = 1, table.getn(q.kinds) do
+				if not WA_KINDS[q.kinds[i]] then return WABad("unknown kind " .. tostring(q.kinds[i])) end
+				want[q.kinds[i]] = true
+			end
+		end
+	end
+	if cursor ~= nil and type(cursor) ~= "string" then return WABad("cursor must be nil or a string") end
+	if limit ~= nil and (type(limit) ~= "number" or limit < 1 or limit > 256 or math.floor(limit) ~= limit) then
+		return WABad("limit must be a whole number from 1 to 256")
+	end
+	local all = {}
+	local catalog = WACatalog()
+	for i = 1, table.getn(catalog) do
+		if not want or want[catalog[i].kind] then table.insert(all, catalog[i]) end
+	end
+	local from = 1
+	if cursor then
+		local _, _, n = string.find(cursor, "^c(%d+)$")
+		if not n then return WAErr("INVALID_ARGUMENT", "this cursor belongs to another query") end
+		from = tonumber(n)
+	end
+	limit = limit or 64
+	local entries = {}
+	for i = from, math.min(table.getn(all), from + limit - 1) do table.insert(entries, all[i]) end
+	local last = from + table.getn(entries) - 1
+	local more = last < table.getn(all)
+	return { apiVersion = 1, catalogId = "cat1", entries = entries, hasMore = more, nextCursor = more and ("c" .. (last + 1)) or nil,
+		overflowed = false }, nil
+end
+M.waAPI.AZS_ProjectWorldAnchors = function(...)
+	if arg.n ~= 1 then return WABad("AZS_ProjectWorldAnchors takes the requests") end
+	local reqs = arg[1]
+	if type(reqs) ~= "table" then return WABad("requests must be an array") end
+	local n = table.getn(reqs)
+	if n > 256 then return WABad("at most 256 requests a call") end
+	M.waCalls.project = M.waCalls.project + 1
+	M.waCalls.requests = M.waCalls.requests + n
+	if M.waThrows then error("boom") end
+	local byId = {}
+	local catalog = WACatalog()
+	for i = 1, table.getn(catalog) do byId[catalog[i].anchorId] = catalog[i] end
+	local entries = {}
+	for i = 1, n do
+		local r = reqs[i]
+		if type(r) ~= "table" then return WABad("every request must be a table") end
+		if type(r.anchorId) ~= "string" then return WABad("every request needs an anchorId") end
+		if r.attachment ~= nil and r.attachment ~= "position" and r.attachment ~= "overhead" then
+			return WABad("attachment must be \"position\" or \"overhead\"")
+		end
+		if r.offset ~= nil and (type(r.offset) ~= "table" or not Finite(r.offset.x) or not Finite(r.offset.y) or not Finite(r.offset.z)) then
+			return WABad("offset must be a table of finite x, y and z yards")
+		end
+		local a = byId[r.anchorId]
+		M.waLast = M.waLast or {}
+		M.waLast[r.anchorId] = r.attachment
+		if not a then
+			entries[i] = { anchorId = r.anchorId, state = "unknownAnchor" }
+		elseif r.attachment == "overhead" and M.waNoHead[a.name] then
+			entries[i] = { anchorId = r.anchorId, state = "unsupportedAttachment" }
+		else
+			local spot = M.waSpots[a.name] or a
+			local upy = 9 * (M.waNear[a.name] or 1)
+			local lift = (r.attachment == "overhead" and 3 or 0) + (r.offset and r.offset.z or 0)
+			local sx, sy = ScreenOf(spot.x, spot.y)
+			local e = { anchorId = r.anchorId, state = M.waOff[a.name] and "offscreen" or "onScreen", targetState = a.entityState,
+				x = sx, y = sy + lift * upy, cameraDepth = 20 / (M.waNear[a.name] or 1), uiUnitsPerYard = upy,
+				playerDistance = 20 / (M.waNear[a.name] or 1) }
+			entries[i] = e
+		end
+	end
+	return { apiVersion = 1, cameraSampleId = M.now, frameCurrent = true, entries = entries }, nil
+end
+M.waAPI.AZS_RegisterWorldAnchorFrameHandler = function(fn)
+	if type(fn) ~= "function" then return WABad("the handler must be a function") end
+	M.waHandler = fn
+	M.waRegistered = (M.waRegistered or 0) + 1
+	return true, nil
+end
+M.waAPI.AZS_UnregisterWorldAnchorFrameHandler = function(fn)
+	if M.waHandler == fn then M.waHandler = nil end
+	return true, nil
+end
+M.waAPI.AZS_GetDownedPartyMembers = function(...)
+	if arg.n ~= 0 then return WABad("AZS_GetDownedPartyMembers takes no arguments") end
+	return M.downed or {}, nil
+end
+for name, fn in pairs(M.waAPI) do setglobal(name, fn) end
 
 -- Azeroth Survivors' character window (shut, as at login)
 dofile(SCRATCH .. "/cui/mock_char.lua")

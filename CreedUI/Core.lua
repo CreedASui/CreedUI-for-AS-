@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.8.3"
+C.VERSION = "1.9.0"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -1091,11 +1091,11 @@ function C.Button(parent, width, height, label, onClick)
 	return button
 end
 
-local function PartRow(parent, y, info)
+local function PartRow(parent, x, y, info)
 	local row = CreateFrame("Button", nil, parent)
 	row:SetWidth(200)
 	row:SetHeight(20)
-	row:SetPoint("TOPLEFT", parent, "TOPLEFT", 14, y)
+	row:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
 	row:EnableMouse(true)
 	local edge = row:CreateTexture(nil, "BORDER")
 	edge:SetTexture(C.FLAT)
@@ -1139,7 +1139,7 @@ local function PartRow(parent, y, info)
 			info.setScale(C.Clamp(math.floor((info.getScale() - 0.05) * 20 + 0.5) / 20, 0.5, 1.8))
 			RefreshHub()
 		end)
-		row.less:SetPoint("TOPLEFT", parent, "TOPLEFT", 220, y)
+		row.less:SetPoint("TOPLEFT", parent, "TOPLEFT", x + 206, y)
 		row.size = HubText(parent, 11, 1, 1, 1)
 		row.size:SetPoint("LEFT", row.less, "RIGHT", 0, 0)
 		row.size:SetWidth(46)
@@ -1182,12 +1182,16 @@ RefreshHub = function()
 end
 C.RefreshHub = function() RefreshHub() end
 
+-- The parts in two columns, the first half down the left, so the window stays well inside a
+-- 768 px screen however many parts there are; the buttons under them run across its width.
+local HUB_W, COL_W = 638, 312
+
 local function BuildHub()
 	local o = CreateFrame("Frame", "CreedUIOptions", UIParent)
 	hub = o
-	o:SetWidth(330)
-	local h = 120 + table.getn(C.parts) * 26 + 170
-	o:SetHeight(h)
+	o:SetWidth(HUB_W)
+	local perColumn = math.ceil(table.getn(C.parts) / 2)
+	o:SetHeight(62 + perColumn * 26 + 14 + 60 + 24 + 12) -- the rows, then three lines of buttons
 	o:SetPoint("CENTER", UIParent, "CENTER", 0, 10)
 	o:SetFrameStrata("DIALOG")
 	o:SetBackdrop({ bgFile = C.FLAT, edgeFile = C.FLAT, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
@@ -1212,24 +1216,27 @@ local function BuildHub()
 	local close = C.Button(o, 22, 22, "x", function() o:Hide() end)
 	close:SetPoint("TOPRIGHT", o, "TOPRIGHT", -10, -10)
 
-	local head = HubText(o, 10, 0.6, 0.6, 0.65)
-	head:SetPoint("TOPLEFT", o, "TOPLEFT", 14, -46)
-	C.LText(head, "PART")
-	local head2 = HubText(o, 10, 0.6, 0.6, 0.65)
-	head2:SetPoint("TOPLEFT", o, "TOPLEFT", 244, -46)
-	C.LText(head2, "SIZE")
+	for col = 0, 1 do
+		local head = HubText(o, 10, 0.6, 0.6, 0.65)
+		head:SetPoint("TOPLEFT", o, "TOPLEFT", 14 + col * COL_W, -46)
+		C.LText(head, "PART")
+		local head2 = HubText(o, 10, 0.6, 0.6, 0.65)
+		head2:SetPoint("TOPLEFT", o, "TOPLEFT", 244 + col * COL_W, -46)
+		C.LText(head2, "SIZE")
+	end
 
 	o.rows = {}
-	local y = -62
 	for i = 1, table.getn(C.parts) do
-		table.insert(o.rows, PartRow(o, y, C.parts[i]))
-		y = y - 26
+		local col = (i > perColumn) and 1 or 0
+		local line = i - 1 - col * perColumn
+		table.insert(o.rows, PartRow(o, 14 + col * COL_W, -62 - line * 26, C.parts[i]))
 	end
+	local y = -62 - perColumn * 26
 
 	local divider = o:CreateTexture(nil, "ARTWORK")
 	divider:SetTexture(C.FLAT)
 	divider:SetVertexColor(1, 1, 1, 0.08)
-	divider:SetWidth(302)
+	divider:SetWidth(HUB_W - 28)
 	divider:SetHeight(1)
 	divider:SetPoint("TOPLEFT", o, "TOPLEFT", 14, y - 4)
 	y = y - 14
@@ -1244,18 +1251,17 @@ local function BuildHub()
 	end)
 	C.LText(numbersButton.text, "Damage number settings")
 	numbersButton:SetPoint("TOPLEFT", o, "TOPLEFT", 168, y)
-	y = y - 30
 	o.move = C.Button(o, 148, 24, "Move frames", function()
 		C.SetUnlocked(not C.unlocked)
 		RefreshHub()
 	end)
-	o.move:SetPoint("TOPLEFT", o, "TOPLEFT", 14, y)
+	o.move:SetPoint("TOPLEFT", o, "TOPLEFT", 14 + COL_W, y)
 	local reset = C.Button(o, 148, 24, "", function()
 		C.ResetPositions()
 		C.Print(C.L("frames are back in their places."))
 	end)
 	C.LText(reset.text, "Reset positions")
-	reset:SetPoint("TOPLEFT", o, "TOPLEFT", 168, y)
+	reset:SetPoint("TOPLEFT", o, "TOPLEFT", 168 + COL_W, y)
 	y = y - 30
 	o.calm = C.Button(o, 302, 24, "", function()
 		local root = C.Root()
@@ -1264,13 +1270,12 @@ local function BuildHub()
 	end)
 	C.LText(o.calm.text, "Calm mode: no flowing light in the bars")
 	o.calm:SetPoint("TOPLEFT", o, "TOPLEFT", 14, y)
-	y = y - 30
 	o.lock = C.Button(o, 302, 24, "Meter and luck windows: drag them to move", function()
 		local root = C.Root()
 		root.lockWindows = not root.lockWindows
 		RefreshHub()
 	end)
-	o.lock:SetPoint("TOPLEFT", o, "TOPLEFT", 14, y)
+	o.lock:SetPoint("TOPLEFT", o, "TOPLEFT", 14 + COL_W, y)
 	y = y - 30
 	-- the language: a button that opens the list of them, each in its own words
 	o.lang = C.Button(o, 302, 24, "", function()
@@ -1331,6 +1336,7 @@ local function Slash(msg)
 		if C.numberSlash then C.numberSlash(rest) end
 	elseif cmd == "probe" then
 		if C.Probe then C.Probe() end
+		if C.ProbeAnchors then C.ProbeAnchors() end
 	elseif cmd == "move" or cmd == "unlock" then
 		C.SetUnlocked(true)
 		C.Print(C.L("drag the frames, then type /creed lock."))

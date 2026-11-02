@@ -2193,6 +2193,152 @@ do
 	problems("talent page")
 end
 
+------------------------------------------------------------------ 11c. the boss skulls
+do
+	local function skulls(minAlpha)
+		local out = {}
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "BossSkull", 1, true) and under(o, CreedUISkulls)
+				and visibleAlpha(o) > (minAlpha or 0.5) then
+				table.insert(out, o)
+			end
+		end
+		return out
+	end
+	local function center(o)
+		local l, b, r, t = M.Rect(o)
+		return (l + r) / 2, (b + t) / 2, r - l
+	end
+	local function skullOf(name)
+		-- the skull over a boss: the one nearest its spot across the screen
+		local i = name == "Kel'Thuzad" and 2 or 1
+		local want = 640 + (i * 10 - 15) * 9
+		for _, o in ipairs(skulls()) do
+			local cx = center(o)
+			if math.abs(cx - want) < 1 then return o end
+		end
+	end
+	local part
+	for i = 1, table.getn(CreedUI.parts) do if CreedUI.parts[i].key == "skulls" then part = CreedUI.parts[i] end end
+	check(part ~= nil and part.get(), "the boss skulls are a part, on at first")
+	M.Slash("skulls on")
+	M.guardians = { { id = 77, name = "Sir Zeliek", hp = 21500, hpm = 36000, awake = true } }
+	M.bosses = { { name = "Anub'Rekhan", hp = 9000, hpm = 10000 }, { name = "Kel'Thuzad", hp = 50000, hpm = 60000, final = true } }
+	M.waSpots, M.waNear, M.waOff, M.waNoHead, M.waLast = {}, {}, {}, {}, {}
+	frames(30)
+	check(table.getn(skulls()) == 2, "a skull over each boss, none over the mini-boss (" .. table.getn(skulls()) .. ")")
+	check(M.waHandler ~= nil, "the skulls move with the game's camera (its frame handler)")
+	check(M.waLast["boss:Anub'Rekhan"] == "overhead" and M.waLast["guardian:77"] == nil, "the bosses' heads are asked for, not the mini-boss's")
+	local s1 = skullOf("Anub'Rekhan")
+	local cx, cy, w = 0, 0, 0
+	if s1 then cx, cy, w = center(s1) end
+	local head = 330 + 6 * 9 + (3 + 1.2) * 9
+	check(s1 and math.abs(cx - (640 - 5 * 9)) < 1 and math.abs(cy - (head + w / 2)) <= 2.5,
+		string.format("the skull floats just over the boss's head (%.1f, %.1f; head at %.1f)", cx, cy, head))
+	check(s1 and math.abs(w - 22) < 1, "a far boss's skull is small, but not smaller than 22 (" .. w .. ")")
+	-- nearer: bigger, up to a limit
+	M.waNear["Anub'Rekhan"] = 3
+	frames(30)
+	local _, _, w1 = center(skullOf("Anub'Rekhan"))
+	local _, _, w2 = center(skullOf("Kel'Thuzad"))
+	check(math.abs(w1 - 43) < 1.5 and math.abs(w2 - 22) < 1, string.format("a near boss's skull is bigger (%.1f vs %.1f)", w1, w2))
+	M.waNear["Anub'Rekhan"] = 10
+	frames(30)
+	_, _, w1 = center(skullOf("Anub'Rekhan"))
+	check(math.abs(w1 - 64) < 1, "and no bigger than 64 however near (" .. w1 .. ")")
+	M.waNear["Anub'Rekhan"] = nil
+	part.setScale(1.5)
+	frames(30)
+	_, _, w2 = center(skullOf("Kel'Thuzad"))
+	check(math.abs(w2 - 33) < 1, "the size setting scales them (" .. w2 .. ")")
+	part.setScale(1)
+	-- the final boss glows gold, the others red
+	local gold, red = 0, 0
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Glow", 1, true) and under(o, CreedUISkulls) and visibleAlpha(o) > 0.5 and o.__vc then
+			if o.__vc[2] > 0.6 then gold = gold + 1 elseif o.__vc[2] < 0.2 then red = red + 1 end
+		end
+	end
+	check(gold == 1 and red == 1, "the final boss's skull glows gold, the other's red (" .. gold .. ", " .. red .. ")")
+	-- off the screen: no skull at the edge of it
+	M.waOff["Kel'Thuzad"] = true
+	frames(30)
+	check(table.getn(skulls()) == 1 and skullOf("Anub'Rekhan"), "a boss off the screen has no skull")
+	M.waOff["Kel'Thuzad"] = nil
+	-- a boss the game has no head for: over its feet, higher
+	M.waNoHead["Kel'Thuzad"] = true
+	frames(30)
+	check(M.waLast["boss:Kel'Thuzad"] == "position" and skullOf("Kel'Thuzad") ~= nil, "a boss with no head spot gets its skull over its feet")
+	M.waNoHead["Kel'Thuzad"] = nil
+	-- a boss that falls loses its skull; then the other goes
+	M.bosses[1].hp = 0
+	frames(40)
+	check(table.getn(skulls(0.05)) == 1 and skullOf("Kel'Thuzad"), "a fallen boss's skull fades away")
+	M.bosses = {}
+	frames(40)
+	check(table.getn(skulls(0.05)) == 0, "no boss, no skull")
+	-- bosses come and go many times: the skulls are reused, not piled up
+	local function framesUnder()
+		local n = 0
+		for _, o in ipairs(M.All()) do if o.__kind == "Frame" and under(o, CreedUISkulls) then n = n + 1 end end
+		return n
+	end
+	local before = framesUnder()
+	for k = 1, 5 do
+		M.bosses = { { name = "Boss" .. k, hp = 10, hpm = 10 } }
+		frames(20)
+		M.bosses = {}
+		frames(40)
+	end
+	check(framesUnder() <= math.max(before, 2), "skulls are reused (" .. before .. " then " .. framesUnder() .. " frames)")
+	-- the game failing: nothing breaks, no skull, the part stays on
+	M.bosses = { { name = "Anub'Rekhan", hp = 9000, hpm = 10000 } }
+	frames(20)
+	M.waThrows = true
+	frames(40)
+	check(table.getn(skulls(0.05)) == 0 and part.get() and not chatHas("boss skulls stopped"), "the game failing hides the skulls and nothing breaks")
+	M.waThrows = nil
+	frames(30)
+	check(table.getn(skulls()) == 1, "and they come back with it")
+	-- off: no skulls, no handler, no more questions to the game
+	M.Slash("skulls off")
+	frames(5)
+	local asked = M.waCalls.list
+	frames(30)
+	check(table.getn(skulls(0.05)) == 0 and M.waHandler == nil and M.waCalls.list == asked, "/creed skulls off: none, and the game is left alone")
+	-- a game without the frame handler: they move from Creed UI's own updates
+	local register = AZS_RegisterWorldAnchorFrameHandler
+	AZS_RegisterWorldAnchorFrameHandler = nil
+	M.Slash("skulls on")
+	frames(30)
+	check(M.waHandler == nil and table.getn(skulls()) == 1, "without the game's frame handler they still show")
+	AZS_RegisterWorldAnchorFrameHandler = register
+	frames(200)
+	check(M.waHandler ~= nil, "and take it once the game has it")
+	-- /creed probe shows what the anchors look like
+	M.chat = {}
+	M.Slash("probe")
+	check(chatHas(": anchors: ") and chatHas("entries=1") and chatHas(": projected: ") and chatHas("state=onScreen") and chatHas(": downed: 0"),
+		"/creed probe shows the game's anchors, a projection and the downed friends")
+	M.bosses = {}
+	frames(40)
+	-- the options window: two columns, inside a 768 px screen, every row inside it
+	if not (CreedUIOptions and CreedUIOptions.__shown) then M.Slash("") end
+	local ol, ob, or_, ot = M.Rect(CreedUIOptions)
+	check(ot - ob <= 700, "the options window stays low enough for any screen (" .. (ot - ob) .. ")")
+	local inside, rowsSeen = true, 0
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Button" and o.__parent == CreedUIOptions and M.Visible(o) then
+			rowsSeen = rowsSeen + 1
+			local l, b, r, t = M.Rect(o)
+			if l < ol or r > or_ or b < ob or t > ot then inside = false end
+		end
+	end
+	check(inside and rowsSeen >= table.getn(CreedUI.parts), "every row and button sits inside it (" .. rowsSeen .. ")")
+	M.Slash("")
+	problems("boss skulls")
+end
+
 ------------------------------------------------------------------ 12. no API at all
 M.RemoveAPI()
 AZS_TARGET = nil

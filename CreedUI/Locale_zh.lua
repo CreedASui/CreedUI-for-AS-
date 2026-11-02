@@ -318,4 +318,7 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["what the game tells addons:"] = "游戏提供给插件的信息：",
 	["Talents"] = "天赋",
 	["The game has no talent trees for this hero."] = "游戏没有这个英雄的天赋树。",
+	["Boss skulls"] = "首领骷髅",
+	["A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses."] = "每个首领头上一个骷髅，无论它在屏幕何处：近时大，远时小。小首领没有。",
+	["the boss skulls stopped after an error: "] = "首领骷髅出错后已停止：",
 })

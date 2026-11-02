@@ -6,6 +6,7 @@ A clean, smooth HUD for **Azeroth Survivors** ([wow.aethus.pl](https://wow.aethu
 
 - **Boss timer:** a themed countdown to each boss, with the run's time.
 - **Boss and mini-boss bars:** red bars with real health numbers and the debuffs on them.
+- **Boss skulls:** a skull floating over each boss wherever it is on the screen, large when it's near and small when it's far (gold over the final boss).
 - **Your frame, your target and your party:** in class colors, portraits in metal rings.
 - **Skill bar:** your abilities and jewelry, your XP a second, on a gold-framed panel guarded by two dragons wrapped in their wings.
 - **Kills, gold and cache:** in the panel; hover for what each gives.

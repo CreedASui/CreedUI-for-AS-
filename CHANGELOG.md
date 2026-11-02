@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.0
+- A skull floats over each boss, wherever it is on the screen, without a target or a nameplate: large when the boss is near, small when it's far, glowing gold over the final boss. It fades away when the boss falls. Mini-bosses have none. Turn it off or size it in the options (Boss skulls).
+- The options window has two columns now, so it fits on any screen.
+- `/creed probe` also shows what the game says about the bosses' places and downed friends.
+
 ## 1.8.3
 - The Talents page now looks like the game's talent window: each tree in its own framed panel with its background painting, the full grid of talents, and branches with arrows from each talent to the ones it opens. Talents with points are lit with their rank, ones you could take are in color, locked ones are greyed.
 

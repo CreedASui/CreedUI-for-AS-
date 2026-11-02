@@ -318,4 +318,7 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["what the game tells addons:"] = "ゲームがアドオンに渡す情報：",
 	["Talents"] = "タレント",
 	["The game has no talent trees for this hero."] = "この英雄のタレントツリーはありません。",
+	["Boss skulls"] = "ボスのドクロ",
+	["A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses."] = "画面のどこにいても各ボスの頭上にドクロ：近いと大きく、遠いと小さく。ミニボスには出ません。",
+	["the boss skulls stopped after an error: "] = "ボスのドクロはエラーで停止しました：",
 })

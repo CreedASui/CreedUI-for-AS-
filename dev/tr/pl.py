@@ -124,4 +124,7 @@ T = {
 315: "co gra przekazuje dodatkom:",
 316: "Talenty",
 317: "Gra nie ma drzewek talentów dla tego bohatera.",
+318: "Czaszki bossów",
+319: "Czaszka nad każdym bossem, gdziekolwiek jest na ekranie: duża, gdy jest blisko, mała, gdy daleko. Nie nad minibossami.",
+320: "czaszki bossów zatrzymały się po błędzie: ",
 }
