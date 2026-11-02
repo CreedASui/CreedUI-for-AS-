@@ -13,6 +13,15 @@ M.runTime = 60
 SIM.Publish()
 AZS_STATS = { luck = 0.41, gluck = 0.22 }
 M.meter = { damage = { { key = "melee", name = "Melee", amount = 30000 } } }
+-- the panels that show only now and then: the run's summary, the level-up button, a friend down
+M.runEnd = { result = "victory", t = 100000, lvl = 24, kills = 1834, elites = 12, guardians = 3, bosses = 5, dmg = 2400000,
+	taken = 81234, gold = 512, chests = 9, hero = "Creed" }
+M.storing, M.storedLevels = true, 3
+M.unit.party1 = { exists = true, name = "Melkor", class = "Mage", level = 20, hp = 0, hpm = 2000, dead = true }
+M.downed = { { id = 2, name = "Melkor", anchorId = "downed:2", anchorStatus = "ready", positionAvailable = true, wx = 8, wy = -6 } }
+M.revive = { reviving = "Melkor", rshare = 0.5 }
+AZS_TAKEN = { { source = "Plagued Ghoul", dmg = 1200 } }
+CreedUIDB.meter.tab = "taken"
 SIM.Advance(1, 1 / 30)
 M.Slash("")
 M.Slash("timer")

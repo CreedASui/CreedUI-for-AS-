@@ -18,7 +18,7 @@ on it: bosses, guardians, cards, deaths, victory.
 
 | Command | What it checks |
 | --- | --- |
-| `lua50 cui/tests.lua . ../CreedUI` | Every part, end to end (440+ checks) |
+| `lua50 cui/tests.lua . ../CreedUI` | Every part, end to end (500+ checks) |
 | `lua50 cui/timer_tests.lua . ../CreedUI` | The boss timer |
 | `lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua` | The damage numbers (`CROWD=1` for crowds) |
 | `lua50 cui/smoke.lua . ../CreedUI <out folder>` | A long run with everything on, no errors |
@@ -35,7 +35,9 @@ lua50 cui/charprev.lua . ../CreedUI out
 python3 cui/render_cui.py out/char.txt out/char.png 2 0 150 590 720
 ```
 
-`cui/skullprev.lua` sets a boss fight with the skulls over two bosses and writes `out/skulls.txt`, and
+`cui/partyprev.lua` sets friends down (a revive mark and an edge arrow), the Level Up! button and the
+meter on Damage Taken (`out/party.txt`), then the run's summary (`out/summary.txt`); `cui/rankprev.lua`
+the skill bar's rank boxes. `cui/skullprev.lua` sets a boss fight with the skulls over two bosses and writes `out/skulls.txt`, and
 the options window in `out/hub.txt`.
 
 A 1920x1080 game screenshot at `cui/shot.png` (or named in `CREEDUI_SHOT`) is drawn behind it,

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.0
+- **Downed friends (co-op):** when a friend goes down, a banner says so with the raid warning sound. A glowing mark shows where they lie (stand on it to bring them back), with their name in their class color and the distance; while you revive them it turns green and counts up. While they're off the screen, a gold arrow at its edge points the way, with the distance.
+- **Stored level-ups:** with the game's Store Level-Ups on, a glowing Level Up! button over the skill bar shows how many wait; click it to pick their cards. It pulses when one more comes.
+- **Run summary:** when a run ends, a panel shows your time, level, kills, elites, guardians and bosses slain, damage dealt (and a second) and taken, gold earned and caches opened, counting up. Close it with its x; it moves with Move frames.
+- **Damage Taken:** a new view in the damage meter: what hit you, the most first, per second.
+- The options window has room for the three new parts.
+
 ## 1.10.0
 - Each ability on the skill bar shows its rank in a little gold-rimmed box on its bottom right corner. When a card ranks one up, the box and the ability flash gold as you come back from the cards.
 - `/creed probe` also shows the game's spells, their ranks and the rank each slot found.

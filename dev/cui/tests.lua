@@ -1348,6 +1348,7 @@ do
 		local line = { { key = "melee", name = "Melee", amount = total } }
 		M.meter = { damage = line, healing = { { key = "regen", name = "Regeneration", amount = total } }, boss = line,
 			party = { { key = "H1", name = "Creed", class = "rogue", amount = total } } }
+		AZS_TAKEN = { { source = "Melee", dmg = total } }
 		CreedUIDB.meter.tab = tab
 		frames(20)
 	end
@@ -1361,7 +1362,7 @@ do
 	end
 	local worst, worstCase, overlaps, cases, blank, wrongRate = 99, "", 0, 0, 0, 0
 	local fullAt300 = true
-	for _, tab in ipairs({ "damage", "healing", "boss", "party" }) do
+	for _, tab in ipairs({ "damage", "healing", "boss", "party", "taken" }) do
 		for _, w in ipairs({ 200, 236, 300, 440 }) do
 			setWidth(w)
 			for _, total in ipairs({ 30000, 1060000, 79990000 }) do
@@ -1372,8 +1373,8 @@ do
 				if gap < worst then worst, worstCase = gap, tab .. " " .. w .. " '" .. name .. "' / '" .. rateText .. "'" end
 				if gap < 6 or nameEnd > caretL + 0.5 then overlaps = overlaps + 1 end
 				if name == "" then blank = blank + 1 end
-				if not string.find(rateText, "^[%d%.]+[km]? [dh]ps$") then wrongRate = wrongRate + 1 end
-				local full = ({ damage = "Damage Done", healing = "Healing Done", boss = "Boss Damage", party = "Party DPS" })[tab]
+				if not string.find(rateText, "^[%d%.]+[km]? [dh]t?ps$") then wrongRate = wrongRate + 1 end
+				local full = ({ damage = "Damage Done", healing = "Healing Done", boss = "Boss Damage", party = "Party DPS", taken = "Damage Taken" })[tab]
 				if w >= 300 and name ~= full then fullAt300 = false end
 			end
 		end
@@ -2221,6 +2222,7 @@ do
 	local part
 	for i = 1, table.getn(CreedUI.parts) do if CreedUI.parts[i].key == "skulls" then part = CreedUI.parts[i] end end
 	check(part ~= nil and part.get(), "the boss skulls are a part, on at first")
+	M.Slash("downed off") -- the skulls' own frame handler alone, for these checks
 	M.Slash("skulls on")
 	M.guardians = { { id = 77, name = "Sir Zeliek", hp = 21500, hpm = 36000, awake = true } }
 	M.bosses = { { name = "Anub'Rekhan", hp = 9000, hpm = 10000 }, { name = "Kel'Thuzad", hp = 50000, hpm = 60000, final = true } }
@@ -2336,6 +2338,7 @@ do
 	end
 	check(inside and rowsSeen >= table.getn(CreedUI.parts), "every row and button sits inside it (" .. rowsSeen .. ")")
 	M.Slash("")
+	M.Slash("downed on")
 	problems("boss skulls")
 end
 
@@ -2443,6 +2446,198 @@ do
 	check(chatHas(": loadout: a1 r4 slot1") and chatHas(": bar: 1=spell_shadow_ritualofsacrifice r4"), "/creed probe shows the spells' ranks and what each slot found")
 	M.loadout = nil
 	problems("ranks")
+end
+
+------------------------------------------------------------------ 11e. damage taken, stored level-ups, the run's summary, friends down
+do
+	local function partOf(key)
+		for i = 1, table.getn(CreedUI.parts) do if CreedUI.parts[i].key == key then return CreedUI.parts[i] end end
+	end
+	M.meter = M.meter or { damage = {} }
+	M.phase = "playing"
+	-- Damage Taken: what hit you, the most first, a skull for each one's icon, per second over the run
+	if not CreedUIMeter.__shown then M.Slash("meter on") end
+	CreedUIDB.meter.shown = true
+	M.runTime = 100
+	AZS_TAKEN = { { source = "Plagued Ghoul", dmg = 1200 }, { source = "Anub'Rekhan", dmg = 5400 }, { source = "Nobody", dmg = 0 } }
+	CreedUIDB.meter.tab = "taken"
+	frames(30)
+	check(findText(CreedUIMeter, "^Damage Taken") ~= nil and findText(CreedUIMeter, "^1%. Anub'Rekhan$") ~= nil
+		and findText(CreedUIMeter, "^2%. Plagued Ghoul$") ~= nil and findText(CreedUIMeter, "^3%.") == nil,
+		"Damage Taken lists what hit you, the most first: " .. table.concat(textsUnder(CreedUIMeter), " | "))
+	check(findText(CreedUIMeter, "^66 dtps$") ~= nil, "with the damage you take a second (" .. tostring(findText(CreedUIMeter, "dtps")) .. ")")
+	check(countTex(CreedUIMeter, "Art\\Skull$", 0.3) == 2, "a skull for each line's icon")
+	local reset
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Button" and under(o, CreedUIMeter) and o.__scripts.OnClick then
+			for _, k in ipairs(M.All()) do if k.__parent == o and k.__kind == "FontString" and k.__text == "Reset" then reset = o end end
+		end
+	end
+	this = reset
+	reset.__scripts.OnClick()
+	AZS_TAKEN[1].dmg = 1500
+	frames(30)
+	check(findText(CreedUIMeter, "^1%. Plagued Ghoul$") ~= nil and findText(CreedUIMeter, "^2%.") == nil, "Reset counts what hit you since")
+	AZS_TAKEN = {}
+	frames(30)
+	check(findText(CreedUIMeter, "^No damage taken yet%.$") ~= nil, "nothing yet says so")
+	CreedUIDB.meter.tab = "damage"
+	frames(10)
+	problems("damage taken")
+
+	-- stored level-ups: a button over the bar with how many wait; a click opens them
+	local lv = partOf("levelups")
+	check(lv and lv.get(), "stored level-ups are a part, on at first")
+	check(M.hud.levels == false, "the game's Level Up! button is hidden while it's on")
+	M.storing, M.storedLevels = true, 0
+	frames(20)
+	check(not M.Visible(CreedUILevelUps), "nothing waiting: no button")
+	M.storedLevels = 2
+	frames(20)
+	check(M.Visible(CreedUILevelUps) and findText(CreedUILevelUps, "^Level Up!$") and findText(CreedUILevelUps, "^2$"), "two waiting: Level Up! with a 2")
+	local glow = CreedUILevelUps.glow
+	frames(20)
+	local calm = glow.__alpha
+	M.storedLevels = 3
+	frames(3)
+	check(findText(CreedUILevelUps, "^3$") and glow.__alpha > calm + 0.2, "one more pulses it")
+	M.openedLevels = 0
+	this = CreedUILevelUps
+	CreedUILevelUps.__scripts.OnClick()
+	check(M.openedLevels == 1, "a click opens them, as the game's button does")
+	-- while the cards are up it steps aside
+	M.phase = "choosing"
+	frames(40)
+	check(visibleAlpha(CreedUILevelUps) < 0.05, "it steps aside for the cards")
+	M.phase = "playing"
+	M.storing = false
+	frames(30)
+	check(not M.Visible(CreedUILevelUps), "with Store Level-Ups off, none")
+	M.storing = true
+	M.Slash("levelups off")
+	frames(20)
+	check(M.hud.levels == true and not M.Visible(CreedUILevelUps), "off: the game's button is back")
+	M.Slash("levelups on")
+	frames(5)
+	check(M.hud.levels == false, "and on hides it again")
+	M.storedLevels = 0
+	frames(20)
+	problems("stored level-ups")
+
+	-- the run's summary: when a run ends, a panel with what it came to, counting up
+	check(partOf("summary") and partOf("summary").get(), "the run summary is a part, on at first")
+	M.runEnd = nil
+	frames(10)
+	check(not M.Visible(CreedUISummary), "no summary while the run goes on")
+	M.runTime = 600
+	M.runEnd = { result = "victory", t = 600, lvl = 24, kills = 1834, elites = 12, guardians = 3, bosses = 5, dmg = 2400000,
+		taken = 81234, gold = 512, chests = 9, magnets = 2, endl = 0, hero = "Creed" }
+	frames(6)
+	check(M.Visible(CreedUISummary) and findText(CreedUISummary, "^Victory!$") ~= nil and findText(CreedUISummary, "^Creed$") ~= nil,
+		"a won run: Victory! and the hero")
+	local early = findText(CreedUISummary, "^[%d,]+$")
+	frames(60)
+	local texts = table.concat(textsUnder(CreedUISummary), " | ")
+	check(findText(CreedUISummary, "^10:00$") and findText(CreedUISummary, "^24$") and findText(CreedUISummary, "^1,834$")
+		and findText(CreedUISummary, "^2.4M$") and findText(CreedUISummary, "^4,000$") and findText(CreedUISummary, "^81,234$")
+		and findText(CreedUISummary, "^512$") and findText(CreedUISummary, "^9$") and findText(CreedUISummary, "^Damage a second$"),
+		"every line, damage a second from the damage and the time: " .. texts)
+	check(early ~= nil and early ~= "1,834", "the numbers count up as it opens (" .. tostring(early) .. ")")
+	local l = M.Rect(CreedUISummary)
+	check(l < 200, "it sits at the left, clear of the game's end screen")
+	-- closed by its x
+	local x
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Button" and o.__parent == CreedUISummary then x = o end
+	end
+	this = x
+	x.__scripts.OnClick()
+	frames(30)
+	check(not M.Visible(CreedUISummary), "its x closes it")
+	-- a fallen run opens it again; fighting on in endless puts it away
+	M.runEnd = { result = "defeat", t = 420, lvl = 18, kills = 900, dmg = 100000, taken = 40000, gold = 100, chests = 2, hero = "Creed" }
+	M.runTime = 420
+	frames(30)
+	check(M.Visible(CreedUISummary) and findText(CreedUISummary, "^You have fallen$") ~= nil, "a fallen run: You have fallen")
+	M.runTime = 430
+	frames(30)
+	check(not M.Visible(CreedUISummary), "fighting on past the end puts it away")
+	M.runEnd = nil
+	frames(10)
+	problems("run summary")
+
+	-- friends down: a banner and a sound, a mark where they lie, an arrow while they're off the screen
+	local dn = partOf("downed")
+	check(dn and dn.get(), "downed friends are a part, on at first")
+	M.unit.party1 = { exists = true, name = "Melkor", class = "Mage", level = 20, hp = 0, hpm = 2000, mp = 0, mpm = 1200, power = 0, dead = true }
+	M.unit.party2 = { exists = true, name = "Zulyara", class = "Priest", level = 20, hp = 1650, hpm = 1800, mp = 1100, mpm = 1500, power = 0 }
+	M.downed, M.revive, M.sounds = {}, {}, {}
+	frames(20)
+	check(not M.Visible(CreedUIDownedBanner), "nobody down: no banner")
+	M.downed = { { id = 2, name = "Melkor", anchorId = "downed:2", anchorStatus = "ready", positionAvailable = true, wx = 8, wy = -6 } }
+	frames(10)
+	check(M.Visible(CreedUIDownedBanner) and findText(CreedUIDownedBanner, "^Melkor is down!$") ~= nil, "Melkor falls: a banner says so")
+	check(M.sounds[1] == "RaidWarning", "with the raid warning sound")
+	local function markOf(name)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "FontString" and under(o, CreedUIDowned) and o.__text == name and visibleAlpha(o) > 0.3 then return o.__parent, o end
+		end
+	end
+	local mark, label = markOf("Melkor")
+	local mx, my = 0, 0
+	if mark then
+		local l2, b2, r2, t2 = M.Rect(mark)
+		mx, my = (l2 + r2) / 2, (b2 + t2) / 2
+	end
+	check(mark and math.abs(mx - (640 + 8 * 9)) < 1 and math.abs(my - (330 - 6 * 9 + 0.2 * 9)) < 1,
+		string.format("a mark where they lie (%.1f, %.1f)", mx, my))
+	check(label and label.__color and label.__color[1] < 0.6 and label.__color[3] > 0.8, "their name in their class color (a mage's blue)")
+	check(findText(CreedUIDowned, "^20 yd$") ~= nil, "and how far they are")
+	frames(150)
+	check(not M.Visible(CreedUIDownedBanner), "the banner fades after a few seconds")
+	check(markOf("Melkor") ~= nil, "the mark stays while they're down")
+	-- you stand on them: it counts up in green
+	M.revive = { down = 0, reviving = "Melkor", rshare = 0.45 }
+	frames(5)
+	check(findText(CreedUIDowned, "^Reviving 45%%$") ~= nil, "standing on them counts the revive up: " .. table.concat(textsUnder(CreedUIDowned), " | "))
+	M.revive = {}
+	-- off the screen: an arrow on its edge toward them, with the distance
+	M.downed[1].wx, M.downed[1].wy = 120, 10
+	frames(5)
+	local arrow
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "EdgeArrow", 1, true) and under(o, CreedUIDowned) and visibleAlpha(o) > 0.5 then arrow = o end
+	end
+	local al, ab, ar, at = 0, 0, 0, 0
+	if arrow then al, ab, ar, at = M.Rect(arrow) end
+	check(arrow and ar <= 1280 and ar > 1280 - 80 and (ab + at) / 2 > 360, string.format("off the screen: an arrow on the right edge (%.0f, %.0f)", (al + ar) / 2, (ab + at) / 2))
+	check(markOf("Melkor") == nil and findText(CreedUIDowned, "^Melkor  20 yd$") ~= nil, "naming them, with the distance")
+	-- behind the camera: the arrow turns the other way
+	M.waBehind = { Melkor = true }
+	frames(5)
+	if arrow then al, ab, ar, at = M.Rect(arrow) end
+	check(arrow and al < 80, "behind the camera: the arrow points the other way")
+	M.waBehind = nil
+	-- a second friend falls: one banner, the sound again
+	M.downed[2] = { id = 3, name = "Zulyara", anchorId = "downed:3", anchorStatus = "ready", positionAvailable = true, wx = -4, wy = 4 }
+	frames(10)
+	check(findText(CreedUIDownedBanner, "^Zulyara is down!$") ~= nil and table.getn(M.sounds) == 2, "a second friend: a banner and the sound again")
+	-- back up: no marks
+	M.downed = {}
+	frames(10)
+	check(markOf("Melkor") == nil and markOf("Zulyara") == nil and table.getn(M.sounds) == 2, "back on their feet: no marks, no sound")
+	-- off: nothing, the game left alone
+	M.Slash("downed off")
+	M.downed = { { id = 2, name = "Melkor", anchorId = "downed:2", anchorStatus = "ready", positionAvailable = true, wx = 8, wy = -6 } }
+	frames(20)
+	check(not M.Visible(CreedUIDownedBanner) and markOf("Melkor") == nil and table.getn(M.sounds) == 2, "/creed downed off: no banner, no mark")
+	M.Slash("downed on")
+	frames(10)
+	check(markOf("Melkor") ~= nil and table.getn(M.sounds) == 2, "on again: the mark, but no alarm for who was already down")
+	M.downed = {}
+	frames(10)
+	M.unit.party1, M.unit.party2 = nil, nil
+	problems("friends down")
 end
 
 ------------------------------------------------------------------ 12. no API at all

@@ -318,3 +318,33 @@ The game has no talent trees for this hero.
 Boss skulls
 A skull over each boss, wherever it is on the screen: large when it is near, small when it is far. Not over mini-bosses.
 the boss skulls stopped after an error: 
+Damage Taken
+Taken
+No damage taken yet.
+Level Up!
+{1} level-ups wait. Click to pick their cards.
+the level-up button stopped after an error, so the game's own is back: 
+Stored level-ups
+With the game's Store Level-Ups on: a glowing Level Up! button over the skill bar with how many wait. Click it to pick their cards. Replaces the game's button.
+Survived
+Level
+Elites slain
+Guardians slain
+Bosses slain
+Damage dealt
+Damage a second
+Damage taken
+You have fallen
+You left the run
+Run over
+the run summary stopped after an error: 
+Run summary
+When a run ends: your time, level, kills, elites, guardians and bosses slain, damage dealt and taken, gold and caches on one panel beside the game's end screen.
+{1} is down!
+{1} are down!
+Reviving {1}
+{1} yd
+Stand on them to bring them back.
+the downed friends' marks stopped after an error: 
+Downed friends
+In a party: a warning and a sound when a friend goes down, a glowing mark where they lie (stand on it to bring them back), and an arrow at the screen's edge with the distance while they're off it.

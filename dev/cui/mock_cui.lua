@@ -810,6 +810,16 @@ local function InstallAPI()
 		return true
 	end
 	for name, fn in pairs(M.waAPI or {}) do setglobal(name, fn) end
+	-- stored level-ups (the game's Store Level-Ups): M.storedLevels waiting, M.storing the setting
+	function AZS_GetStoredLevels() return M.storedLevels or 0 end
+	function AZS_IsStoringLevels() return M.storing and true or false end
+	function AZS_OpenStoredLevels() M.openedLevels = (M.openedLevels or 0) + 1 end
+	-- the run's end (M.runEnd as the game's AZS_END line) and the revive line (M.revive)
+	function AZS_GetRunSummary()
+		if type(M.runEnd) ~= "table" or not M.runEnd.result then return nil end
+		return M.runEnd
+	end
+	function AZS_GetRevive() return M.revive or {} end
 	function AZS_SetHudShown(part, shown) M.hud[part] = shown and true or false; M.hudWrites = (M.hudWrites or 0) + 1 end
 	function AZS_IsHudShown(part) return M.hud[part] ~= false end
 	function AZS_SetOnTopOfScreens(frame, on)
@@ -823,6 +833,7 @@ local function RemoveAPI()
 	AZS_SetHudShown, AZS_IsHudShown, AZS_SetOnTopOfScreens = nil, nil, nil
 	AZS_GetMeterContext, AZS_GetMeterSnapshot, AZS_CreateMeterCheckpoint, AZS_ReleaseMeterCheckpoint, AZS_SetMeterPortrait = nil, nil, nil, nil, nil
 	AZS_GetMeterLoadout = nil
+	AZS_GetStoredLevels, AZS_IsStoringLevels, AZS_OpenStoredLevels, AZS_GetRunSummary, AZS_GetRevive = nil, nil, nil, nil, nil
 	AZS_STATS = nil
 	for name in pairs(M.waAPI or {}) do setglobal(name, nil) end
 	AZS_ZONE, AZS_RUN, AZS_SCHEDULE, AZS_ZONE_UPDATED = nil, nil, nil, nil
@@ -851,8 +862,8 @@ function M.Frame(dt)
 	end
 end
 
-M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Bar.lua", "Tally.lua", "Minimap.lua", "MinimapButton.lua",
-	"Chests.lua", "Meter.lua", "Luck.lua", "Character.lua", "Chat.lua" }
+M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua",
+	"Chests.lua", "Meter.lua", "Luck.lua", "Summary.lua", "Character.lua", "Chat.lua" }
 function M.Load(dir)
 	for i = 1, table.getn(M.files) do
 		local chunk, err = loadfile(dir .. "/" .. M.files[i])
@@ -870,7 +881,7 @@ function M.Reload(dir, fireLogout)
 	local saved = CreedUIDB
 	all, updaters, eventFrames = {}, {}, {}
 	for _, name in ipairs({ "CreedUITimerFrame", "CreedUIOptions", "CreedUITimerOptions", "CreedUINumbersOptions",
-		"CreedUIBosses", "CreedUISkulls", "CreedUISkullsDriver", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
+		"CreedUIBosses", "CreedUISkulls", "CreedUISkullsDriver", "CreedUIDowned", "CreedUIDownedBanner", "CreedUIDownedDriver", "CreedUILevelUps", "CreedUILevelUpsDriver", "CreedUISummary", "CreedUISummaryDriver", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
 		"CreedUIParty", "CreedUITally", "CreedUIMinimap", "CreedUIMenuGuard", "GameMenuFrame", "Minimap", "CreedUIMeter",
 		"CreedUILuck", "CreedUIMeterToggle", "CreedUIChatGlass", "CreedUIChatDown", "ChatFrame1", "ChatFrame2", "CreedUIChests", "CreedUIMinimapClock", "CreedUIMeterSizer", "CreedUILuckSizer", "CreedUILuckToggle",
 		"ChatFrameEditBox", "ChatFrameMenuButton" }) do
@@ -889,7 +900,7 @@ function M.Reload(dir, fireLogout)
 		M.MakeCharacter()
 		CharacterFrame:Hide()
 	end
-	M.ctHandler, M.waHandler = nil, nil
+	M.ctHandler, M.waHandler, M.waHandlers = nil, nil, {}
 	M.Load(dir)
 end
 
@@ -1000,7 +1011,9 @@ function SetPortraitTexture(tex, unit)
 	if type(tex) ~= "table" or tex.__kind ~= "Texture" then M.Problem("SetPortraitTexture on a non-texture") end
 	tex.__tex = "Portrait:" .. unit
 end
-RAID_CLASS_COLORS = { ROGUE = { r = 1, g = 0.96, b = 0.41 } }
+RAID_CLASS_COLORS = { ROGUE = { r = 1, g = 0.96, b = 0.41 }, MAGE = { r = 0.41, g = 0.8, b = 0.94 }, PRIEST = { r = 1, g = 1, b = 1 },
+	WARRIOR = { r = 0.78, g = 0.61, b = 0.43 }, HUNTER = { r = 0.67, g = 0.83, b = 0.45 }, WARLOCK = { r = 0.58, g = 0.51, b = 0.79 },
+	DRUID = { r = 1, g = 0.49, b = 0.04 }, SHAMAN = { r = 0, g = 0.44, b = 0.87 }, PALADIN = { r = 0.96, g = 0.55, b = 0.73 } }
 
 M.actions = {
 	[1] = { tex = "Interface\\Icons\\Spell_Shadow_RitualOfSacrifice", start = 0, dur = 0 },
@@ -1131,7 +1144,17 @@ local frameBase = M.Frame
 function M.Frame(dt)
 	frameBase(dt)
 	if M.ctHandler then M.ctHandler() end
-	if M.waHandler then M.waHandler() end
+	-- over a copy, as the game: a handler may take itself off
+	local list = {}
+	for i = 1, table.getn(M.waHandlers) do list[i] = M.waHandlers[i] end
+	for i = 1, table.getn(list) do list[i]() end
+end
+
+-- the game's sounds by kit name
+M.sounds = {}
+function PlaySound(name)
+	if type(name) ~= "string" then Problem("PlaySound needs a kit name") end
+	table.insert(M.sounds, name)
 end
 
 ------------------------------------------------------------------ the world anchors API (the game's 0.139.2)
@@ -1155,6 +1178,13 @@ local function WACatalog()
 		table.insert(out, { anchorId = "boss:" .. b.name, kind = b.final and "finalBoss" or "boss", name = b.name,
 			entityState = (b.hp or 1) > 0 and "alive" or "dead", attachments = { "position", "overhead" },
 			positionAvailable = true, x = i * 10 - 15, y = 6, z = 0, index = i })
+	end
+	for i = 1, table.getn(M.downed or {}) do
+		local d = M.downed[i]
+		if d.anchorId then
+			table.insert(out, { anchorId = d.anchorId, kind = "downedPartyMember", name = d.name, entityState = "downed",
+				attachments = { "position" }, positionAvailable = true, x = d.wx or 0, y = d.wy or 0, z = 0 })
+		end
 	end
 	for i = 1, table.getn(M.guardians or {}) do
 		local g = M.guardians[i]
@@ -1250,7 +1280,9 @@ M.waAPI.AZS_ProjectWorldAnchors = function(...)
 			local upy = 9 * (M.waNear[a.name] or 1)
 			local lift = (r.attachment == "overhead" and 3 or 0) + (r.offset and r.offset.z or 0)
 			local sx, sy = ScreenOf(spot.x, spot.y)
-			local e = { anchorId = r.anchorId, state = M.waOff[a.name] and "offscreen" or "onScreen", targetState = a.entityState,
+			local off = M.waOff[a.name] or sx < 0 or sx > SW or sy < 0 or sy > SH
+			if M.waBehind and M.waBehind[a.name] then off = "behindCamera" end
+			local e = { anchorId = r.anchorId, state = (off == "behindCamera" and off) or (off and "offscreen") or "onScreen", targetState = a.entityState,
 				x = sx, y = sy + lift * upy, cameraDepth = 20 / (M.waNear[a.name] or 1), uiUnitsPerYard = upy,
 				playerDistance = 20 / (M.waNear[a.name] or 1) }
 			entries[i] = e
@@ -1258,14 +1290,23 @@ M.waAPI.AZS_ProjectWorldAnchors = function(...)
 	end
 	return { apiVersion = 1, cameraSampleId = M.now, frameCurrent = true, entries = entries }, nil
 end
+-- as the game: a list of handlers, each once; M.waHandler is the first, for the tests
+M.waHandlers = {}
 M.waAPI.AZS_RegisterWorldAnchorFrameHandler = function(fn)
 	if type(fn) ~= "function" then return WABad("the handler must be a function") end
-	M.waHandler = fn
 	M.waRegistered = (M.waRegistered or 0) + 1
+	for i = 1, table.getn(M.waHandlers) do
+		if M.waHandlers[i] == fn then return true, nil end
+	end
+	table.insert(M.waHandlers, fn)
+	M.waHandler = M.waHandlers[1]
 	return true, nil
 end
 M.waAPI.AZS_UnregisterWorldAnchorFrameHandler = function(fn)
-	if M.waHandler == fn then M.waHandler = nil end
+	for i = table.getn(M.waHandlers), 1, -1 do
+		if M.waHandlers[i] == fn then table.remove(M.waHandlers, i) end
+	end
+	M.waHandler = M.waHandlers[1]
 	return true, nil
 end
 M.waAPI.AZS_GetDownedPartyMembers = function(...)

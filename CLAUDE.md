@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.10.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.11.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -36,6 +36,9 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
   Skulls.lua        a skull over each boss (world anchors), sized by distance
   Party.lua         party frames                   Chat.lua     dressed chat, kept clear of the dragon
+  Downed.lua        friends down: banner + sound, a revive mark on their spot, edge arrows (world anchors)
+  LevelUps.lua      the Level Up! button for stored level-ups (replaces the game's "levels" HUD part)
+  Summary.lua       the run's summary panel when it ends (AZS_GetRunSummary)
   Bar.lua           skill bar, each ability's rank box, jewelry, XP/s, the gold panel with its two dragons
   Tally.lua         kills / gold / cache, docked inside the bar's panel
   Minimap.lua       metal ring, local clock, zone name
@@ -93,7 +96,7 @@ README.md, CHANGELOG.md
   an error it turns itself off with a translated message.
 - Comments are plain English prose describing what the player sees. Keep that voice.
 - The options hub lays the parts out in two columns (the first half on the left) and grows 26 px
-  per two parts: at 19 parts it's 432 px tall. A test keeps it under 700 px.
+  per two parts: at 22 parts it's 458 px tall. A test keeps it under 700 px.
 
 ## 5. Checking before shipping
 
@@ -101,7 +104,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 462 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 507 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
@@ -137,6 +140,18 @@ before using an API. Known:
   `rank`, `slotId`, `learned`, `passive`), `equipment`, `talents`, `runJewelry`, and `sources[key].icon`.
   The skill bar's rank boxes match each slot to its ability by icon (by `slotId` if there are none).
 - **Spells:** `AZS_SPELLS` (+ `AZS_SPELLS_UPDATED`): `{ key, spell, rank, cd, cdmax }` each, no slot.
+- **The run's end:** `AZS_GetRunSummary()` is nil while the run goes on, else `AZS_END`: `result`
+  (`victory`, `defeat`, `left`), `t` (seconds), `lvl`, `kills`, `elites`, `guardians`, `bosses`, `dmg`,
+  `taken`, `gold`, `chests`, `magnets`, `endl`, `hero`.
+- **Damage taken:** `AZS_TAKEN` (+ `_UPDATED`): `{ source, dmg }` each. The meter API itself has only
+  `damage` and `healing` metrics.
+- **Stored level-ups:** `AZS_GetStoredLevels()` (`AZS_RUN.sl`), `AZS_IsStoringLevels()`,
+  `AZS_OpenStoredLevels()` (as the game's Level Up! button), `AZS_SetStoringLevels(on)`. The game's
+  button is the `levels` HUD part.
+- **Downed and revive lines:** `AZS_DOWNED` raw `{ id, name, x, y, z, ep, state }`; `AZS_GetRevive()`
+  `{ down, share, by, reviving, rshare }`. `PlaySound(kit)` plays the game's sounds ("RaidWarning").
+- **The game's own words** in its 14 languages (`"end.victory": "..."` and so on) are JSON inside the
+  client file too: read them as UTF-8 from the bytes (`strings` drops non-ASCII letters).
 - **World anchors (API 0.139.2):** read from the game's own code (below), mirrored in the stand-in.
   - `AZS_GetWorldAnchorCapabilities()`: kinds `enemy`, `elite`, `guardian`, `boss`, `finalBoss`,
     `cache`, `guardianLair`, `downedPartyMember`; attachments `position`, `overhead`; 256 a call.
@@ -168,12 +183,11 @@ before using an API. Known:
 1. **Boss skulls (1.9.0):** done, not yet seen in the real client. Ask the user for a screenshot in a
    boss fight and the output of `/creed probe` there; adjust `Skulls.lua` and the stand-in if the
    answers are nested differently.
-2. **Downed party member** (co-op: you revive someone by standing on them):
-   - a banner and a sound when someone in the party goes down;
-   - a marker on the spot where they can be revived (world anchor kind `downedPartyMember`);
-   - an arrow at the screen's edge with the distance while they're off-screen.
-
-   The API is known now (section 6); `Skulls.lua` shows how to read and draw world anchors.
+2. **1.11.0, not yet seen in the real client:** downed friends (does the projection give `x`/`y` for
+   off-screen anchors? the arrow needs them; is `AZS_GetRevive().reviving` a name or an id? both are
+   matched), the summary's fields, the Level Up! button, Damage Taken. Ask for screenshots.
+   Ideas not done yet: talent/summon timers (`AZS_GetTimers`), arrows to caches and lairs, the
+   upcoming bosses (`AZS_GetUpcomingBosses`; ask first, the timer is the user's favorite).
 3. **Run talents strip** (removed in 1.8.1, code in `dev/attic`): wait until the game says where it
    keeps the run's talents (`/creed probe`).
 4. **Not yet confirmed in the real client:**
