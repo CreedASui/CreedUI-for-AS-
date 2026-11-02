@@ -1,5 +1,6 @@
 -- Creed UI: the damage meter, in the boss timer's style. The game's four views (Damage Done,
--- Healing Done, Boss Damage, Party DPS) with every line's icon, rank, amount, per second and
+-- Healing Done, Boss Damage, Party DPS), and Damage Taken (what hit you, the most first), with
+-- every line's icon, rank, amount, per second and
 -- share, a blue "proc" tag on a talent's or amulet's own damage, the total per second up top,
 -- and Reset (this window only, as the game's). Bars glide and lines slide when they swap places.
 -- Drag it (title or lines) to move it, any edge or corner to size it (an arrow by the mouse shows
@@ -19,7 +20,9 @@ local TABS = {
 	{ key = "healing", name = "Healing Done", short = { "Healing", "Heal" }, unit = "hps", empty = "No healing yet." },
 	{ key = "boss", name = "Boss Damage", short = { "Boss Dmg", "Boss" }, unit = "dps", empty = "No boss fight yet." },
 	{ key = "party", name = "Party DPS", short = { "Party" }, unit = "dps", empty = "No damage yet." },
+	{ key = "taken", name = "Damage Taken", short = { "Taken" }, unit = "dtps", empty = "No damage taken yet." },
 }
+local TAKEN_ICON = C.ART .. "Skull" -- what hit you is a monster: a skull stands for its icon
 local EMPTY_BY_CODE = { NO_PARTY = "Not in a party.", NO_ENCOUNTER = "No boss fight yet.", NO_RUN = "No run yet." }
 -- by actor and source: each of your skills on its own line, and each summon's skills on theirs
 local QUERIES = {
@@ -264,10 +267,31 @@ local function ReadSnapshot(tab)
 end
 
 ------------------------------------------------------------------------ reading: the older getters
-local GETTERS = { damage = "AZS_GetMeter", healing = "AZS_GetHealing", boss = "AZS_GetBossMeter", party = "AZS_GetPartyMeter" }
+-- Damage Taken: the game's list of what hit you ({ source, dmg }), as a meter's lines, per second
+-- over the run's clock
+local function TakenLines()
+	local list = type(AZS_TAKEN) == "table" and AZS_TAKEN or {}
+	local t = math.max(1, tonumber(Call(AZS_GetRunTime)) or 1)
+	local lines, total = {}, 0
+	for i = 1, table.getn(list) do
+		local l = list[i]
+		local dmg = type(l) == "table" and tonumber(l.dmg)
+		if dmg and dmg > 0 and l.source ~= nil then
+			table.insert(lines, { name = tostring(l.source), dmg = dmg, dps = dmg / t })
+			total = total + dmg
+		end
+	end
+	for i = 1, table.getn(lines) do lines[i].share = total > 0 and lines[i].dmg / total or 0 end
+	return lines, total, total / t
+end
+
+local GETTERS = { damage = "AZS_GetMeter", healing = "AZS_GetHealing", boss = "AZS_GetBossMeter", party = "AZS_GetPartyMeter",
+	taken = TakenLines }
 
 local function ReadLines(tab)
-	local lines, total, rate = Call(getglobal(GETTERS[tab]))
+	local getter = GETTERS[tab]
+	if type(getter) == "string" then getter = getglobal(getter) end
+	local lines, total, rate = Call(getter)
 	local n = 0
 	if type(lines) == "table" then
 		-- Reset here keeps each line's amount at that moment and shows what came after
@@ -290,7 +314,7 @@ local function ReadLines(tab)
 						e.color = CLASS_COLORS[e.classKey or ""]
 						if type(l.top) == "string" and l.top ~= "" then e.top, e.topRate = l.top, tonumber(l.topdps) end
 					else
-						e.icon = C.icons[l.name]
+						e.icon = (tab == "taken") and TAKEN_ICON or C.icons[l.name]
 						e.color = nil
 					end
 				end
@@ -339,7 +363,7 @@ end
 local function Read()
 	local tab = db.tab
 	local done = false
-	if type(AZS_GetMeterSnapshot) == "function" and type(AZS_GetMeterContext) == "function" then
+	if tab ~= "taken" and type(AZS_GetMeterSnapshot) == "function" and type(AZS_GetMeterContext) == "function" then
 		done = ReadSnapshot(tab)
 	end
 	S.usedLines = not done
