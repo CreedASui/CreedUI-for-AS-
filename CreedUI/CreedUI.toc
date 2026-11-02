@@ -1,0 +1,28 @@
+## Interface: 11200
+## Title: Creed UI
+## Notes: A clean, smooth HUD for Azeroth Survivors: a themed boss timer, red boss and mini-boss bars with real health numbers and their debuffs, a skull floating over each boss (large when near, small when far), your frame, your target and your party in class colors, a skill bar with your jewelry, your XP a second and your kills/gold/cache on a bronze panel guarded by two dragons wrapped in their wings (hover for what it gives), a damage meter and a luck medallion with your card odds, both resizable, shown or hidden by their crossed swords and clover on the minimap's edge, a dressed minimap with the caches and the guardians' lairs on it (and the time until each empty lair fills) and your local time, a dressed character window (gear slots lit in their rarity, your run's stats grouped beside it, a Talents page with your talent trees in place of Skills), a dressed chat, and calm damage numbers that merge on crowds. It all steps aside while you pick cards. In English, French, German, Spanish, Portuguese, Chinese, Russian, Japanese, Korean, Polish and Turkish. Click the C on the minimap's edge (or type /creed) for options.
+## Version: 1.9.0
+## SavedVariables: CreedUIDB
+Core.lua
+Locale.lua
+Locale_zh.lua
+Locale_ru.lua
+Locale_ja.lua
+Locale_ko.lua
+Locale_pl.lua
+Locale_tr.lua
+Timer.lua
+Numbers.lua
+Bosses.lua
+Skulls.lua
+Units.lua
+Party.lua
+Bar.lua
+Tally.lua
+Minimap.lua
+MinimapButton.lua
+Chests.lua
+Meter.lua
+Luck.lua
+Character.lua
+Chat.lua
