@@ -293,7 +293,7 @@ def foreleg(shoulder, elbow, wrist, value):
         c = tube(list(bez([(x0, y0), (x0 + dx * 0.6, y0 + dy * 0.3 - 2), (x0 + dx, y0 + dy)], 12)), 3.0, 0.5)
         put(c, part(c, 1.6, value=1.18 * value), shadow=0.3, reach=1.0)
 
-foreleg((144, 156), (142, 190), (114, 192), 0.72)
+foreleg((132, 146), (118, 176), (90, 168), 0.7)   # the far one just behind the near: a pair
 foreleg((126, 138), (110, 168), (80, 158), 1.0)
 
 # the head, facing out: a heavy skull, the snout long, the jaw open on its teeth
