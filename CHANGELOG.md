@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.13.1
+- **Dragons:** the skill bar's dragons are redrawn rearing up: jaws open, forelegs raised with claws curled, crouched on a hind leg, wings spread high, and the tail sweeping along the ground to a tip of flame. Their scales are now raised plates with depth: each one domed, overlapping the next with a step of shadow.
+
 ## 1.13.0
 - **Talent window:** the Talents tab (or `/creed talents`) opens Creed UI's own talent window: your trees side by side with their names and points, every talent you learned as its icon with its rank (point at one for its name), and the total. Tree names are in your language, by the game's own words.
 - **Damage numbers:** a number that keeps adding hits (a DoT ticking on, a spell's crowd total) grows as it stacks, up to about a third bigger after a second and a half. Every number is a touch smaller to make room.
