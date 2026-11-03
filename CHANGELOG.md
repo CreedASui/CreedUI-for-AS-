@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.12.1
+- **Damage numbers and the level-up cards:** picking a card no longer sends black icons flashing across the screen. The numbers step aside while the cards are up, the ones from before are dropped as the cards close, and new hits show as the fight resumes.
+
 ## 1.12.0
 Fixes from playtesting:
 - **Talents:** the Talents tab opens the game's own Talents window, with Azeroth Survivors' real trees, milestones and points (Creed UI's page showed the wrong talents).

@@ -2723,6 +2723,42 @@ do
 	problems("compact guardians")
 end
 
+------------------------------------------------------------------ 11g. damage numbers and the level-up cards
+do
+	local function shownHolders()
+		local n = 0
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Frame" and o.__parent == CreedUINumbersLayer and o.__shown then n = n + 1 end
+		end
+		return n
+	end
+	M.phase = "playing"
+	if CreedUIDB.numbers and not CreedUIDB.numbers.enabled then M.Slash("numbers on") end
+	local foe = M.Enemy("Ghoul", 6, 4)
+	frames(30)
+	M.Hit(foe, 420, "strike", false)
+	frames(6)
+	check(labelsWith("RitualOfSacrifice") >= 1, "a hit shows its number and icon")
+	-- the cards come up: the numbers step aside at once (under the veil their icons came out black)
+	M.phase = "choosing"
+	frames(2)
+	check(labelsWith("RitualOfSacrifice") == 0 and visibleAlpha(CreedUINumbersLayer) == 0, "the cards up: no numbers, no black icons")
+	M.Hit(foe, 99, "strike", false)
+	frames(20)
+	check(labelsWith("RitualOfSacrifice") == 0, "hits while picking stay hidden")
+	-- a card picked: the old numbers are dropped, nothing flies across the screen
+	foe.x, foe.y = -30, -12
+	M.phase = "playing"
+	frames(1)
+	check(shownHolders() == 0, "the cards closed: the numbers from before are gone (" .. shownHolders() .. ")")
+	frames(30)
+	M.Hit(foe, 300, "strike", false)
+	frames(10)
+	check(labelsWith("RitualOfSacrifice") >= 1 and visibleAlpha(CreedUINumbersLayer) > 0.9, "and new hits show as the fight resumes")
+	frames(90)
+	problems("numbers and cards")
+end
+
 ------------------------------------------------------------------ 12. no API at all
 M.RemoveAPI()
 AZS_TARGET = nil
