@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Creed UI's panel dragon (original): a heavy dragon sitting on its haunches, facing out, its folded
-wing raised behind it and laid over the panel's end so dragon and frame meet with no gap. Painted
+"""Creed UI's panel dragon (original): a dragon rearing up on a crouched hind leg, facing out, jaws
+open, its forelegs raised with claws curled, the tail sweeping along the ground to a tip of flame-
+like tongues; its wings spread high behind it, the near one laid over the panel's end so dragon and
+frame meet with no gap. Its scales are domed plates that overlap with a step of shadow. Painted
 from shapes: each part a rounded relief with its own scales or plates, lit from the top left, with
 contact shadows where parts overlap and a dark line round each. Grey; tinted the panel's gold in
 game. 256x256, shown 128 across: the panel's left edge falls at x 216, its foot at y 248."""
@@ -88,15 +90,21 @@ def dome(mask, R):
 
 
 def scales(size, squash=0.78, ang=0.0):
+    """overlapping scales with depth: each a domed plate rising toward its rounded free edge (low),
+    where it stands proud of the row it covers, so the light catches its crown and the edge casts a
+    crisp step of shadow onto the next. A height field, about 0 to 1.6."""
     a = np.radians(ang)
     u = (X * np.cos(a) + Y * np.sin(a)) / size
     v = (-X * np.sin(a) + Y * np.cos(a)) / (size * squash)
     row = np.floor(v)
     u = u + 0.5 * (np.mod(row, 2))
     fu, fv = u - np.floor(u) - 0.5, v - row
-    # each scale a rounded tongue, its free edge low (overlapping the next row)
-    r = np.hypot(fu * 1.15, (fv - 0.15) * 1.0)
-    return np.clip(1 - r * 1.55, 0, 1) ** 0.7
+    # the plate: a dome over a rounded tongue, its tip at the bottom of the cell
+    r = np.hypot(fu * 1.05, (fv - 0.42) * 0.95)
+    plate = np.sqrt(np.clip(1 - (r / 0.62) ** 2, 0, 1))
+    # it rises toward its free edge (a ramp across the row), then drops to the scale below
+    ramp = np.clip(fv, 0, 1) ** 1.3
+    return plate * 0.9 + ramp * 0.7
 
 
 def shade(h, d, amb=0.17, dif=0.78, spec=0.55, power=22, line=1.0, value=1.0):
@@ -135,8 +143,8 @@ def part(mask, R, tex=None, texk=0.0, **kw):
 
 
 # ------------------------------------------------------------------ the dragon
-SC = scales(5.2)
-SB = scales(7.5, 0.72, 10)
+SC = scales(6.4) * 1.6         # bigger and deeper than they were, so they read at 128 px
+SB = scales(8.6, 0.72, 10) * 1.5
 
 # the wings, folded and raised, bat-like: an arm up to a high wrist with a hooked thumb, four long
 # finger bones fanning down to the panel's end, the membrane sagging between them with folds
@@ -199,45 +207,51 @@ def wing(shoulder, elbow, wrist, tips, body, value, far=False, bends=None):
         put(th, part(th, 2.0, value=value * 1.12), shadow=0.35, reach=1.0)
 
 
-# the far wing first, behind and a little higher, mostly hidden
-wing((174, 104), (160, 60), (174, 13), [(206, 34), (222, 72), (226, 110)], [(200, 124), (180, 120)], value=0.6, far=True)
 
-# the tail: from behind the haunch round the front along the ground, its tip curling up
-tailpts = list(bez([(228, 232), (170, 243), (96, 241), (50, 228)], 40)) + list(bez([(50, 228), (31, 219), (30, 204)], 14))[1:]
-tail = tube(tailpts, 11.5, 5.0, power=0.8)
+# the tail: from under the haunch, sweeping along the ground and curling up at the front into a
+# tip of three flame-like tongues
+tailpts = list(bez([(200, 214), (196, 246), (120, 250), (64, 240)], 44)) + list(bez([(64, 240), (34, 232), (36, 206)], 18))[1:]
+tail = tube(tailpts, 12.0, 4.5, power=0.85)
 put(tail, part(tail, 7.0, SC, 1.0), shadow=0.4)
-# the tip: a teardrop barb growing out of the tail, its point up (no flukes to read as an anchor)
-barb = np.maximum(ellipse(30, 196, 8.5, 11.0, 0), poly([(30, 176), (37.5, 192), (22.5, 192)]))
-put(barb, part(barb, 4.5, SC, 0.5), shadow=0.4)
+# each tongue an S, sweeping back (to the right) as it rises, like a flame in the wind
+flame = np.zeros_like(X)
+flame = np.maximum(ellipse(38, 210, 11, 9, -20), ellipse(46, 214, 9, 6, -10))  # the fire's body
+for (bx, by), c1, c2, (tx, ty), w in (((36, 208), (26, 194), (46, 184), (40, 162), 9.0),
+                                       ((42, 208), (54, 198), (52, 184), (64, 172), 7.0),
+                                       ((32, 210), (18, 204), (24, 190), (14, 178), 6.0),
+                                       ((46, 214), (60, 212), (66, 202), (76, 194), 5.0)):
+    flame = np.maximum(flame, tube(list(bez([(bx, by), c1, c2, (tx, ty)], 26)), w, 0.3, power=1.1))
+put(flame, part(flame, 3.0, value=1.1), shadow=0.35, reach=1.2)
 
-# the haunch, big and round, and the hind foot flat on the ground, toes forward
-haunch = ellipse(180, 196, 46, 42, -20)
-put(haunch, part(haunch, 26.0, SB, 0.9), shadow=0.5)
-# the body: a deep chest leaning back over the haunch
-torso = ellipse(146, 150, 44, 60, 12)
-put(torso, part(torso, 28.0, SB, 0.9), shadow=0.5)
+# the far wing first, behind and a little higher, mostly hidden: raised high over the back
+wing((170, 104), (158, 52), (178, 6), [(208, 22), (226, 58), (232, 98)], [(204, 118), (182, 116)], value=0.6, far=True)
 
-# the near wing, folded round the dragon like a cloak: over the panel's end rail from its top,
-# its lower fingers sweeping down and forward round the haunch; the hind foot steps out over it
-wing((166, 112), (188, 68), (214, 15), [(245, 58), (245, 124), (236, 196), (178, 234)],
-     [(162, 204), (160, 160), (164, 124)], value=1.0, bends=[None, None, (252, 120), (248, 192)])
-# the hind foot: a heel under the haunch, the long foot narrowing forward along the ground to the
-# ball of the foot, three toes spread from it, each ending in a hooked claw
-heel = ellipse(186, 228, 13, 10, -15)
-sole = tube(list(bez([(184, 229), (164, 236), (146, 237)], 20)), 10.5, 7.0)
-ball = ellipse(144, 236, 9.5, 7.0, -5)
-foot = np.maximum(np.maximum(heel, sole), ball)
+# the body, rearing up: a crouched haunch, the chest upright over it
+haunch = ellipse(178, 196, 36, 34, -25)
+put(haunch, part(haunch, 22.0, SB, 0.9), shadow=0.5)
+torso = ellipse(148, 146, 34, 58, 10)
+put(torso, part(torso, 24.0, SB, 0.9), shadow=0.5)
+
+# the near wing spread high and wide behind, its fingers fanning down over the panel's end
+wing((164, 106), (194, 56), (222, 8), [(250, 40), (252, 104), (246, 168), (214, 214)],
+     [(184, 204), (172, 160), (166, 126)], value=1.0, bends=[None, (258, 70), (256, 136), (238, 196)])
+
+# the hind leg, crouched to spring: the thigh, the shin angled back down to the ankle, and the
+# long foot flat on the ground, its toes spread and clawed
+thigh = ellipse(170, 204, 22, 30, 35)
+shin = tube(list(bez([(176, 214), (162, 230), (146, 236)], 20)), 11.0, 7.5)
+foot = tube(list(bez([(148, 236), (132, 240), (120, 241)], 16)), 7.5, 5.5)
+leg = np.maximum(np.maximum(thigh, shin), foot)
 toes = np.zeros_like(X)
 tips = []
-for (x1, y1), (x2, y2) in (((138, 231), (118, 228)), ((138, 237), (115, 238)), ((140, 242), (120, 247))):
-    toes = np.maximum(toes, tube(list(bez([(x1, y1), ((x1 + x2) / 2, (y1 + y2) / 2 - 2), (x2, y2)], 14)), 4.6, 3.4))
+for (x1, y1), (x2, y2) in (((124, 236), (106, 232)), ((122, 241), (102, 242)), ((124, 245), (106, 250))):
+    toes = np.maximum(toes, tube(list(bez([(x1, y1), ((x1 + x2) / 2, (y1 + y2) / 2 - 2), (x2, y2)], 14)), 4.2, 3.0))
     tips.append((x2, y2))
-foot = np.maximum(foot, toes)
-put(foot, part(foot, 6.0, SC, 0.8), shadow=0.5)
+leg = np.maximum(leg, toes)
+put(leg, part(leg, 8.0, SC, 0.9), shadow=0.5)
 for x0, y0 in tips:
-    c = tube(list(bez([(x0 + 2, y0 - 1), (x0 - 6, y0 - 1), (x0 - 10, y0 + 5)], 12)), 3.4, 0.5)
-    put(c, part(c, 1.8, value=1.18), shadow=0.35, reach=1.0)
-
+    c = tube(list(bez([(x0 + 2, y0 - 1), (x0 - 6, y0 - 1), (x0 - 10, y0 + 5)], 12)), 3.2, 0.5)
+    put(c, part(c, 1.7, value=1.18), shadow=0.35, reach=1.0)
 
 # the neck: thick, curving up and out to the head, with spines along its back
 neckpts = list(bez([(150, 124), (140, 84), (110, 64), (86, 52)], 36))
@@ -256,33 +270,31 @@ neck = tube(neckpts, 25.0, 15.0)
 put(neck, part(neck, 13.0, SC, 1.0), shadow=0.5)
 
 # the belly plates, from under the jaw down the front of the neck and chest
-bellypts = list(bez([(78, 66), (104, 98), (110, 150), (138, 202)], 40))
-belly = tube(bellypts, 8.0, 15.0) * np.clip(neck + torso, 0, 1)
+bellypts = list(bez([(78, 66), (104, 98), (116, 150), (146, 200)], 40))
+belly = tube(bellypts, 8.0, 14.0) * np.clip(neck + torso, 0, 1)
 bh, bd = dome(belly, 6.0)
 plates = np.mod((Y + 0.45 * X) / 7.0, 1.0)
 groove = np.exp(-((plates - 0.5) / 0.09) ** 2)
 put(belly, shade(bh - 1.4 * groove, bd, value=1.12, spec=0.65), shadow=0.25, reach=1.0)
 
-# the foreleg, planted in front like a sitting beast's: a heavy shoulder, the upper arm running
-# back to the elbow, the forearm angled forward and down with its muscle, a slimmer wrist, and a
-# broad hand gripping the ground with three curved fingers, each ending in a claw
-shoulder = ellipse(139, 156, 15, 21, 22)
-upper = tube(list(bez([(137, 146), (147, 170), (148, 188)], 22)), 14.5, 10.0)
-fore = tube(list(bez([(148, 186), (141, 207), (125, 226)], 22)), 11.0, 7.5)
-brawn = ellipse(142, 201, 10.5, 15.0, 32)
-arm = np.maximum(np.maximum(shoulder, upper), np.maximum(fore, brawn))
-put(arm, part(arm, 9.0, SC, 1.0), shadow=0.55)
-hand = np.maximum(ellipse(116, 234, 14, 7.5, -14), tube(list(bez([(126, 225), (120, 231), (112, 235)], 10)), 6.5, 6.0))
-fingers = np.zeros_like(X)
-ftips = []
-for (x1, y1), (x2, y2) in (((110, 230), (90, 229)), ((108, 236), (86, 238)), ((110, 240), (91, 246))):
-    fingers = np.maximum(fingers, tube(list(bez([(x1, y1), ((x1 + x2) / 2, (y1 + y2) / 2 - 2.5), (x2, y2)], 14)), 4.2, 3.0))
-    ftips.append((x2, y2))
-hand = np.maximum(hand, fingers)
-put(hand, part(hand, 5.5, SC, 0.7), shadow=0.5)
-for x0, y0 in ftips:
-    c = tube(list(bez([(x0 + 2, y0 - 1), (x0 - 6, y0 - 1), (x0 - 10, y0 + 5)], 12)), 3.2, 0.5)
-    put(c, part(c, 1.7, value=1.18), shadow=0.35, reach=1.0)
+# the forelegs raised before the chest, as if to strike: each from a heavy shoulder down to the
+# elbow, the forearm reaching forward, and a hand with three claws curled down. The far one first,
+# behind and darker.
+def foreleg(shoulder, elbow, wrist, value):
+    up = tube(list(bez([shoulder, ((shoulder[0] + elbow[0]) / 2 + 3, (shoulder[1] + elbow[1]) / 2 + 3), elbow], 20)), 12.5, 8.5)
+    fa = tube(list(bez([elbow, ((elbow[0] + wrist[0]) / 2, (elbow[1] + wrist[1]) / 2 + 2), wrist], 20)), 8.5, 6.0)
+    brawn = ellipse((elbow[0] * 2 + wrist[0]) / 3, (elbow[1] * 2 + wrist[1]) / 3, 8.0, 12.0, np.degrees(np.arctan2(wrist[1] - elbow[1], wrist[0] - elbow[0])) + 90)
+    arm = np.maximum(np.maximum(up, fa), brawn)
+    hand = ellipse(wrist[0] - 4, wrist[1] + 2, 8.5, 6.0, 20)
+    arm = np.maximum(arm, hand)
+    put(arm, part(arm, 7.0, SC, 0.9, value=value), shadow=0.5)
+    for k, (dx, dy) in enumerate(((-12, 2), (-10, 8), (-5, 11))):
+        x0, y0 = wrist[0] - 6 + k * 2, wrist[1] + 2 + k * 2
+        c = tube(list(bez([(x0, y0), (x0 + dx * 0.6, y0 + dy * 0.3 - 2), (x0 + dx, y0 + dy)], 12)), 3.0, 0.5)
+        put(c, part(c, 1.6, value=1.18 * value), shadow=0.3, reach=1.0)
+
+foreleg((132, 146), (118, 176), (90, 168), 0.7)   # the far one just behind the near: a pair
+foreleg((126, 138), (110, 168), (80, 158), 1.0)
 
 # the head, facing out: a heavy skull, the snout long, the jaw open on its teeth
 skull = ellipse(86, 46, 27, 21, -8)
