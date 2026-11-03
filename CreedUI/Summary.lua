@@ -72,15 +72,23 @@ local function Step(dt, now)
 	local e = nil
 	if type(AZS_GetRunSummary) == "function" then e = C.Call(AZS_GetRunSummary) end
 	if type(e) ~= "table" then e = nil end
-	local stamp = e and (tostring(e.result) .. "|" .. tostring(e.t) .. "|" .. tostring(e.kills)) or nil
+	-- The numbers are taken once, as the run ends, and then stay still: in co-op the run goes on
+	-- after you fall and the game's end line keeps counting, which would make them flicker. Only
+	-- another ending (your friends win after you fell) or a new run takes them again.
+	local stamp = e and tostring(e.result) or nil
 	if stamp ~= S.stamp then
 		S.stamp = stamp
-		if e then Show(e, now) else S.closed = true end
+		if e then
+			Show(e, now)
+			S.endT = tonumber(e.t)
+		else
+			S.closed = true
+		end
 	end
-	-- still fighting past the end (endless): the summary steps aside
-	if e and not S.closed and tonumber(e.t) then
+	-- fighting on past a victory (endless): the summary steps aside
+	if e and not S.closed and stamp == "victory" and S.endT then
 		local t = tonumber(C.Call(AZS_GetRunTime))
-		if t and t > e.t + 3 then S.closed = true end
+		if t and t > S.endT + 3 then S.closed = true end
 	end
 	local want = (e and not S.closed) and 1 or 0
 	S.alpha = C.Toward(S.alpha, want, want > 0 and 6 or 9, dt)

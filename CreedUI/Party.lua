@@ -38,14 +38,34 @@ local function HPText(hp, hpm)
 	return C.Commas(hp) .. " / " .. C.Commas(hpm)
 end
 
--- a class color as the bar's three-stop fill: deep, true, bright. The palest (priest white,
--- rogue yellow) are toned down a touch so the white numbers on them stay easy to read.
+-- a class color as the bar's three-stop fill: deep, true, bright, all in the class's own hue. The
+-- color is made richer first (pulled away from grey), and the bright end stays the class's color
+-- instead of fading toward white, so every class reads at a glance. Priest white, which has no hue
+-- to strengthen, gets a pearl sheen with a deep slate start, so it reads as white and not as empty.
+local VIVID = 1.45
 local function ClassFill(c, out)
 	local lum = c[1] * 0.3 + c[2] * 0.59 + c[3] * 0.11
-	local k = lum > 0.8 and 0.84 or 1
-	out[1][1], out[1][2], out[1][3] = c[1] * 0.3 * k, c[2] * 0.3 * k, c[3] * 0.3 * k
-	out[2][1], out[2][2], out[2][3] = c[1] * 0.78 * k, c[2] * 0.78 * k, c[3] * 0.78 * k
-	out[3][1], out[3][2], out[3][3] = (c[1] + (1 - c[1]) * 0.35) * k, (c[2] + (1 - c[2]) * 0.35) * k, (c[3] + (1 - c[3]) * 0.35) * k
+	local v = {}
+	for i = 1, 3 do v[i] = C.Clamp(lum + (c[i] - lum) * VIVID, 0, 1) end
+	local top = math.max(v[1], v[2], v[3], 0.01)
+	if top - math.min(v[1], v[2], v[3]) < 0.08 and lum <= 0.8 then
+		-- grey (no class known): as it is
+		for i = 1, 3 do
+			out[1][i], out[2][i], out[3][i] = c[i] * 0.3, c[i] * 0.78, c[i]
+		end
+		return out
+	elseif top - math.min(v[1], v[2], v[3]) < 0.08 then
+		-- white: slate to pearl
+		out[1][1], out[1][2], out[1][3] = 0.22, 0.25, 0.32
+		out[2][1], out[2][2], out[2][3] = 0.68, 0.72, 0.80
+		out[3][1], out[3][2], out[3][3] = 0.96, 0.97, 1.00
+		return out
+	end
+	-- the true color at full strength: its brightest channel up to 1
+	for i = 1, 3 do v[i] = v[i] / top end
+	out[1][1], out[1][2], out[1][3] = v[1] * 0.32, v[2] * 0.32, v[3] * 0.32
+	out[2][1], out[2][2], out[2][3] = v[1] * 0.86, v[2] * 0.86, v[3] * 0.86
+	out[3][1], out[3][2], out[3][3] = v[1] + (1 - v[1]) * 0.12, v[2] + (1 - v[2]) * 0.12, v[3] + (1 - v[3]) * 0.12
 	return out
 end
 
@@ -177,6 +197,9 @@ local function StepRow(r, d, slotY, dt, now)
 		r.colorsFor = key
 		local fill = d.offline and GREY or ClassFill(CLASS_COLORS[d.class or ""] or NO_CLASS, r.fill)
 		C.BarColors(r.hp, fill[1], fill[2], fill[3])
+		-- the flowing light in the class's color too, so it shines without bleaching it
+		local f3 = fill[3]
+		C.Color(r.hp.flowTex, f3[1], f3[2], f3[3], 1)
 	end
 	local cols = POWER_COLORS[d.power] or POWER_COLORS[0]
 	if r.powerFor ~= d.power then

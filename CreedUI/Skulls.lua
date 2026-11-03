@@ -1,13 +1,15 @@
--- Creed UI: a skull floating over each boss.
--- Every boss of the run (the final one too, but not the guardians) wears a bone skull a little
--- over its head, wherever it is on the screen, without a target or a nameplate: the game's world
--- anchors say where each boss stands and where that spot falls on the screen this frame. A near
--- boss's skull is large, a far one's small, within limits. It fades in when the boss comes and
--- out when it falls; the final boss's glow is gold.
+-- Creed UI: a skull floating over each boss and guardian.
+-- Every boss of the run wears a fierce horned skull a little over its head, its eyes smouldering
+-- red; every guardian out of its lair, a plainer bone skull in an amber glow. They show wherever the
+-- unit is on the screen, without a target or a nameplate: the game's world anchors say where each
+-- stands and where that spot falls on the screen this frame. A near one's skull is large, a far
+-- one's small, within limits. It fades in when the unit comes and out when it falls; the final
+-- boss's glow is gold.
 
 local C = CreedUI
 local DEFAULTS = { enabled = true, scale = 1 }
-local QUERY = { kinds = { "boss", "finalBoss" } }
+local QUERY = { kinds = { "boss", "finalBoss", "guardian" } }
+local GUARD_SIZE = 0.82     -- a guardian's skull, against a boss's at the same distance
 local LIST_EVERY = 0.5      -- how often the list of bosses is read again
 local LIFT = 1.2            -- yards over the head
 local FEET_LIFT = 5         -- yards over the feet, for a boss the game can't find the head of
@@ -16,7 +18,8 @@ local MIN_PX, MAX_PX = 22, 64
 local MAX_SKULLS = 8
 local GONE = { dead = true, removed = true, departed = true, collected = true, expired = true, unavailable = true }
 local LOST = { unknownAnchor = true, expired = true, worldChanged = true }
-local GLOW_BOSS, GLOW_FINAL = { 0.95, 0.12, 0.06 }, { 1.00, 0.72, 0.20 }
+local GLOW_BOSS, GLOW_FINAL, GLOW_GUARD = { 0.95, 0.12, 0.06 }, { 1.00, 0.72, 0.20 }, { 1.00, 0.55, 0.12 }
+local ASLEEP = { asleep = true, empty = true } -- a guardian home in its lair has none
 
 local db
 local layer
@@ -43,9 +46,10 @@ local function ReadList()
 		if type(entries) ~= "table" then return nil end
 		for i = 1, table.getn(entries) do
 			local e = entries[i]
-			if type(e) == "table" and type(e.anchorId) == "string" and (e.kind == "boss" or e.kind == "finalBoss")
-				and not GONE[e.entityState or e.state or "alive"] and table.getn(out) < MAX_SKULLS then
-				table.insert(out, { id = e.anchorId, final = e.kind == "finalBoss" })
+			local state = e and (e.entityState or e.state) or "alive"
+			if type(e) == "table" and type(e.anchorId) == "string" and not GONE[state] and table.getn(out) < MAX_SKULLS
+				and (e.kind == "boss" or e.kind == "finalBoss" or (e.kind == "guardian" and not ASLEEP[state])) then
+				table.insert(out, { id = e.anchorId, final = e.kind == "finalBoss", guardian = e.kind == "guardian" })
 			end
 		end
 		if res.hasMore and type(res.nextCursor) == "string" then
@@ -67,8 +71,12 @@ local function NewMarker()
 	f:EnableMouse(false)
 	m.glow = C.Tex(f, "BACKGROUND", C.ART .. "Glow", "ADD")
 	m.glow:SetPoint("CENTER", f, "CENTER", 0, 0)
-	m.skull = C.Tex(f, "ARTWORK", C.ART .. "BossSkull")
+	m.skull = C.Tex(f, "ARTWORK", C.ART .. "BossSkullFierce")
 	m.skull:SetPoint("CENTER", f, "CENTER", 0, 0)
+	-- a boss's eyes: their own light over the skull, smouldering like the dragons' on the skill bar
+	m.eyes = C.Tex(f, "OVERLAY", C.ART .. "BossSkullEyes", "ADD")
+	m.eyes:SetPoint("CENTER", f, "CENTER", 0, 0)
+	m.eyes:SetVertexColor(1, 0.22, 0.06)
 	f:Hide()
 	return m
 end
@@ -77,10 +85,9 @@ end
 local function Marker(id)
 	local m = S.markers[id]
 	if not m then
-		local n = table.getn(S.pool)
-		if n > 0 then
-			m = S.pool[n]
-			S.pool[n] = nil
+		if table.getn(S.pool) > 0 then
+			-- table.remove, not [n] = nil: in Lua 5.0 that leaves the list's count as it was
+			m = table.remove(S.pool)
 			m.alpha, m.size, m.x, m.y, m.want, m.seen, m.feet = 0, 0, nil, nil, nil, false, false
 		else
 			m = NewMarker()
@@ -175,9 +182,18 @@ local function Draw(now, dt)
 			m.size = m.size + ((m.want or m.size) - m.size) * math.min(1, dt * 10)
 			local size = math.floor(m.size + 0.5)
 			local bob = math.sin(now * 1.6 + m.bob) * 2
+			local guardian = item and item.guardian
+			if m.art ~= (guardian and 1 or 2) then
+				m.art = guardian and 1 or 2
+				m.skull:SetTexture(C.ART .. (guardian and "BossSkull" or "BossSkullFierce"))
+			end
+			if guardian then size = math.floor(size * GUARD_SIZE + 0.5) end
 			C.Size(m.skull, size, size)
+			C.Size(m.eyes, size, size)
+			C.Vis(m.eyes, not guardian)
+			if not guardian then C.Alpha(m.eyes, 0.88 + 0.12 * math.sin(now * 2.6 + m.bob)) end
 			C.Size(m.glow, size * 2.1, size * 2.1)
-			local tint = item and item.final and GLOW_FINAL or GLOW_BOSS
+			local tint = (guardian and GLOW_GUARD) or (item and item.final and GLOW_FINAL) or GLOW_BOSS
 			C.Color(m.glow, tint[1], tint[2], tint[3], 0.55 + 0.15 * math.sin(now * 2.2 + m.bob))
 			C.Place(m.frame, "CENTER", WorldFrame, "BOTTOMLEFT", math.floor(m.x * 10 + 0.5) / 10,
 				math.floor((m.y + size * 0.5 + bob) * 10 + 0.5) / 10)

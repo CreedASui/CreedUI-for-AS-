@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Creed UI's downed-friend art (original): EdgeArrow, the gold arrow at the screen's edge that
+"""Creed UI's downed-friend art (original): ReviveRing, the same mark with an empty middle for the
+friend's class crest; EdgeArrow, the gold arrow at the screen's edge that
 points to a fallen friend (pointing up; the game turns it), and ReviveMark, the mark on the spot
 where you revive them: a bright ring with a rising spirit, a teardrop flame over two upswept
 wings. Both grey-white so the game tints them. BLP2 + PNG."""
@@ -104,8 +105,12 @@ def make_revive():
     alpha = np.clip(ring + halo + inner + spirit + glyph_glow, 0, 1)
     grey = np.clip(0.75 + 0.25 * np.maximum(ring, spirit), 0, 1)
     finish("ReviveMark", grey, alpha)
+    # the ring alone, its middle left clear (and a little darker) for the class crest
+    alpha = np.clip(ring + halo + inner * 0.6, 0, 1)
+    grey = np.clip(0.75 + 0.25 * ring, 0, 1)
+    finish("ReviveRing", grey, alpha)
 
 
 make_arrow()
 make_revive()
-print("EdgeArrow ReviveMark")
+print("EdgeArrow ReviveMark ReviveRing")

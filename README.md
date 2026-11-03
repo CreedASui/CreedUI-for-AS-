@@ -6,16 +6,16 @@ A clean, smooth HUD for **Azeroth Survivors** ([wow.aethus.pl](https://wow.aethu
 
 - **Boss timer:** a themed countdown to each boss, with the run's time.
 - **Boss and mini-boss bars:** red bars with real health numbers and the debuffs on them.
-- **Boss skulls:** a skull floating over each boss wherever it is on the screen, large when it's near and small when it's far (gold over the final boss).
+- **Skulls:** a horned skull with red eyes floating over each boss, and a plainer one over each guardian, wherever it is on the screen, large when near and small when far.
 - **Your frame, your target and your party:** in class colors, portraits in metal rings.
-- **Downed friends (co-op):** a warning and a sound when a friend goes down, a glowing mark where you can revive them, and an arrow at the screen's edge with the distance while they're off it.
+- **Downed friends (co-op):** a warning and a sound when a friend goes down, a glowing mark with their class crest where you can revive them, and an arrow at the screen's edge with the distance while they're off it.
 - **Skill bar:** your abilities (each with its rank, flashing when a card ranks it up) and jewelry, your XP a second, on a gold-framed panel guarded by two dragons wrapped in their wings.
 - **Kills, gold and cache:** in the panel; hover for what each gives.
 - **Stored level-ups:** a glowing Level Up! button with how many wait (with the game's Store Level-Ups on).
 - **Damage meter:** Damage Done, Healing Done, Boss Damage, Party DPS and Damage Taken, with icons, per second and shares. Resizable from any edge.
 - **Luck medallion:** your luck and the odds of a Rare, Epic or Legendary card.
 - **Minimap:** a metal ring, your local time, the caches and the guardians' lairs (with the time until each empty lair fills), and buttons on its edge you can drag around it: the **C** opens the options, the **crossed swords** show or hide the meter, the **clover** the luck window.
-- **Character window:** gear slots lit in their rarity color, your run's stats grouped beside it (zeros dimmed, changes flashing), and a **Talents** page with your talent trees in place of Skills.
+- **Character window:** gear slots lit in their rarity color and your run's stats grouped beside it (zeros dimmed, changes flashing); its Talents tab opens the game's own Talents window.
 - **Chat:** dressed to match, and kept clear of the skill bar's dragon.
 - **Damage numbers:** calm and readable; a spell hitting a crowd adds up into one number a second.
 - **Run summary:** when a run ends, your time, level, kills, bosses, damage dealt and taken, gold and caches on one panel.

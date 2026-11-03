@@ -13,6 +13,14 @@ local EDGE = 46               -- how far in from the screen's edge the arrows ri
 local READ_EVERY = 0.25
 local MAX_FRIENDS = 4
 local DOWN_COLOR, REVIVE_COLOR = { 1, 0.42, 0.28 }, { 0.35, 1, 0.55 }
+-- the friend's class crest inside the mark: the game's character-creation class sheet, four across
+local CRESTS = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
+local CREST_AT = {
+	WARRIOR = { 0, 0.25, 0, 0.25 }, MAGE = { 0.25, 0.49609375, 0, 0.25 }, ROGUE = { 0.49609375, 0.7421875, 0, 0.25 },
+	DRUID = { 0.7421875, 0.98828125, 0, 0.25 }, HUNTER = { 0, 0.25, 0.25, 0.5 }, SHAMAN = { 0.25, 0.49609375, 0.25, 0.5 },
+	PRIEST = { 0.49609375, 0.7421875, 0.25, 0.5 }, WARLOCK = { 0.7421875, 0.98828125, 0.25, 0.5 }, PALADIN = { 0, 0.25, 0.5, 0.75 },
+}
+local CREST_ALPHA = 0.55 -- see-through, as the mark is
 
 local db
 local layer, banner
@@ -20,15 +28,21 @@ local S = { friends = {}, n = 0, seen = {}, primed = false, readAt = -10, marks 
 	lastAt = nil, broken = false, bannerAt = nil, requests = {} }
 
 ------------------------------------------------------------------------ the game's answers
-local function ClassColor(name)
+-- a friend's class (the game's English key, MAGE...) by their name, from the party
+local function ClassOf(name)
 	for i = 1, 4 do
 		local unit = "party" .. i
 		if C.Call(UnitName, unit) == name then
 			local _, file = C.Call(UnitClass, unit)
-			local c = type(RAID_CLASS_COLORS) == "table" and file and RAID_CLASS_COLORS[file]
-			if c then return c.r, c.g, c.b end
+			return file
 		end
 	end
+end
+
+local function ClassColor(name)
+	local file = ClassOf(name)
+	local c = type(RAID_CLASS_COLORS) == "table" and file and RAID_CLASS_COLORS[file]
+	if c then return c.r, c.g, c.b end
 	return 1, 1, 1
 end
 
@@ -97,6 +111,9 @@ local function NewMark()
 	f:EnableMouse(false)
 	m.halo = C.Tex(f, "BACKGROUND", C.ART .. "Glow", "ADD")
 	m.halo:SetPoint("CENTER", f, "CENTER", 0, 0)
+	m.crest = C.Tex(f, "BORDER", CRESTS)
+	m.crest:SetPoint("CENTER", f, "CENTER", 0, 0)
+	C.Vis(m.crest, false)
 	m.ring = C.Tex(f, "ARTWORK", C.ART .. "ReviveMark", "ADD")
 	m.ring:SetPoint("CENTER", f, "CENTER", 0, 0)
 	m.name = C.Text(f, C.FONT, 12, "OUTLINE", "CENTER", 160)
@@ -149,6 +166,18 @@ local function PlaceMark(m, e, f, ratio, revive, share)
 	local size = MARK_YARDS * (tonumber(e.uiUnitsPerYard) or 12) * ratio
 	size = math.floor(C.Clamp(size, MARK_MIN, MARK_MAX) * (db.scale or 1) + 0.5)
 	C.Size(m.ring, size, size)
+	-- their class crest inside, as see-through as the mark; the rising spirit when it isn't known
+	local at = CREST_AT[ClassOf(f.name) or ""]
+	if m.crestAt ~= at then
+		m.crestAt = at
+		m.ring:SetTexture(C.ART .. (at and "ReviveRing" or "ReviveMark"))
+		if at then m.crest:SetTexCoord(at[1], at[2], at[3], at[4]) end
+	end
+	if at then
+		C.Size(m.crest, size * 0.58, size * 0.58)
+		C.Alpha(m.crest, CREST_ALPHA)
+	end
+	C.Vis(m.crest, at ~= nil)
 	C.Size(m.halo, size * 1.8, size * 1.8)
 	local col = revive and REVIVE_COLOR or DOWN_COLOR
 	C.Color(m.ring, col[1], col[2], col[3], 1)

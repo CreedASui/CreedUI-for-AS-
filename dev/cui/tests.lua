@@ -554,8 +554,29 @@ do
 	end
 	local mage, priest, warrior = hpFill(CreedUIParty1), hpFill(CreedUIParty2), hpFill(CreedUIParty3)
 	check(mage and mage[3] > mage[1] * 1.5, "a mage's health bar is mage blue")
-	check(priest and math.abs(priest[1] - priest[3]) < 0.05 and priest[1] > 0.5, "a priest's is white")
+	check(priest and priest[3] >= priest[1] and priest[1] > 0.15, "a priest's starts in deep slate")
 	check(warrior and warrior[1] > warrior[3] * 1.4, "a warrior's is tan")
+	-- strong colors: the true and bright stops keep the class's hue instead of going whitish
+	local function stops(row)
+		local a2, b2
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Art\\Fill$") and under(o, row) and o.__grad then
+				local _, b, _, t = M.Rect(o)
+				if t - b > 9 then
+					if not a2 then a2 = o else b2 = o end
+				end
+			end
+		end
+		return a2 and a2.__grad[3], b2 and b2.__grad[3]
+	end
+	local function sat(c) local hi, lo = math.max(c[1], c[2], c[3]), math.min(c[1], c[2], c[3]) return hi > 0 and (hi - lo) / hi or 0 end
+	local mid, bright = stops(CreedUIParty1)
+	check(mid and bright and sat(mid) > 0.5 and sat(bright) > 0.45 and math.max(mid[1], mid[2], mid[3]) > 0.8,
+		string.format("a mage's bar is a strong, bright blue (%.2f, %.2f)", mid and sat(mid) or 0, bright and sat(bright) or 0))
+	mid, bright = stops(CreedUIParty3)
+	check(mid and sat(mid) > 0.4, string.format("a warrior's tan is rich, not grey (%.2f)", mid and sat(mid) or 0))
+	local pmid = stops(CreedUIParty2)
+	check(pmid and pmid[3] > pmid[1] and pmid[1] > 0.6, "a priest's reads as a pearl white")
 	this = CreedUIParty1
 	CreedUIParty1.__scripts.OnClick()
 	check(M.targeted == "party1", "clicking a friend targets them")
@@ -1984,6 +2005,14 @@ do
 	local bg, panel = CreedUICharacterBack, CreedUICharacterStats
 	check(bg and M.Visible(bg) and M.Visible(panel), "opened, the window is dressed: its body and the stats beside it")
 	check(CreedUICharacterTalents == nil, "no talents strip (for later)")
+	-- behind the level-up cards it goes as dark as the game's own, and comes back after
+	local phaseWas = M.phase
+	M.phase = "choosing"
+	frames(40)
+	check(visibleAlpha(panel) < 0.15 and visibleAlpha(bg) < 0.15, string.format("behind the cards the window is dark like the game's (%.2f)", visibleAlpha(panel)))
+	M.phase = phaseWas == "choosing" and "playing" or phaseWas
+	frames(60)
+	check(visibleAlpha(panel) > 0.99, "and lit again once they close")
 	-- the game's art goes, its slots and model stay
 	local art, artFaded = 0, 0
 	for _, r in ipairs({ PaperDollFrame:GetRegions() }) do
@@ -2084,114 +2113,54 @@ do
 	problems("character window")
 end
 
------------------------------------------------------------------- 11t. the talent page, in place of Skills; no Honor
+------------------------------------------------------------------ 11t. the Talents tab opens the game's talent window; no Honor
 do
-	local TREES = { { "Arms", 12 }, { "Fury", 5 }, { "Protection", 0 } }
-	GetNumTalentTabs = function() return 3 end
-	GetTalentTabInfo = function(t) return TREES[t][1], "Interface\\Icons\\Ability_Rogue_Eviscerate", TREES[t][2], "Warrior" .. TREES[t][1] end
-	GetNumTalents = function(t) return 3 end
-	GetTalentInfo = function(t, i)
-		-- tier i, column i; the first two with points in the first tree
-		local rank = (t == 1 and i <= 2) and (i == 1 and 5 or 2) or 0
-		return TREES[t][1] .. " talent " .. i, "Interface\\Icons\\Ability_BackStab", i, i, rank, 5
-	end
-	-- in the first tree each talent opens the next (the second's at 2/5, so the third stays locked)
-	GetTalentPrereqs = function(t, i)
-		if t == 1 and i > 1 then return i - 1, i - 1, 1 end
-	end
 	local function alpha(o) return o.__alpha or 1 end
 	CharacterFrame:Show()
-	frames(5)
-	check(CharacterFrameTab4Text.__text == "Talents" and not M.Visible(CharacterFrameTab5), "the Skills tab says Talents, the Honor tab's gone: " .. tostring(CharacterFrameTab4Text.__text))
-	this = CharacterFrameTab4
-	CharacterFrameTab4.__scripts.OnClick()
-	frames(5)
-	local page = CreedUITalentPage
-	check(page and M.Visible(page) and M.Visible(SkillFrame) and alpha(SkillFrame) == 0 and not SkillListMock.__mouse,
-		"the Talents tab opens our page over the game's Skills, see-through and deaf under it")
-	check(alpha(CharacterFramePortrait) == 0 and alpha(M.runPanel) == 0 and M.Visible(CreedUITalentsFace), "the page in our dress: the portrait ours, the game's Run Stats away")
-	-- the trees: three, by name and points; each talent at its tier and column
-	local titles, icons, lit, ranks = {}, {}, 0, {}
-	for _, o in ipairs(M.All()) do
-		if o.__kind == "FontString" and M.Visible(o) and o.__text and under(o, page) then table.insert(titles, M.Plain(o.__text)) end
-		if o.__kind == "Button" and o.tab and M.Visible(o) and under(o, page) then
-			table.insert(icons, o)
-			if not o.icon.__desat then lit = lit + 1 end
-			if o.rank.__text and o.rank.__text ~= "" then table.insert(ranks, o.rank.__text) end
-		end
-	end
-	local all = table.concat(titles, " | ")
-	check(string.find(all, "Arms", 1, true) and string.find(all, "Fury", 1, true) and string.find(all, "Protection", 1, true) and string.find(all, "12", 1, true),
-		"three trees by name and points: " .. all)
-	table.sort(ranks)
-	-- with points: Arms 1 and 2; could be taken: Fury 1 and 2 (5 points), Protection 1; locked: the rest
-	-- (Arms 3 waits for Arms 2 to be full)
-	check(table.getn(icons) == 9 and lit == 5 and table.concat(ranks, ",") == "0/5,0/5,0/5,2/5,5/5",
-		string.format("9 talents: 2 with points, 3 more that could be taken (%d, %d in color; %s)", table.getn(icons), lit, table.concat(ranks, ",")))
-	-- each tree in a panel of its own with the game's painting; the branches with their arrows
-	local art = CreedUITalentTree1 and CreedUITalentTree1.artTop
-	check(art and art.__tex == "Interface\\TalentFrame\\WarriorArms-TopLeft" and M.Visible(art) and M.Visible(CreedUITalentTree3),
-		"each tree in its own panel, the game's painting behind it: " .. tostring(art and art.__tex))
-	local cores, arrows, litCores = 0, 0, 0
-	for _, p in ipairs(CreedUITalentTree1.pieces) do
-		if M.Visible(p.core) and (p.core.__alpha or 1) > 0 then
-			cores = cores + 1
-			if p.core.__vc and p.core.__vc[1] > 0.9 then litCores = litCores + 1 end
-		end
-	end
-	for _, a in ipairs(CreedUITalentTree1.arrows) do if M.Visible(a) then arrows = arrows + 1 end end
-	check(cores == 4 and arrows == 2 and litCores == 2, string.format("two branches (across, then down) with an arrow each, the full talent's lit (%d pieces, %d lit, %d arrows)", cores, litCores, arrows))
-	local first, third
-	for _, b in ipairs(icons) do
-		if b.tab == 1 and b.index == 1 then first = b end
-		if b.tab == 1 and b.index == 3 then third = b end
-	end
-	local fl, fb, _, ft = M.Rect(first)
-	local tl, tb = M.Rect(third)
-	check(tl > fl + 30 and ft > tb + 50, "a talent sits at its tier and column (the third two tiers down, two columns over)")
-	this = first
-	first.__scripts.OnEnter()
-	check(M.tip.lines[1] == "Talent 1.1", "a talent's tooltip is the game's own")
-	first.__scripts.OnLeave()
-	-- back to the character page, dressed as before; shut, the game's pieces back
 	this = CharacterFrameTab1
 	CharacterFrameTab1.__scripts.OnClick()
+	frames(5)
+	check(CharacterFrameTab4Text.__text == "Talents" and not M.Visible(CharacterFrameTab5), "the Skills tab says Talents, the Honor tab's gone: " .. tostring(CharacterFrameTab4Text.__text))
+	-- the Talents tab: the game's own Talents window opens, the character window steps aside
+	M.talentToggles = 0
+	this = CharacterFrameTab4
+	CharacterFrameTab4.__scripts.OnClick()
 	frames(3)
-	check(not M.Visible(page) and M.Visible(CreedUICharacterBack) and alpha(CharacterFramePortrait) == 0 and alpha(SkillFrame) == 0,
-		"the Character tab: our character page again, the portrait still ours")
+	check(M.talentToggles == 1, "the Talents tab opens the game's own Talents window (" .. M.talentToggles .. ")")
+	check(not M.Visible(CharacterFrame), "and the character window closes for it")
+	check(CreedUITalentPage == nil, "no talent page of Creed UI's own any more")
+	-- opened again: on the Character page, dressed, not straight back to talents
+	CharacterFrame:Show()
+	frames(5)
+	check(M.Visible(PaperDollFrame) and not M.Visible(SkillFrame) and M.Visible(CreedUICharacterBack) and M.talentToggles == 1,
+		"opened again, it's on the Character page, dressed (and the talents didn't open again)")
+	check(alpha(CharacterFramePortrait) == 0 and alpha(M.runPanel) == 0, "the page in our dress: the portrait ours, the game's Run Stats away")
 	CharacterFrame:Hide()
 	frames(2)
 	check(alpha(CharacterFramePortrait) == 1 and alpha(M.runPanel) == 1, "shut: the game's pieces back")
-	-- opened straight on the talents
-	CharacterFrame:Show()
-	this = CharacterFrameTab4
-	CharacterFrameTab4.__scripts.OnClick()
-	frames(3)
-	check(M.Visible(page) and alpha(CharacterFramePortrait) == 0, "and the talent page again")
 	-- in Chinese: the tab in the face with those letters
+	CharacterFrame:Show()
 	M.Slash("language zh")
 	frames(40)
 	check(CharacterFrameTab4Text.__text == "天赋" and CharacterFrameTab4Text.__font == CreedUI.FACE_CJK, "中文: the tab " .. tostring(CharacterFrameTab4Text.__text))
 	M.Slash("language en")
 	frames(40)
-	-- off: Skills and Honor as the game had them
+	-- off: Skills and Honor as the game had them, the Skills tab its own page again
 	M.Slash("character off")
 	frames(2)
-	check(CharacterFrameTab4Text.__text == "Skills" and CharacterFrameTab4Text.__font == "Fonts\\FRIZQT__.TTF" and M.Visible(CharacterFrameTab5)
-		and not M.Visible(page) and alpha(SkillFrame) == 1 and SkillListMock.__mouse, "/creed character off: Skills and Honor as the game had them")
+	check(CharacterFrameTab4Text.__text == "Skills" and CharacterFrameTab4Text.__font == "Fonts\\FRIZQT__.TTF" and M.Visible(CharacterFrameTab5),
+		"/creed character off: Skills and Honor as the game had them")
+	this = CharacterFrameTab4
+	CharacterFrameTab4.__scripts.OnClick()
+	frames(3)
+	check(M.Visible(SkillFrame) and alpha(SkillFrame) == 1 and SkillListMock.__mouse and M.talentToggles == 1, "and its Skills page is the game's, untouched")
+	this = CharacterFrameTab1
+	CharacterFrameTab1.__scripts.OnClick()
 	M.Slash("character on")
 	frames(3)
-	-- no talent trees: a line says so
-	GetNumTalentTabs = function() return 0 end
-	frames(70)
-	check(page and M.Visible(page) and CreedUITalentPage and string.find(table.concat((function()
-		local t = {}
-		for _, o in ipairs(M.All()) do if o.__kind == "FontString" and M.Visible(o) and o.__text and under(o, page) then table.insert(t, o.__text) end end
-		return t end)(), "|"), "no talent trees", 1, true), "no talent trees: a line says so")
 	CharacterFrame:Hide()
 	frames(2)
-	GetNumTalentTabs, GetTalentTabInfo, GetNumTalents, GetTalentInfo, GetTalentPrereqs = nil, nil, nil, nil, nil
-	problems("talent page")
+	problems("talents tab")
 end
 
 ------------------------------------------------------------------ 11c. the boss skulls
@@ -2199,8 +2168,8 @@ do
 	local function skulls(minAlpha)
 		local out = {}
 		for _, o in ipairs(M.All()) do
-			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "BossSkull", 1, true) and under(o, CreedUISkulls)
-				and visibleAlpha(o) > (minAlpha or 0.5) then
+			if o.__kind == "Texture" and o.__tex and (string.find(o.__tex, "BossSkull$") or string.find(o.__tex, "BossSkullFierce$"))
+				and under(o, CreedUISkulls) and visibleAlpha(o) > (minAlpha or 0.5) then
 				table.insert(out, o)
 			end
 		end
@@ -2228,9 +2197,21 @@ do
 	M.bosses = { { name = "Anub'Rekhan", hp = 9000, hpm = 10000 }, { name = "Kel'Thuzad", hp = 50000, hpm = 60000, final = true } }
 	M.waSpots, M.waNear, M.waOff, M.waNoHead, M.waLast = {}, {}, {}, {}, {}
 	frames(30)
-	check(table.getn(skulls()) == 2, "a skull over each boss, none over the mini-boss (" .. table.getn(skulls()) .. ")")
+	check(table.getn(skulls()) == 3, "a skull over each boss and the awake mini-boss (" .. table.getn(skulls()) .. ")")
+	local fierce, plain, eyes = 0, 0, 0
+	for _, o in ipairs(skulls()) do
+		if string.find(o.__tex, "Fierce$") then fierce = fierce + 1 else plain = plain + 1 end
+	end
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "BossSkullEyes$") and under(o, CreedUISkulls) and visibleAlpha(o) > 0.5 then eyes = eyes + 1 end
+	end
+	check(fierce == 2 and plain == 1 and eyes == 2, string.format("bosses wear the fierce skull with red eyes, the mini-boss the plain one (%d, %d, %d)", fierce, plain, eyes))
+	M.guardians[1].awake = false
+	frames(40)
+	check(table.getn(skulls(0.05)) == 2, "a mini-boss asleep in its lair has none")
+	M.guardians = {} -- the bosses alone from here
 	check(M.waHandler ~= nil, "the skulls move with the game's camera (its frame handler)")
-	check(M.waLast["boss:Anub'Rekhan"] == "overhead" and M.waLast["guardian:77"] == nil, "the bosses' heads are asked for, not the mini-boss's")
+	check(M.waLast["boss:Anub'Rekhan"] == "overhead", "the bosses' heads are asked for")
 	local s1 = skullOf("Anub'Rekhan")
 	local cx, cy, w = 0, 0, 0
 	if s1 then cx, cy, w = center(s1) end
@@ -2293,6 +2274,19 @@ do
 		frames(40)
 	end
 	check(framesUnder() <= math.max(before, 2), "skulls are reused (" .. before .. " then " .. framesUnder() .. " frames)")
+	-- two skulls back in the pool, then three bosses at once: each takes one (in Lua 5.0 a list
+	-- emptied with [n] = nil keeps its count, which once handed out a missing skull and stopped them)
+	M.bosses = { { name = "A", hp = 10, hpm = 10 }, { name = "B", hp = 10, hpm = 10 } }
+	frames(20)
+	M.bosses = {}
+	frames(40)
+	M.bosses = { { name = "C", hp = 10, hpm = 10 }, { name = "D", hp = 10, hpm = 10 }, { name = "E", hp = 10, hpm = 10 } }
+	frames(20)
+	M.bosses = { { name = "F", hp = 10, hpm = 10 }, { name = "G", hp = 10, hpm = 10 }, { name = "H", hp = 10, hpm = 10 }, { name = "I", hp = 10, hpm = 10 } }
+	frames(30)
+	check(part.get() and table.getn(skulls()) == 4 and not chatHas("boss skulls stopped"), "skulls taken from the pool and new ones together, no error")
+	M.bosses = {}
+	frames(40)
 	-- the game failing: nothing breaks, no skull, the part stays on
 	M.bosses = { { name = "Anub'Rekhan", hp = 9000, hpm = 10000 } }
 	frames(20)
@@ -2320,6 +2314,7 @@ do
 	-- /creed probe shows what the anchors look like
 	M.chat = {}
 	M.Slash("probe")
+	check(chatHas(": AZS tables: .*AZS_RUN%(%d+%)") and chatHas("AZS_STATS%("), "/creed probe lists the game's AZS tables with their sizes")
 	check(chatHas(": anchors: ") and chatHas("entries=1") and chatHas(": projected: ") and chatHas("state=onScreen") and chatHas(": downed: 0"),
 		"/creed probe shows the game's anchors, a projection and the downed friends")
 	M.bosses = {}
@@ -2554,14 +2549,29 @@ do
 	x.__scripts.OnClick()
 	frames(30)
 	check(not M.Visible(CreedUISummary), "its x closes it")
-	-- a fallen run opens it again; fighting on in endless puts it away
+	-- you fall in co-op: the summary opens, and its numbers stay still while the party plays on
 	M.runEnd = { result = "defeat", t = 420, lvl = 18, kills = 900, dmg = 100000, taken = 40000, gold = 100, chests = 2, hero = "Creed" }
 	M.runTime = 420
-	frames(30)
+	frames(60)
 	check(M.Visible(CreedUISummary) and findText(CreedUISummary, "^You have fallen$") ~= nil, "a fallen run: You have fallen")
-	M.runTime = 430
+	local before = table.concat(textsUnder(CreedUISummary), "|")
+	local changed = 0
+	for k = 1, 30 do
+		M.runEnd.t, M.runEnd.kills, M.runEnd.dmg, M.runTime = 420 + k, 900 + k * 7, 100000 + k * 999, 420 + k
+		frames(3)
+		if table.concat(textsUnder(CreedUISummary), "|") ~= before then changed = changed + 1 end
+	end
+	check(changed == 0 and M.Visible(CreedUISummary), "while the party plays on, the numbers stay still (" .. changed .. " changes)")
+	check(findText(CreedUISummary, "^900$") ~= nil and findText(CreedUISummary, "^7:00$") ~= nil, "they are the run's at its end")
+	-- your friends win after you fell: that's another ending, taken once
+	M.runEnd = { result = "victory", t = 1200, lvl = 18, kills = 2000, dmg = 300000, taken = 50000, gold = 300, chests = 4, hero = "Creed" }
+	M.runTime = 1200
+	frames(60)
+	check(findText(CreedUISummary, "^Victory!$") ~= nil and findText(CreedUISummary, "^2,000$") ~= nil, "the party wins after: Victory! with the new numbers")
+	-- fighting on in endless after a victory puts it away
+	M.runTime = 1210
 	frames(30)
-	check(not M.Visible(CreedUISummary), "fighting on past the end puts it away")
+	check(not M.Visible(CreedUISummary), "fighting on past a victory (endless) puts it away")
 	M.runEnd = nil
 	frames(10)
 	problems("run summary")
@@ -2593,6 +2603,30 @@ do
 		string.format("a mark where they lie (%.1f, %.1f)", mx, my))
 	check(label and label.__color and label.__color[1] < 0.6 and label.__color[3] > 0.8, "their name in their class color (a mage's blue)")
 	check(findText(CreedUIDowned, "^20 yd$") ~= nil, "and how far they are")
+	-- their class crest inside the mark, as see-through as the mark
+	local crest, ringTex
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and under(o, CreedUIDowned) and M.Visible(o) and o.__tex then
+			if string.find(o.__tex, "UI%-CharacterCreate%-Classes") then crest = o end
+			if string.find(o.__tex, "Revive") then ringTex = o.__tex end
+		end
+	end
+	check(crest and crest.__tc and math.abs(crest.__tc[1] - 0.25) < 0.01 and crest.__tc[3] == 0, "a mage's crest inside the mark")
+	check(crest and (crest.__alpha or 1) <= 0.6, "see-through, as the mark is (" .. tostring(crest and crest.__alpha) .. ")")
+	check(ringTex and string.find(ringTex, "ReviveRing$"), "on the ring with a clear middle")
+	local p1 = M.unit.party1
+	M.unit.party1 = nil -- their class unknown for a moment
+	frames(3)
+	local glyph, crests = false, 0
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and under(o, CreedUIDowned) and M.Visible(o) and o.__tex then
+			if string.find(o.__tex, "ReviveMark$") then glyph = true end
+			if string.find(o.__tex, "Classes$") then crests = crests + 1 end
+		end
+	end
+	check(glyph and crests == 0, "a friend of no known class: the rising spirit, no crest")
+	M.unit.party1 = p1
+	frames(3)
 	frames(150)
 	check(not M.Visible(CreedUIDownedBanner), "the banner fades after a few seconds")
 	check(markOf("Melkor") ~= nil, "the mark stays while they're down")
@@ -2638,6 +2672,55 @@ do
 	frames(10)
 	M.unit.party1, M.unit.party2 = nil, nil
 	problems("friends down")
+end
+
+------------------------------------------------------------------ 11f. four guardians stay a small stack
+do
+	local function barOf(name)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "FontString" and o.__text == name and under(o, CreedUIBosses) and visibleAlpha(o) > 0.5 then
+				local l, b, r, t = M.Rect(o.__parent.__parent)
+				return r - l, t - b, (l + r) / 2
+			end
+		end
+	end
+	M.phase = "playing"
+	if not CreedUIDB.bosses.enabled then M.Slash("bosses on") end
+	local saveB, saveG = M.bosses, M.guardians
+	M.bosses = { { name = "Hakkar", hp = 90000, hpm = 100000 } }
+	M.guardians = {
+		{ id = 41, name = "Gnoll Packleader", hp = 9000, hpm = 10000, awake = true },
+		{ id = 42, name = "Kobold Geomancer", hp = 8000, hpm = 10000, awake = true },
+		{ id = 43, name = "Murloc Tidecaller", hp = 7000, hpm = 10000, awake = true },
+		{ id = 44, name = "Defias Pillager", hp = 6000, hpm = 10000, awake = true },
+	}
+	AZS_UNITS_UPDATED = M.now
+	frames(60)
+	local bw, bh, bx = barOf("Hakkar")
+	local gw, gh, gx = barOf("Gnoll Packleader")
+	check(bw and gw and gw < bw * 0.75 and gh < bh, string.format("a guardian's bar is narrower and thinner than a boss's (%s x %s vs %s x %s)",
+		tostring(gw), tostring(gh), tostring(bw), tostring(bh)))
+	check(bw and math.abs(bw - CreedUIDB.bosses.width) < 1, "the boss keeps its full bar")
+	check(bx and gx and math.abs(bx - gx) < 1, "the guardians' bars sit centered under the boss's")
+	local l, b, r, t = M.Rect(CreedUIBosses)
+	local lowest = 9999
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text == "Defias Pillager" and under(o, CreedUIBosses) then
+			local _, b2 = M.Rect(o.__parent.__parent)
+			lowest = b2
+		end
+	end
+	check(t - lowest < 180, "a boss and four guardians take less than 180 px (" .. math.floor(t - lowest) .. ")")
+	-- a row that was a guardian's, then a boss's: it takes the boss's look again
+	M.guardians = {}
+	M.bosses = { { name = "Hakkar", hp = 90000, hpm = 100000 }, { name = "Jin'do", hp = 50000, hpm = 60000 } }
+	AZS_UNITS_UPDATED = M.now
+	frames(90)
+	local jw = barOf("Jin'do")
+	check(jw and math.abs(jw - CreedUIDB.bosses.width) < 1, "a reused row takes a boss's full look")
+	M.bosses, M.guardians = saveB, saveG
+	frames(30)
+	problems("compact guardians")
 end
 
 ------------------------------------------------------------------ 12. no API at all

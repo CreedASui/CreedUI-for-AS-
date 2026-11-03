@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.11.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.12.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -34,7 +34,7 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Timer.lua         the boss timer (DON'T TOUCH: the user loves it as it is)
   Numbers.lua       floating damage numbers (combat text API)
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
-  Skulls.lua        a skull over each boss (world anchors), sized by distance
+  Skulls.lua        a skull over each boss (horned, red eyes) and guardian (world anchors), sized by distance
   Party.lua         party frames                   Chat.lua     dressed chat, kept clear of the dragon
   Downed.lua        friends down: banner + sound, a revive mark on their spot, edge arrows (world anchors)
   LevelUps.lua      the Level Up! button for stored level-ups (replaces the game's "levels" HUD part)
@@ -47,13 +47,14 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Meter.lua         damage meter (+ its crossed-swords edge button)
   Luck.lua          luck medallion (+ its clover edge button)
   Character.lua     the game's character window dressed: gear slots lit by rarity, the run's stats
-                    read off the game's own labels and regrouped beside it, a Talents page in place
-                    of Skills (the 3 talent trees, read-only), the Honor tab hidden
+                    read off the game's own labels and regrouped beside it; the Skills tab is called
+                    Talents and opens the game's own Talents window (ToggleTalentFrame); Honor hidden.
+                    Behind the level-up cards it dims (it shares panel art with the lit skill bar)
   Art/              original art, BLP2 uncompressed (made by dev/art scripts)
   Fonts/            Letters.ttf (Latin+Cyrillic, from Lora), LettersCJK.ttf (from Noto Sans CJK), OFL
 dev/                tools: stand-in game client + tests, translations, art, fonts, renderer
                     (dev/README.md explains each)
-dev/attic/          code kept for later (the 1.8.0 talents strip)
+dev/attic/          code kept for later (the 1.8.0 talents strip, the 1.11.0 talent-tree page)
 README.md, CHANGELOG.md
 ```
 
@@ -69,6 +70,8 @@ README.md, CHANGELOG.md
 - **Only real 1.12 widget methods.** `dev/engine_methods.lua` lists them; the stand-in client errors
   on anything else, even *reading* a method a widget type doesn't have (`texture.IsMouseEnabled`). Check
   the object type first.
+- **Lists:** take items off with `table.remove`, never `list[n] = nil`: in Lua 5.0 that leaves
+  `table.getn` as it was (it broke the skulls' pool in 1.9.0 to 1.11.0).
 - **No stray `nil` arguments.** The game's API counts a passed `nil` as an argument and refuses
   the call. Use `C.Call(fn, a, b)`, and pass exact counts (`SetTexCoord` takes 4 *or* 8).
 - **Memo writers** in Core (`C.SetText`, `C.Size`, `C.Width`, `C.Place`, `C.Vis`, `C.Alpha`, `C.Color`,
@@ -104,7 +107,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 507 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 524 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
@@ -188,13 +191,15 @@ before using an API. Known:
    matched), the summary's fields, the Level Up! button, Damage Taken. Ask for screenshots.
    Ideas not done yet: talent/summon timers (`AZS_GetTimers`), arrows to caches and lairs, the
    upcoming bosses (`AZS_GetUpcomingBosses`; ask first, the timer is the user's favorite).
-3. **Run talents strip** (removed in 1.8.1, code in `dev/attic`): wait until the game says where it
-   keeps the run's talents (`/creed probe`).
+3. **Talents:** the tab opens the game's window (`ToggleTalentFrame()`, which the game's Lua defines;
+   it bumps `AZS_TALENT_TOGGLES`). AS talents are in the meter loadout (`talents`: `sourceKey`, `rank`,
+   `treeKey`, `specKey`), but not their grid, branches or paintings. `/creed probe` lists the AZS tables.
 4. **Not yet confirmed in the real client:**
    - the bundled TTFs loading from the addon folder, and CJK rendering;
    - `SetCursor` taking an addon texture (the resize arrow; if it fails, the drawn arrow comes back);
    - the character window's assumptions: stats are read as "Label:" with the value on the same row,
      and the Run Stats panel is found by its title;
-   - the talent trees' background paths (`Interface\\TalentFrame\\<bg>-TopLeft/-BottomLeft`).
+   - the downed mark's class crest (`Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes`,
+     in the game's boot manifest; the 1.12 coordinates).
 
    Ask the user for a screenshot after each change in these areas.
