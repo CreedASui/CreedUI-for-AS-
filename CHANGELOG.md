@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.13.2
+- **Dragons:** the body is one smooth piece now (neck, chest, haunch and thigh flow into each other instead of reading as separate shapes), with a band of domed belly plates down its front. The second wing is folded over the neck instead of sticking up behind it, and the front legs are a pair.
+
 ## 1.13.1
 - **Dragons:** the skill bar's dragons are redrawn rearing up: jaws open, forelegs raised with claws curled, crouched on a hind leg, wings spread high, and the tail sweeping along the ground to a tip of flame. Their scales are now raised plates with depth: each one domed, overlapping the next with a step of shadow.
 

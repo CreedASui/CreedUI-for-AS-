@@ -223,37 +223,8 @@ for (bx, by), c1, c2, (tx, ty), w in (((36, 208), (26, 194), (46, 184), (40, 162
     flame = np.maximum(flame, tube(list(bez([(bx, by), c1, c2, (tx, ty)], 26)), w, 0.3, power=1.1))
 put(flame, part(flame, 3.0, value=1.1), shadow=0.35, reach=1.2)
 
-# the far wing first, behind and a little higher, mostly hidden: raised high over the back
-wing((170, 104), (158, 52), (178, 6), [(208, 22), (226, 58), (232, 98)], [(204, 118), (182, 116)], value=0.6, far=True)
 
-# the body, rearing up: a crouched haunch, the chest upright over it
-haunch = ellipse(178, 196, 36, 34, -25)
-put(haunch, part(haunch, 22.0, SB, 0.9), shadow=0.5)
-torso = ellipse(148, 146, 34, 58, 10)
-put(torso, part(torso, 24.0, SB, 0.9), shadow=0.5)
-
-# the near wing spread high and wide behind, its fingers fanning down over the panel's end
-wing((164, 106), (194, 56), (222, 8), [(250, 40), (252, 104), (246, 168), (214, 214)],
-     [(184, 204), (172, 160), (166, 126)], value=1.0, bends=[None, (258, 70), (256, 136), (238, 196)])
-
-# the hind leg, crouched to spring: the thigh, the shin angled back down to the ankle, and the
-# long foot flat on the ground, its toes spread and clawed
-thigh = ellipse(170, 204, 22, 30, 35)
-shin = tube(list(bez([(176, 214), (162, 230), (146, 236)], 20)), 11.0, 7.5)
-foot = tube(list(bez([(148, 236), (132, 240), (120, 241)], 16)), 7.5, 5.5)
-leg = np.maximum(np.maximum(thigh, shin), foot)
-toes = np.zeros_like(X)
-tips = []
-for (x1, y1), (x2, y2) in (((124, 236), (106, 232)), ((122, 241), (102, 242)), ((124, 245), (106, 250))):
-    toes = np.maximum(toes, tube(list(bez([(x1, y1), ((x1 + x2) / 2, (y1 + y2) / 2 - 2), (x2, y2)], 14)), 4.2, 3.0))
-    tips.append((x2, y2))
-leg = np.maximum(leg, toes)
-put(leg, part(leg, 8.0, SC, 0.9), shadow=0.5)
-for x0, y0 in tips:
-    c = tube(list(bez([(x0 + 2, y0 - 1), (x0 - 6, y0 - 1), (x0 - 10, y0 + 5)], 12)), 3.2, 0.5)
-    put(c, part(c, 1.7, value=1.18), shadow=0.35, reach=1.0)
-
-# the neck: thick, curving up and out to the head, with spines along its back
+# the neck's line and the spines along its back (behind the body, peeking over its edge)
 neckpts = list(bez([(150, 124), (140, 84), (110, 64), (86, 52)], 36))
 spines = np.zeros_like(X)
 for i in range(3, 33, 4):
@@ -266,16 +237,58 @@ for i in range(3, 33, 4):
     k = 13 - 4 * i / 36
     spines = np.maximum(spines, poly([(bx - dx / L * 6, by - dy / L * 6), (bx + nx * k - dx / L * 4, by + ny * k - dy / L * 4), (bx + dx / L * 5, by + dy / L * 5)]))
 put(spines, part(spines, 2.0, value=1.05), shadow=0.35, reach=1.2)
-neck = tube(neckpts, 25.0, 15.0)
-put(neck, part(neck, 13.0, SC, 1.0), shadow=0.5)
 
-# the belly plates, from under the jaw down the front of the neck and chest
-bellypts = list(bez([(78, 66), (104, 98), (116, 150), (146, 200)], 40))
-belly = tube(bellypts, 8.0, 14.0) * np.clip(neck + torso, 0, 1)
-bh, bd = dome(belly, 6.0)
-plates = np.mod((Y + 0.45 * X) / 7.0, 1.0)
-groove = np.exp(-((plates - 0.5) / 0.09) ** 2)
-put(belly, shade(bh - 1.4 * groove, bd, value=1.12, spec=0.65), shadow=0.25, reach=1.0)
+# the body as one piece: neck, upright chest, crouched haunch and thigh merged into a single smooth
+# form (the hollows where they meet filled in), lit as one, its scales running on without seams:
+# small on the neck, broader on the chest and haunch
+neck = tube(neckpts, 25.0, 15.0)
+torso = ellipse(148, 146, 34, 58, 10)
+haunch = ellipse(178, 196, 36, 34, -25)
+thigh = ellipse(170, 204, 22, 30, 35)
+parts_ = np.maximum(np.maximum(neck, torso), np.maximum(haunch, thigh))
+body = np.maximum(np.clip((soft(parts_, 3.0) - 0.5) * 3.0 + 0.5, 0, 1), parts_)
+w_neck = np.clip(soft(neck * (1 - torso), 4.0) * 1.4, 0, 1)
+put(body, part(body, 22.0, SC * w_neck + SB * (1 - w_neck), 0.9), shadow=0.5)
+
+# the near wing spread high and wide behind, its fingers fanning down over the panel's end
+wing((164, 106), (194, 56), (222, 8), [(250, 40), (252, 104), (246, 168), (214, 214)],
+     [(184, 204), (172, 160), (166, 126)], value=1.0, bends=[None, (258, 70), (256, 136), (238, 196)])
+
+# the hind leg below the thigh, crouched to spring: the shin angled back down to the ankle, and the
+# long foot flat on the ground, its toes spread and clawed
+shin = tube(list(bez([(176, 214), (162, 230), (146, 236)], 20)), 11.0, 7.5)
+foot = tube(list(bez([(148, 236), (132, 240), (120, 241)], 16)), 7.5, 5.5)
+leg = np.maximum(shin, foot)
+toes = np.zeros_like(X)
+tips = []
+for (x1, y1), (x2, y2) in (((124, 236), (106, 232)), ((122, 241), (102, 242)), ((124, 245), (106, 250))):
+    toes = np.maximum(toes, tube(list(bez([(x1, y1), ((x1 + x2) / 2, (y1 + y2) / 2 - 2), (x2, y2)], 14)), 4.2, 3.0))
+    tips.append((x2, y2))
+leg = np.maximum(leg, toes)
+put(leg, part(leg, 8.0, SC, 0.9), shadow=0.5)
+for x0, y0 in tips:
+    c = tube(list(bez([(x0 + 2, y0 - 1), (x0 - 6, y0 - 1), (x0 - 10, y0 + 5)], 12)), 3.2, 0.5)
+    put(c, part(c, 1.7, value=1.18), shadow=0.35, reach=1.0)
+
+# the far wing, swept forward and draped over the neck: its arm folded along the neck, its
+# membrane falling over it in a broad fan (the head and its horns stay in front)
+wing((160, 112), (164, 70), (138, 30), [(116, 58), (118, 86), (132, 108), (148, 120)], [(154, 124), (160, 118)],
+     value=0.95, far=True)
+
+# the belly: one band of plates down the front from the throat to between the legs, each plate a
+# shallow dome running across the band, the grooves between them dark, the band following the body
+from scipy.spatial import cKDTree
+bellypts = list(bez([(80, 66), (104, 96), (110, 150), (150, 212)], 60))
+band = tube(bellypts, 7.0, 15.0) * np.clip(body, 0, 1)
+fine = bez([(80, 66), (104, 96), (110, 150), (150, 212)], 900)   # dense, so the plates run smooth
+_, idx = cKDTree(fine).query(np.dstack([X, Y]).reshape(-1, 2))
+along = (idx.reshape(X.shape) / (len(fine) - 1.0)).astype(np.float32)
+ph = np.mod(along * 13, 1.0)
+plate = np.sin(np.pi * ph) ** 0.45          # each plate bulges in its middle, low at its ends
+groove = np.exp(-(np.minimum(ph, 1 - ph) / 0.07) ** 2)
+bh, bd = dome(band, 5.0)
+g = shade(bh * 0.8 + 2.6 * plate, bd, value=1.02, spec=0.55, line=0.9) * (1 - 0.5 * groove)
+put(band, g, shadow=0.3, reach=1.0)
 
 # the forelegs raised before the chest, as if to strike: each from a heavy shoulder down to the
 # elbow, the forearm reaching forward, and a hand with three claws curled down. The far one first,
