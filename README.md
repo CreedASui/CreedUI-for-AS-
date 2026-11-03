@@ -15,9 +15,9 @@ A clean, smooth HUD for **Azeroth Survivors** ([wow.aethus.pl](https://wow.aethu
 - **Damage meter:** Damage Done, Healing Done, Boss Damage, Party DPS and Damage Taken, with icons, per second and shares. Resizable from any edge.
 - **Luck medallion:** your luck and the odds of a Rare, Epic or Legendary card.
 - **Minimap:** a metal ring, your local time, the caches and the guardians' lairs (with the time until each empty lair fills), and buttons on its edge you can drag around it: the **C** opens the options, the **crossed swords** show or hide the meter, the **clover** the luck window.
-- **Character window:** gear slots lit in their rarity color and your run's stats grouped beside it (zeros dimmed, changes flashing); its Talents tab opens the game's own Talents window.
+- **Character window:** gear slots lit in their rarity color and your run's stats grouped beside it (zeros dimmed, changes flashing); its Talents tab opens Creed UI's talent window (your trees, points and learned talents with their ranks).
 - **Chat:** dressed to match, and kept clear of the skill bar's dragon.
-- **Damage numbers:** calm and readable; a spell hitting a crowd adds up into one number a second.
+- **Damage numbers:** calm and readable; a spell hitting a crowd adds up into one number a second, and a number that keeps stacking grows.
 - **Run summary:** when a run ends, your time, level, kills, bosses, damage dealt and taken, gold and caches on one panel.
 
 Every part can be turned on or off, sized and moved.
@@ -40,6 +40,7 @@ Every part can be turned on or off, sized and moved.
 | `/creed language <code>` | Picks the language (`auto` follows the game) |
 | `/creed timer ...`, `/creed numbers ...` | The boss timer's and damage numbers' own settings |
 | `/creed <part> on/off` | Turns a part on or off |
+| `/creed talents` | Opens the talent window |
 | `/creed probe` | Prints what the game gives addons, for reporting what's missing |
 
 ## Credits

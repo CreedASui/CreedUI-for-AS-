@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.12.1"
+C.VERSION = "1.13.0"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -1334,6 +1334,8 @@ local function Slash(msg)
 		if C.timerSlash then C.timerSlash(rest) end
 	elseif cmd == "numbers" or cmd == "sn" or cmd == "dmg" then
 		if C.numberSlash then C.numberSlash(rest) end
+	elseif cmd == "talents" then
+		if C.ToggleTalents then C.ToggleTalents() end
 	elseif cmd == "probe" then
 		if C.Probe then C.Probe() end
 		if C.ProbeAnchors then C.ProbeAnchors() end

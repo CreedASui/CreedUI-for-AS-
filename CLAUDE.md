@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.12.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.13.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -39,6 +39,7 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Downed.lua        friends down: banner + sound, a revive mark on their spot, edge arrows (world anchors)
   LevelUps.lua      the Level Up! button for stored level-ups (replaces the game's "levels" HUD part)
   Summary.lua       the run's summary panel when it ends (AZS_GetRunSummary)
+  Talents.lua       the talent window: trees side by side, learned talents with ranks (meter loadout)
   Bar.lua           skill bar, each ability's rank box, jewelry, XP/s, the gold panel with its two dragons
   Tally.lua         kills / gold / cache, docked inside the bar's panel
   Minimap.lua       metal ring, local clock, zone name
@@ -48,7 +49,7 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Luck.lua          luck medallion (+ its clover edge button)
   Character.lua     the game's character window dressed: gear slots lit by rarity, the run's stats
                     read off the game's own labels and regrouped beside it; the Skills tab is called
-                    Talents and opens the game's own Talents window (ToggleTalentFrame); Honor hidden.
+                    Talents and opens Talents.lua's window (the game's own if that's missing); Honor hidden.
                     Behind the level-up cards it dims (it shares panel art with the lit skill bar)
   Art/              original art, BLP2 uncompressed (made by dev/art scripts)
   Fonts/            Letters.ttf (Latin+Cyrillic, from Lora), LettersCJK.ttf (from Noto Sans CJK), OFL
@@ -70,6 +71,8 @@ README.md, CHANGELOG.md
 - **Only real 1.12 widget methods.** `dev/engine_methods.lua` lists them; the stand-in client errors
   on anything else, even *reading* a method a widget type doesn't have (`texture.IsMouseEnabled`). Check
   the object type first.
+- **At most 200 locals** at a file's top level (Lua 5.0): Numbers.lua is near it; group new constants
+  in a table.
 - **Lists:** take items off with `table.remove`, never `list[n] = nil`: in Lua 5.0 that leaves
   `table.getn` as it was (it broke the skulls' pool in 1.9.0 to 1.11.0).
 - **No stray `nil` arguments.** The game's API counts a passed `nil` as an argument and refuses
@@ -107,7 +110,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 530 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 547 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
@@ -191,9 +194,10 @@ before using an API. Known:
    matched), the summary's fields, the Level Up! button, Damage Taken. Ask for screenshots.
    Ideas not done yet: talent/summon timers (`AZS_GetTimers`), arrows to caches and lairs, the
    upcoming bosses (`AZS_GetUpcomingBosses`; ask first, the timer is the user's favorite).
-3. **Talents:** the tab opens the game's window (`ToggleTalentFrame()`, which the game's Lua defines;
-   it bumps `AZS_TALENT_TOGGLES`). AS talents are in the meter loadout (`talents`: `sourceKey`, `rank`,
-   `treeKey`, `specKey`), but not their grid, branches or paintings. `/creed probe` lists the AZS tables.
+3. **Talents (1.13.0):** Talents.lua shows the meter loadout's `talents` (`sourceKey`, `rank`, `treeKey`,
+   `specKey`; names and icons in `sources`): learned ones only, no grid, max ranks, branches or paintings.
+   Tree names: the key's last part in title case, through C.L (the game's 24 tree names are rows).
+   Not seen live: the `treeKey` format. The game's own window is `ToggleTalentFrame()`.
 4. **Not yet confirmed in the real client:**
    - the bundled TTFs loading from the addon folder, and CJK rendering;
    - `SetCursor` taking an addon texture (the resize arrow; if it fails, the drawn arrow comes back);

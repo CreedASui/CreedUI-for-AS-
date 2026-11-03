@@ -2113,7 +2113,7 @@ do
 	problems("character window")
 end
 
------------------------------------------------------------------- 11t. the Talents tab opens the game's talent window; no Honor
+------------------------------------------------------------------ 11t. the Talents tab opens Creed UI's talent window; no Honor
 do
 	local function alpha(o) return o.__alpha or 1 end
 	CharacterFrame:Show()
@@ -2121,18 +2121,19 @@ do
 	CharacterFrameTab1.__scripts.OnClick()
 	frames(5)
 	check(CharacterFrameTab4Text.__text == "Talents" and not M.Visible(CharacterFrameTab5), "the Skills tab says Talents, the Honor tab's gone: " .. tostring(CharacterFrameTab4Text.__text))
-	-- the Talents tab: the game's own Talents window opens, the character window steps aside
+	-- the Talents tab: Creed UI's talent window opens, the character window steps aside
 	M.talentToggles = 0
 	this = CharacterFrameTab4
 	CharacterFrameTab4.__scripts.OnClick()
 	frames(3)
-	check(M.talentToggles == 1, "the Talents tab opens the game's own Talents window (" .. M.talentToggles .. ")")
+	check(CreedUITalents and M.Visible(CreedUITalents) and M.talentToggles == 0, "the Talents tab opens Creed UI's talent window")
 	check(not M.Visible(CharacterFrame), "and the character window closes for it")
+	CreedUITalents:Hide()
 	check(CreedUITalentPage == nil, "no talent page of Creed UI's own any more")
 	-- opened again: on the Character page, dressed, not straight back to talents
 	CharacterFrame:Show()
 	frames(5)
-	check(M.Visible(PaperDollFrame) and not M.Visible(SkillFrame) and M.Visible(CreedUICharacterBack) and M.talentToggles == 1,
+	check(M.Visible(PaperDollFrame) and not M.Visible(SkillFrame) and M.Visible(CreedUICharacterBack) and not M.Visible(CreedUITalents),
 		"opened again, it's on the Character page, dressed (and the talents didn't open again)")
 	check(alpha(CharacterFramePortrait) == 0 and alpha(M.runPanel) == 0, "the page in our dress: the portrait ours, the game's Run Stats away")
 	CharacterFrame:Hide()
@@ -2153,7 +2154,7 @@ do
 	this = CharacterFrameTab4
 	CharacterFrameTab4.__scripts.OnClick()
 	frames(3)
-	check(M.Visible(SkillFrame) and alpha(SkillFrame) == 1 and SkillListMock.__mouse and M.talentToggles == 1, "and its Skills page is the game's, untouched")
+	check(M.Visible(SkillFrame) and alpha(SkillFrame) == 1 and SkillListMock.__mouse and not M.Visible(CreedUITalents), "and its Skills page is the game's, untouched")
 	this = CharacterFrameTab1
 	CharacterFrameTab1.__scripts.OnClick()
 	M.Slash("character on")
@@ -2612,7 +2613,7 @@ do
 		end
 	end
 	check(crest and crest.__tc and math.abs(crest.__tc[1] - 0.25) < 0.01 and crest.__tc[3] == 0, "a mage's crest inside the mark")
-	check(crest and (crest.__alpha or 1) <= 0.6, "see-through, as the mark is (" .. tostring(crest and crest.__alpha) .. ")")
+	check(crest and (crest.__alpha or 1) >= 0.65 and (crest.__alpha or 1) <= 0.72, "see-through, as the mark is, but plain to see (" .. tostring(crest and crest.__alpha) .. ")")
 	check(ringTex and string.find(ringTex, "ReviveRing$"), "on the ring with a clear middle")
 	local p1 = M.unit.party1
 	M.unit.party1 = nil -- their class unknown for a moment
@@ -2757,6 +2758,126 @@ do
 	check(labelsWith("RitualOfSacrifice") >= 1 and visibleAlpha(CreedUINumbersLayer) > 0.9, "and new hits show as the fight resumes")
 	frames(90)
 	problems("numbers and cards")
+end
+
+------------------------------------------------------------------ 11h. the talent window
+do
+	local function texts() return table.concat(textsUnder(CreedUITalents), " | ") end
+	local I = "Interface\\Icons\\"
+	M.phase = "playing"
+	M.meter = M.meter or { damage = {} }
+	-- out of a run: it says where the talents show
+	local meter = M.meter
+	M.meter = nil
+	M.Slash("talents")
+	frames(3)
+	check(M.Visible(CreedUITalents) and findText(CreedUITalents, "^Your talents show here during a run%.$") ~= nil, "/creed talents opens it; out of a run it says so")
+	M.meter = meter
+	M.loadout = { abilities = {}, talents = {} }
+	frames(40)
+	check(findText(CreedUITalents, "^No talents learned yet%.$") ~= nil, "a run with none learned: it says so")
+	M.loadout.talents = {
+		{ key = "t:mortal", tree = "warrior.arms", rank = 5, name = "Improved Heroic Strike", icon = I .. "Ability_Rogue_Ambush" },
+		{ key = "t:deep", tree = "warrior.arms", rank = 3, name = "Deep Wounds", icon = I .. "Ability_BackStab" },
+		{ key = "t:sweep", tree = "warrior.arms", rank = 1, name = "Sweeping Strikes", icon = I .. "Ability_Warrior_PunishingBlow" },
+		{ key = "t:a4", tree = "warrior.arms", rank = 2, name = "Two-Handed Mastery", icon = I .. "Ability_Warrior_Challange" },
+		{ key = "t:a5", tree = "warrior.arms", rank = 4, name = "Impale", icon = I .. "Spell_Shadow_RitualOfSacrifice" },
+		{ key = "t:fury1", tree = "warrior.fury", rank = 5, name = "Cruelty", icon = I .. "Ability_Rogue_Eviscerate" },
+		{ key = "t:prot0", tree = "warrior.protection", rank = 0, name = "Shield Specialization", icon = I .. "Ability_Ambush" },
+		{ key = "t:prot1", tree = "warrior.protection", rank = 12, name = "Toughness", icon = I .. "Ability_Ambush" },
+	}
+	frames(40)
+	check(findText(CreedUITalents, "^Arms$") and findText(CreedUITalents, "^Fury$") and findText(CreedUITalents, "^Protection$"),
+		"the trees by name, side by side: " .. texts())
+	check(findText(CreedUITalents, "^15 points$") and findText(CreedUITalents, "^5 points$") and findText(CreedUITalents, "^12 points$"),
+		"each tree's points")
+	check(findText(CreedUITalents, "^32 points spent$") ~= nil, "the total at the foot")
+	local icons, ranks = 0, {}
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Frame" and o.data and under(o, CreedUITalents) and M.Visible(o) then
+			icons = icons + 1
+			for _, k in ipairs(M.All()) do
+				if k.__kind == "FontString" and under(k, o) and k.__text then table.insert(ranks, k.__text) end
+			end
+		end
+	end
+	table.sort(ranks)
+	check(icons == 7 and table.concat(ranks, ",") == "1,12,2,3,4,5,5", "every learned talent as its icon with its rank (none at 0): " .. icons .. " " .. table.concat(ranks, ","))
+	-- five in a tree wrap onto a second row
+	local first, fifth
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Frame" and o.data and under(o, CreedUITalents) then
+			if o.data.name == "Improved Heroic Strike" then first = o end
+			if o.data.name == "Impale" then fifth = o end
+		end
+	end
+	local fl, fb = M.Rect(first)
+	local vl, vb = M.Rect(fifth)
+	check(math.abs(fl - vl) < 1 and vb < fb - 30, "four to a row, the fifth under the first")
+	-- the trees in the language picked, by the game's own names
+	M.Slash("language fr")
+	frames(40)
+	check(findText(CreedUITalents, "^Armes$") and findText(CreedUITalents, "^Fureur$") and findText(CreedUITalents, "^15 points$"), "in French: Armes, Fureur")
+	M.Slash("language en")
+	frames(40)
+	-- a talent's name on hover
+	M.tip.lines = {}
+	this = first
+	first.__scripts.OnEnter()
+	check(M.tip.lines[1] == "Improved Heroic Strike" and M.tip.lines[2] == "Rank 5", "pointing at one shows its name and rank")
+	first.__scripts.OnLeave()
+	-- inside the screen, in the panel's look, closed by its x
+	local l, b, r, t2 = M.Rect(CreedUITalents)
+	check(l >= 0 and r <= 1280 and b >= 0 and t2 <= 720, "it fits the screen")
+	local x
+	for _, o in ipairs(M.All()) do if o.__kind == "Button" and o.__parent == CreedUITalents then x = o end end
+	this = x
+	x.__scripts.OnClick()
+	check(not M.Visible(CreedUITalents), "its x closes it")
+	M.Slash("talents")
+	frames(2)
+	M.Slash("talents")
+	check(not M.Visible(CreedUITalents), "/creed talents again closes it")
+	M.loadout = nil
+	problems("talent window")
+end
+
+------------------------------------------------------------------ 11i. a stacking number grows, to a cap
+do
+	-- the size a number shows at: its icon's frame's scale
+	local function sizeOf(iconPat)
+		local best = 0
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, iconPat) and under(o, CreedUINumbersLayer) and visibleAlpha(o) > 0.2 then
+				best = math.max(best, o.__parent.__scale or 1)
+			end
+		end
+		return best
+	end
+	M.phase = "playing"
+	frames(120)
+	-- one hit: the smaller baseline
+	local lone = M.Enemy("Ghoul", -10, 6)
+	M.Hit(lone, 300, "strike", false)
+	frames(12)
+	local one = sizeOf("RitualOfSacrifice")
+	check(one > 0.6 and one < 0.82, string.format("a single hit shows a touch smaller than before (%.2f)", one))
+	frames(120)
+	-- a DoT ticking on one enemy: it grows as the ticks stack, then holds
+	local foe = M.Enemy("Ghoul", 10, 6)
+	M.Hit(foe, 40, "corruption", true)
+	frames(12)
+	local first = sizeOf("AbominationExplosion")
+	local sizes = {}
+	for k = 1, 8 do
+		M.Hit(foe, 40, "corruption", true)
+		frames(15) -- a tick every half second
+		sizes[k] = sizeOf("AbominationExplosion")
+	end
+	check(first > 0 and sizes[3] > first * 1.2, string.format("ticking on, it grows (%.2f to %.2f)", first, sizes[3]))
+	check(sizes[8] <= first * 1.4 and math.abs(sizes[8] - sizes[5]) < 0.02, string.format("and stops at about a third bigger (%.2f, %.2f, %.2f)", sizes[5], sizes[8], first * 1.35))
+	frames(150)
+	problems("stacking numbers")
 end
 
 ------------------------------------------------------------------ 12. no API at all

@@ -20,7 +20,7 @@ local CREST_AT = {
 	DRUID = { 0.7421875, 0.98828125, 0, 0.25 }, HUNTER = { 0, 0.25, 0.25, 0.5 }, SHAMAN = { 0.25, 0.49609375, 0.25, 0.5 },
 	PRIEST = { 0.49609375, 0.7421875, 0.25, 0.5 }, WARLOCK = { 0.7421875, 0.98828125, 0.25, 0.5 }, PALADIN = { 0, 0.25, 0.5, 0.75 },
 }
-local CREST_ALPHA = 0.55 -- see-through, as the mark is
+local CREST_ALPHA = 0.68 -- see-through, as the mark is, but plain to see
 
 local db
 local layer, banner
@@ -181,7 +181,7 @@ local function PlaceMark(m, e, f, ratio, revive, share)
 	C.Size(m.halo, size * 1.8, size * 1.8)
 	local col = revive and REVIVE_COLOR or DOWN_COLOR
 	C.Color(m.ring, col[1], col[2], col[3], 1)
-	C.Color(m.halo, col[1], col[2], col[3], 0.35 + (revive and 0.35 * share or 0.15 * math.sin(GetTime() * 3)))
+	C.Color(m.halo, col[1], col[2], col[3], 0.45 + (revive and 0.35 * share or 0.15 * math.sin(GetTime() * 3)))
 	C.SetText(m.name, f.name)
 	C.TextColor(m.name, ClassColor(f.name))
 	if revive then

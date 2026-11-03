@@ -206,8 +206,9 @@ wing((174, 104), (160, 60), (174, 13), [(206, 34), (222, 72), (226, 110)], [(200
 tailpts = list(bez([(228, 232), (170, 243), (96, 241), (50, 228)], 40)) + list(bez([(50, 228), (31, 219), (30, 204)], 14))[1:]
 tail = tube(tailpts, 11.5, 5.0, power=0.8)
 put(tail, part(tail, 7.0, SC, 1.0), shadow=0.4)
-spade = poly([(30, 174), (40, 188), (45, 202), (38, 208), (30, 202), (22, 208), (15, 202), (20, 188)])  # a spade, its point up
-put(spade, part(spade, 4.0), shadow=0.4)
+# the tip: a teardrop barb growing out of the tail, its point up (no flukes to read as an anchor)
+barb = np.maximum(ellipse(30, 196, 8.5, 11.0, 0), poly([(30, 176), (37.5, 192), (22.5, 192)]))
+put(barb, part(barb, 4.5, SC, 0.5), shadow=0.4)
 
 # the haunch, big and round, and the hind foot flat on the ground, toes forward
 haunch = ellipse(180, 196, 46, 42, -20)
@@ -220,11 +221,22 @@ put(torso, part(torso, 28.0, SB, 0.9), shadow=0.5)
 # its lower fingers sweeping down and forward round the haunch; the hind foot steps out over it
 wing((166, 112), (188, 68), (214, 15), [(245, 58), (245, 124), (236, 196), (178, 234)],
      [(162, 204), (160, 160), (164, 124)], value=1.0, bends=[None, None, (252, 120), (248, 192)])
-foot = tube(list(bez([(176, 224), (150, 235), (118, 239)], 20)), 11.0, 7.5)
+# the hind foot: a heel under the haunch, the long foot narrowing forward along the ground to the
+# ball of the foot, three toes spread from it, each ending in a hooked claw
+heel = ellipse(186, 228, 13, 10, -15)
+sole = tube(list(bez([(184, 229), (164, 236), (146, 237)], 20)), 10.5, 7.0)
+ball = ellipse(144, 236, 9.5, 7.0, -5)
+foot = np.maximum(np.maximum(heel, sole), ball)
+toes = np.zeros_like(X)
+tips = []
+for (x1, y1), (x2, y2) in (((138, 231), (118, 228)), ((138, 237), (115, 238)), ((140, 242), (120, 247))):
+    toes = np.maximum(toes, tube(list(bez([(x1, y1), ((x1 + x2) / 2, (y1 + y2) / 2 - 2), (x2, y2)], 14)), 4.6, 3.4))
+    tips.append((x2, y2))
+foot = np.maximum(foot, toes)
 put(foot, part(foot, 6.0, SC, 0.8), shadow=0.5)
-for i, (x0, y0) in enumerate([(116, 233), (112, 239), (114, 244)]):
-    c = tube(list(bez([(x0 + 4, y0), (x0 - 6, y0 - 1), (x0 - 12, y0 + 4)], 10)), 3.0, 0.5)
-    put(c, part(c, 1.6, value=1.15), shadow=0.35, reach=1.0)
+for x0, y0 in tips:
+    c = tube(list(bez([(x0 + 2, y0 - 1), (x0 - 6, y0 - 1), (x0 - 10, y0 + 5)], 12)), 3.4, 0.5)
+    put(c, part(c, 1.8, value=1.18), shadow=0.35, reach=1.0)
 
 
 # the neck: thick, curving up and out to the head, with spines along its back
@@ -251,16 +263,26 @@ plates = np.mod((Y + 0.45 * X) / 7.0, 1.0)
 groove = np.exp(-((plates - 0.5) / 0.09) ** 2)
 put(belly, shade(bh - 1.4 * groove, bd, value=1.12, spec=0.65), shadow=0.25, reach=1.0)
 
-# the foreleg, planted in front: a big shoulder, the forearm down to a clawed paw
-upper = tube(list(bez([(138, 138), (126, 168), (118, 190)], 20)), 19.0, 12.0)
-put(upper, part(upper, 11.0, SC, 1.0), shadow=0.55)
-fore = tube(list(bez([(118, 188), (110, 214), (104, 236)], 20)), 11.0, 9.0)
-put(fore, part(fore, 7.0, SC, 0.9), shadow=0.5)
-paw = ellipse(96, 238, 15, 9, -8)
-put(paw, part(paw, 6.0, SC, 0.6), shadow=0.5)
-for x0, y0 in [(86, 234), (82, 240), (86, 245)]:
-    c = tube(list(bez([(x0 + 4, y0), (x0 - 6, y0 - 1), (x0 - 11, y0 + 4)], 10)), 3.0, 0.5)
-    put(c, part(c, 1.6, value=1.15), shadow=0.35, reach=1.0)
+# the foreleg, planted in front like a sitting beast's: a heavy shoulder, the upper arm running
+# back to the elbow, the forearm angled forward and down with its muscle, a slimmer wrist, and a
+# broad hand gripping the ground with three curved fingers, each ending in a claw
+shoulder = ellipse(139, 156, 15, 21, 22)
+upper = tube(list(bez([(137, 146), (147, 170), (148, 188)], 22)), 14.5, 10.0)
+fore = tube(list(bez([(148, 186), (141, 207), (125, 226)], 22)), 11.0, 7.5)
+brawn = ellipse(142, 201, 10.5, 15.0, 32)
+arm = np.maximum(np.maximum(shoulder, upper), np.maximum(fore, brawn))
+put(arm, part(arm, 9.0, SC, 1.0), shadow=0.55)
+hand = np.maximum(ellipse(116, 234, 14, 7.5, -14), tube(list(bez([(126, 225), (120, 231), (112, 235)], 10)), 6.5, 6.0))
+fingers = np.zeros_like(X)
+ftips = []
+for (x1, y1), (x2, y2) in (((110, 230), (90, 229)), ((108, 236), (86, 238)), ((110, 240), (91, 246))):
+    fingers = np.maximum(fingers, tube(list(bez([(x1, y1), ((x1 + x2) / 2, (y1 + y2) / 2 - 2.5), (x2, y2)], 14)), 4.2, 3.0))
+    ftips.append((x2, y2))
+hand = np.maximum(hand, fingers)
+put(hand, part(hand, 5.5, SC, 0.7), shadow=0.5)
+for x0, y0 in ftips:
+    c = tube(list(bez([(x0 + 2, y0 - 1), (x0 - 6, y0 - 1), (x0 - 10, y0 + 5)], 12)), 3.2, 0.5)
+    put(c, part(c, 1.7, value=1.18), shadow=0.35, reach=1.0)
 
 # the head, facing out: a heavy skull, the snout long, the jaw open on its teeth
 skull = ellipse(86, 46, 27, 21, -8)

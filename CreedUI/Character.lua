@@ -3,9 +3,8 @@
 -- in a ring, each gear slot in the skill bar's metal and lit in its item's rarity color. The run's
 -- numbers, drawn by the game in its boxes and its Run Stats panel, are read off those and set out
 -- again in a panel of their own beside the window: grouped, the ones at nothing dimmed, a change
--- since your last look flashing by its number. The Skills tab is called Talents and opens the game's
--- own Talents window (Azeroth Survivors' trees, milestones and points); the Honor tab goes, there
--- being no PvP.
+-- since your last look flashing by its number. The Skills tab is called Talents and opens Creed UI's
+-- talent window (Talents.lua); the Honor tab goes, there being no PvP.
 -- Turned off (or after an error) the window is the game's again, as it was.
 
 local C = CreedUI
@@ -607,7 +606,7 @@ local function FadeWindow()
 end
 
 -- The Talents tab: the character window goes back to its Character page (so it opens there next
--- time) and closes, and the game's own Talents window opens in its place.
+-- time) and closes, and Creed UI's talent window opens in its place (the game's own without it).
 local function OpenGameTalents()
 	local tab = CharacterFrameTab1
 	if tab and tab.Click then
@@ -617,7 +616,11 @@ local function OpenGameTalents()
 		this = was
 	end
 	if type(HideUIPanel) == "function" then HideUIPanel(CharacterFrame) else CharacterFrame:Hide() end
-	if type(ToggleTalentFrame) == "function" then ToggleTalentFrame() end
+	if C.ToggleTalents then
+		C.ToggleTalents()
+	elseif type(ToggleTalentFrame) == "function" then
+		ToggleTalentFrame()
+	end
 end
 
 -- one of our pages open: the window's own pieces (and the game's Run Stats) away; none: back
