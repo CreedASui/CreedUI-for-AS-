@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.14.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.14.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -100,6 +100,8 @@ README.md, CHANGELOG.md
   generator) by `dev/art/cut_dragon.py`. `make_dragon.py` is the earlier drawn dragon, kept.
 - **The gold** comes from that picture: panel metal (0.95, 0.79, 0.44), titles and tooltip heads
   (0.98, 0.85, 0.52), borders and rims (0.91, 0.70, 0.30). Use these for anything gold.
+  `C.Pal()` is the timer's zone palette with its metal (rim, title, gem, glow, trough, mc) swapped
+  for `C.BRONZE` in every zone (1.14.1, asked for): every part is bronze gold; the timer keeps its own.
 - The look: dark glass, a gold rail, the timer's metal, diamonds on corners (`C.Panel`). Smooth,
   "eye candy", but calm.
 - **Parts:** every part registers with `C.RegisterPart` (key, name, note, get, set; optional scale),
@@ -115,7 +117,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 552 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 559 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0

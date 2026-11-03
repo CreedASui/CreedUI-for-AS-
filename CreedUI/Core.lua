@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.14.0"
+C.VERSION = "1.14.1"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -350,8 +350,21 @@ C.DEFAULT_PAL = {
 	mc = { 0.75, 0.88, 1.00 },
 }
 C.palStamp = 0
+-- Every part's metal is the skill bar's bronze gold, in every zone: the zone's palette (the timer's,
+-- which keeps its own colors) with its rims, titles, gems, glows and troughs swapped for it.
+C.BRONZE = {
+	title = { 0.98, 0.85, 0.52 }, rim = { 0.95, 0.79, 0.44 }, gem = { 1.00, 0.78, 0.32 },
+	glow = { 1.00, 0.80, 0.45 }, trough = { 0.07, 0.05, 0.03 }, mc = { 1.00, 0.88, 0.60 },
+}
+local bronzed, bronzedFrom, bronzedAt = {}, nil, nil
 function C.Pal()
-	return C.pal or C.DEFAULT_PAL
+	local base = C.pal or C.DEFAULT_PAL
+	if base ~= bronzedFrom or C.palStamp ~= bronzedAt then
+		bronzedFrom, bronzedAt = base, C.palStamp
+		for k, v in pairs(base) do bronzed[k] = v end
+		for k, v in pairs(C.BRONZE) do bronzed[k] = v end
+	end
+	return bronzed
 end
 
 ------------------------------------------------------------------------ saved settings
@@ -777,18 +790,20 @@ end
 ------------------------------------------------------------------------ an MMO panel
 -- A panel in the timer's metal: brushed dark glass inside a thin round rail lit as the timer's
 -- (darkish bronze, one fine bright line on its lit side), the timer's diamonds on its corners,
--- and (asked for) a golden dragon sitting on each end, facing in, wings raised, its eye glowing:
--- painted, from the user's own bar picture (dev/art/cut_dragon.py), in its own colors. The panel
--- leaves C.PANEL_ROOM at each end for it, so it never covers a slot.
+-- and (asked for) a golden dragon perched on each end, facing out, wings raised, its eye glowing:
+-- painted, from the user's own bar picture (dev/art/cut_dragon.py), in its own colors. It straddles
+-- the panel's end, the end rail running behind its body, head and chest out past it, its wing back
+-- over the bar; the panel leaves C.PANEL_ROOM at each end for the wing, so it never covers a slot.
 local P_RAIL, P_CORNER, P_DRAGON = 8, 16, 122
--- how far it reaches past the panel's end (the picture's x 15 of 370), and below its foot (25 of 370)
-local P_OUT, P_FOOT = P_DRAGON * 15 / 370, P_DRAGON * 25 / 370
-C.PANEL_ROOM = 110
+-- how far it reaches past the panel's end (its front 40% of the picture), and below its foot (25 of 370)
+local P_OUT, P_FOOT = P_DRAGON * 0.40, P_DRAGON * 25 / 370
+C.PANEL_ROOM = math.floor(P_DRAGON - P_OUT + 6)
 -- Creed UI's gold, taken from the user's bar picture (dev/art/source/bar_reference.webp): the panel's
 -- metal is its bright rail; its light rail highlight (0.98, 0.85, 0.52) is the gold of titles and
 -- tooltip heads everywhere, its rail gold (0.91, 0.70, 0.30) the gold of borders and rims
 local GOLD = { 0.95, 0.79, 0.44 }
--- the dragon's eye in its picture, as shares of it (the left dragon, facing in)
+-- the dragon's eye in its picture, as shares of it (the picture faces right; the left dragon is it
+-- mirrored, so both face out)
 local EYE_X, EYE_Y = 0.872, 0.236
 
 function C.Panel(frame, dragons)
@@ -821,7 +836,7 @@ function C.Panel(frame, dragons)
 		table.insert(p.metal, d)
 	end
 	if dragons then
-		-- a dragon on each end, facing in, sitting on the panel's foot over its end
+		-- a dragon on each end, facing out, perched on the panel's end
 		p.dragons, p.eyes = {}, {}
 		p.eyeLayer = CreateFrame("Frame", nil, frame)
 		p.eyeLayer:SetAllPoints(frame)
@@ -832,9 +847,9 @@ function C.Panel(frame, dragons)
 			t:SetWidth(P_DRAGON)
 			t:SetHeight(P_DRAGON)
 			t:SetPoint("BOTTOM" .. side, frame, "BOTTOM" .. side, k * out, -P_FOOT)
-			if k > 0 then t:SetTexCoord(1, 0, 0, 1) end
+			if k < 0 then t:SetTexCoord(1, 0, 0, 1) end
 			p.dragons[i] = t
-			local ex = (k < 0) and (-out + EYE_X * P_DRAGON) or (out - EYE_X * P_DRAGON)
+			local ex = (k < 0) and (-out + (1 - EYE_X) * P_DRAGON) or (out - (1 - EYE_X) * P_DRAGON)
 			local e = C.Tex(p.eyeLayer, "OVERLAY", C.ART .. "Glow", "ADD")
 			e:SetWidth(8)
 			e:SetHeight(8)
