@@ -166,11 +166,14 @@ local function Layout()
 	C.Place(root.dividers[3], "CENTER", root, "RIGHT", DOCK_GAP * 0.5 - INSET, 0)
 end
 
--- the panel spans the bar and, docked in it, the kills, gold and cache; it glides as they come
+-- the panel spans the bar and, docked in it, the kills, gold and cache. Their room is kept whether
+-- they show or not, wide enough for long numbers, so the bar keeps one size as a run starts and goes
+-- on (it only grows past that for numbers longer still)
+local DOCK_ROOM = 86
 local function StepDock(dt)
 	local d = C.tallyDock
 	local target = 0
-	if d and d.on and d.shown > 0.01 then target = (d.w + DOCK_GAP) * d.shown end
+	if d and d.on then target = math.max(DOCK_ROOM, d.w or 0) + DOCK_GAP end
 	local w = C.Toward(S.dock or 0, target, 10, dt)
 	if math.abs(w - target) < 0.3 then w = target end
 	if w ~= S.dock then
@@ -180,7 +183,7 @@ local function StepDock(dt)
 		root.panel:SetPoint("TOPLEFT", root, "TOPLEFT", -room, 0)
 		root.panel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", w + room, 0)
 	end
-	C.Vis(root.dividers[3], w > 20)
+	C.Vis(root.dividers[3], w > 20 and d and d.shown > 0.01)
 end
 
 ------------------------------------------------------------------------ reading

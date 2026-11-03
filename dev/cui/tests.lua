@@ -1681,9 +1681,10 @@ do
 	check(cr + 8 <= dl + 4 - 5, string.format("the chat's glass stops short of the dragon's snout (%.0f < %.0f)", cr + 8, dl + 4))
 	check(ChatFrame1:GetWidth() < 420 and ChatFrame1:GetWidth() >= 200, "by giving up the end of its width: " .. ChatFrame1:GetWidth())
 	-- sized by hand, that width is the one it keeps clear with
-	ChatFrame1:SetWidth(220)
+	local clearW = math.floor(dl + 4 - 6 - 8 - cl) - 10 -- well short of the snout
+	ChatFrame1:SetWidth(clearW)
 	SIM.Advance(1, 1 / 30)
-	check(ChatFrame1:GetWidth() == 220, "a width set by hand that's already clear stays: " .. ChatFrame1:GetWidth())
+	check(ChatFrame1:GetWidth() == clearW, "a width set by hand that's already clear stays: " .. ChatFrame1:GetWidth() .. " / " .. clearW)
 	ChatFrame1:SetWidth(420)
 	SIM.Advance(1, 1 / 30)
 	-- the part off: the width back as it was
@@ -2896,11 +2897,60 @@ do
 			sl, sr = math.min(sl, l), math.max(sr, r)
 		end
 	end
-	check(math.abs(l1 - (pl - 122 * 15 / 370)) < 1 and r1 < sl, string.format("the left dragon sits on the panel's end, clear of the first slot (%.0f < %.0f)", r1, sl))
-	check(l2 > sr and math.abs(r2 - (pr + 122 * 15 / 370)) < 1, "and the right one on the other end, past the last")
+	check(math.abs(l1 - (pl - 122 * 0.4)) < 1 and r1 < sl, string.format("the left dragon straddles the panel's end, clear of the first slot (%.0f < %.0f)", r1, sl))
+	check(l2 > sr and math.abs(r2 - (pr + 122 * 0.4)) < 1, "and the right one the other end, past the last")
+	check(d1.__tc and d1.__tc[1] == 1 and d1.__tc[2] == 0 and not (d2.__tc and d2.__tc[1] == 1), "both face out: the left one mirrored, the right as painted")
 	check(d1.__vc and d1.__vc[1] == 1 and d1.__vc[2] == 1 and d1.__vc[3] == 1, "painted in its own colors (no tint)")
 	check(t1 > pt + 20, "rising over the panel's top")
 	problems("bar dragons")
+end
+
+------------------------------------------------------------------ 11k. the bar keeps its size as a run starts
+do
+	local function width() local l, _, r = M.Rect(CreedUIBar.panel) return r - l end
+	M.phase = "ready"
+	AZS_RUN = nil
+	frames(90)
+	local before = width()
+	SIM.StartRun("naxx", { killAfter = 120 })
+	M.runTime = 30
+	local pub, tally = SIM.Publish, { kills = 59, gold = 71, chest = 20 }
+	SIM.Publish = function()
+		pub()
+		if AZS_RUN then AZS_RUN.kills, AZS_RUN.gold, AZS_RUN.chest = tally.kills, tally.gold, tally.chest end
+	end
+	SIM.Publish()
+	M.phase = "playing"
+	SIM.Advance(3, 1 / 30)
+	local during = width()
+	check(M.Visible(CreedUITally) and math.abs(during - before) < 1,
+		string.format("a run starting: the kills, gold and cache show, the bar keeps its size (%.0f, %.0f)", before, during))
+	tally.kills, tally.gold = 4812, 1290
+	SIM.Advance(2, 1 / 30)
+	check(math.abs(width() - before) < 1, string.format("and as the numbers grow (%.0f)", width()))
+	SIM.Publish = pub
+	problems("bar size")
+end
+
+------------------------------------------------------------------ 11l. bronze gold in every zone
+do
+	-- a zone with silver-blue metal (as Duskwood's): every part's still the bar's bronze gold
+	local was = CreedUI.pal
+	CreedUI.pal = { title = { 0.7, 0.8, 1 }, rim = { 0.62, 0.70, 0.86 }, gem = { 0.5, 0.7, 1 }, glow = { 0.6, 0.8, 1 },
+		trough = { 0.02, 0.04, 0.09 }, mc = { 0.7, 0.8, 1 }, fillA = { 0.1, 0.2, 0.5 }, fillM = { 0.2, 0.4, 0.9 }, fillB = { 0.5, 0.8, 1 } }
+	CreedUI.palStamp = CreedUI.palStamp + 1
+	frames(10)
+	local p = CreedUI.Pal()
+	check(p.rim[1] == 0.95 and p.rim[2] == 0.79 and p.title[1] == 0.98 and p.fillM[3] == 0.9, "the palette keeps the zone's fills, its metal bronze gold")
+	local rim
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Art\\FrameL$") and under(o, CreedUIPlayer) then rim = o end
+	end
+	check(rim and rim.__vc and math.abs(rim.__vc[1] - 0.95) < 0.01 and math.abs(rim.__vc[3] - 0.44) < 0.01, "your frame's bar rim is bronze gold, not the zone's silver")
+	CreedUI.pal = was
+	CreedUI.palStamp = CreedUI.palStamp + 1
+	frames(5)
+	problems("bronze")
 end
 
 ------------------------------------------------------------------ 12. no API at all
