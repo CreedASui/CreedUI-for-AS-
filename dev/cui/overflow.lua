@@ -22,6 +22,12 @@ M.downed = { { id = 2, name = "Melkor", anchorId = "downed:2", anchorStatus = "r
 M.revive = { reviving = "Melkor", rshare = 0.5 }
 AZS_TAKEN = { { source = "Plagued Ghoul", dmg = 1200 } }
 CreedUIDB.meter.tab = "taken"
+-- the talent window, open, with the longest tree names
+M.loadout = { abilities = {}, talents = {
+	{ key = "a", tree = "hunter.beast_mastery", rank = 5, name = "A", icon = "Interface\\Icons\\Ability_Ambush" },
+	{ key = "b", tree = "druid.feral_combat", rank = 3, name = "B", icon = "Interface\\Icons\\Ability_Ambush" },
+	{ key = "c", tree = "shaman.enhancement", rank = 12, name = "C", icon = "Interface\\Icons\\Ability_Ambush" } } }
+M.Slash("talents")
 SIM.Advance(1, 1 / 30)
 M.Slash("")
 M.Slash("timer")

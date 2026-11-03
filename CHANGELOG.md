@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.13.0
+- **Talent window:** the Talents tab (or `/creed talents`) opens Creed UI's own talent window: your trees side by side with their names and points, every talent you learned as its icon with its rank (point at one for its name), and the total. Tree names are in your language, by the game's own words.
+- **Damage numbers:** a number that keeps adding hits (a DoT ticking on, a spell's crowd total) grows as it stacks, up to about a third bigger after a second and a half. Every number is a touch smaller to make room.
+- **Dragons:** the skill bar dragons' front legs bend naturally at the elbow and grip the ground with clawed hands, the hind feet have toes and claws, and the tail ends in a barb instead of an anchor.
+- **Downed friends:** the mark and its class crest are more solid (still see-through).
+
 ## 1.12.1
 - **Damage numbers and the level-up cards:** picking a card no longer sends black icons flashing across the screen. The numbers step aside while the cards are up, the ones from before are dropped as the cards close, and new hits show as the fight resumes.
 

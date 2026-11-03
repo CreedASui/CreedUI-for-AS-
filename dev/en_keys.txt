@@ -348,3 +348,33 @@ Stand on them to bring them back.
 the downed friends' marks stopped after an error: 
 Downed friends
 In a party: a warning and a sound when a friend goes down, a glowing mark where they lie (stand on it to bring them back), and an arrow at the screen's edge with the distance while they're off it.
+Arms
+Fury
+Protection
+Holy
+Retribution
+Shadow
+Discipline
+Fire
+Frost
+Arcane
+Affliction
+Demonology
+Destruction
+Assassination
+Combat
+Subtlety
+Beast Mastery
+Marksmanship
+Survival
+Elemental
+Enhancement
+Restoration
+Balance
+Feral Combat
+{1} points
+{1} points spent
+What this run plays with
+Your talents show here during a run.
+No talents learned yet.
+the talent window stopped after an error: 

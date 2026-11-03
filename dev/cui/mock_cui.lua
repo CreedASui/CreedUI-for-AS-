@@ -786,6 +786,13 @@ local function InstallAPI()
 		M.loadoutReads = (M.loadoutReads or 0) + 1
 		local out = { apiVersion = 1, complete = true, context = AZS_GetMeterContext(), ownerId = "H1", loadoutRevision = "l1",
 			equipment = {}, abilities = {}, talents = {}, runJewelry = {}, sources = {}, actors = {} }
+		-- the run's talents: M.loadout.talents = { { key, rank, tree, name, icon } }
+		for i = 1, table.getn(M.loadout.talents or {}) do
+			local t = M.loadout.talents[i]
+			table.insert(out.talents, { sourceKey = t.key, rank = t.rank, treeKey = t.tree, specKey = "spec1", effectSourceKeys = {}, modifiedSourceKeys = {} })
+			out.sources[t.key] = { sourceKey = t.key, name = t.name or t.key, talentKey = t.key,
+				icon = t.icon and { status = "ready", path = t.icon } or { status = "missing" } }
+		end
 		for i = 1, table.getn(M.loadout.abilities or {}) do
 			local a = M.loadout.abilities[i]
 			table.insert(out.abilities, { sourceKey = a.key, learned = a.learned ~= false, selected = true, passive = a.passive and true or false,
@@ -870,7 +877,7 @@ function M.Frame(dt)
 end
 
 M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua",
-	"Chests.lua", "Meter.lua", "Luck.lua", "Summary.lua", "Character.lua", "Chat.lua" }
+	"Chests.lua", "Meter.lua", "Luck.lua", "Summary.lua", "Character.lua", "Talents.lua", "Chat.lua" }
 function M.Load(dir)
 	for i = 1, table.getn(M.files) do
 		local chunk, err = loadfile(dir .. "/" .. M.files[i])
@@ -888,7 +895,7 @@ function M.Reload(dir, fireLogout)
 	local saved = CreedUIDB
 	all, updaters, eventFrames = {}, {}, {}
 	for _, name in ipairs({ "CreedUITimerFrame", "CreedUIOptions", "CreedUITimerOptions", "CreedUINumbersOptions",
-		"CreedUIBosses", "CreedUISkulls", "CreedUISkullsDriver", "CreedUIDowned", "CreedUIDownedBanner", "CreedUIDownedDriver", "CreedUILevelUps", "CreedUILevelUpsDriver", "CreedUISummary", "CreedUISummaryDriver", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
+		"CreedUIBosses", "CreedUISkulls", "CreedUISkullsDriver", "CreedUIDowned", "CreedUIDownedBanner", "CreedUIDownedDriver", "CreedUILevelUps", "CreedUILevelUpsDriver", "CreedUISummary", "CreedUISummaryDriver", "CreedUITalents", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
 		"CreedUIParty", "CreedUITally", "CreedUIMinimap", "CreedUIMenuGuard", "GameMenuFrame", "Minimap", "CreedUIMeter",
 		"CreedUILuck", "CreedUIMeterToggle", "CreedUIChatGlass", "CreedUIChatDown", "ChatFrame1", "ChatFrame2", "CreedUIChests", "CreedUIMinimapClock", "CreedUIMeterSizer", "CreedUILuckSizer", "CreedUILuckToggle",
 		"ChatFrameEditBox", "ChatFrameMenuButton" }) do

@@ -67,6 +67,9 @@ local CROWD_TICK = 3.2          -- an enemy counts this long after a DoT's tick 
 local CROWD_HIT = 1.6           -- and this long after any other hit
 local MERGE_WINDOW = 1.0        -- a merged number takes one second of its spell's hits
 local MAX_SPOTS = 12            -- the enemies a merged number centers over
+-- every number a touch smaller (shrink), so one that keeps adding hits has room to grow by up to
+-- `grow` over `time` seconds of hits, then hold its size (one table: Lua 5.0 allows 200 locals)
+local STACK = { shrink = 0.88, grow = 0.35, time = 1.5 }
 
 -- Icons for hits that come without one: a swing shows the weapon in hand, a
 -- shot the ranged one, a damage shield Thorns (read from your gear when it can).
@@ -1281,7 +1284,12 @@ local function BaseScale(label)
 	if label.boss then
 		scale = scale * 1.12
 	end
-	return scale * db.size
+	-- a number adding hit after hit grows with how long it has stacked, to a cap: a DoT ticking
+	-- on, a spell's crowd total climbing; one hit stays its size
+	if (label.count or 1) > 1 and label.lastHit and label.born then
+		scale = scale * (1 + STACK.grow * Smooth((label.lastHit - label.born) / STACK.time))
+	end
+	return scale * STACK.shrink * db.size
 end
 
 local function Lift(label, now)
@@ -1892,18 +1900,18 @@ end
 -- The level-up cards: while they're up the numbers step aside (under the game's veil their icons
 -- come out black), and the ones from before are dropped as the cards close, so none of them flies
 -- across the screen to where its enemy has gone meanwhile. New hits show as the fight resumes.
-local cardsWere, layerAlpha = false, 1
+local cards = { was = false, alpha = 1 }
 
 local function StepCards()
 	local up = CUI.cardsUp and true or false
-	if cardsWere and not up then
+	if cards.was and not up then
 		ClearAll()
 	end
-	cardsWere = up
+	cards.was = up
 	local a = 1 - Clamp(CUI.cardsFade or 0, 0, 1)
 	if up then a = 0 end
-	if a ~= layerAlpha then
-		layerAlpha = a
+	if a ~= cards.alpha then
+		cards.alpha = a
 		layer:SetAlpha(a)
 	end
 end

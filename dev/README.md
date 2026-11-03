@@ -37,7 +37,8 @@ python3 cui/render_cui.py out/char.txt out/char.png 2 0 150 590 720
 
 `cui/classprev.lua` writes the party in all nine class colors (`out/class1..3.txt`); `cui/guardprev.lua`
 one boss and four guardians (`out/guards.txt`); `cui/cardsprev.lua` the character window behind the
-level-up cards (`out/cards.txt`). `cui/partyprev.lua` sets friends down (a revive mark and an edge arrow), the Level Up! button and the
+level-up cards (`out/cards.txt`). `cui/talprev.lua` opens the talent window (`out/talents.txt`); `cui/numprev.lua` a single hit beside a
+stacked DoT (`out/numbers.txt`). `cui/partyprev.lua` sets friends down (a revive mark and an edge arrow), the Level Up! button and the
 meter on Damage Taken (`out/party.txt`), then the run's summary (`out/summary.txt`); `cui/rankprev.lua`
 the skill bar's rank boxes. `cui/skullprev.lua` sets a boss fight with the skulls over two bosses and writes `out/skulls.txt`, and
 the options window in `out/hub.txt`.
