@@ -578,6 +578,13 @@ end
 function HideUIPanel(f)
 	if f then f:Hide() end
 end
+-- Azeroth Survivors: the talent key and button open the run's own talent window (the game counts
+-- the toggles in AZS_TALENT_TOGGLES)
+M.talentToggles = 0
+function ToggleTalentFrame()
+	M.talentToggles = M.talentToggles + 1
+	AZS_TALENT_TOGGLES = tostring(M.talentToggles)
+end
 
 -- the game's own font objects: its face, and CreateFont to try one
 M.nativeFace = "Fonts\\NATIVE.TTF"
@@ -1188,7 +1195,7 @@ local function WACatalog()
 	end
 	for i = 1, table.getn(M.guardians or {}) do
 		local g = M.guardians[i]
-		table.insert(out, { anchorId = "guardian:" .. g.id, kind = "guardian", name = g.name, entityState = "alive",
+		table.insert(out, { anchorId = "guardian:" .. g.id, kind = "guardian", name = g.name, entityState = g.awake == false and "asleep" or "awake",
 			attachments = { "position", "overhead" }, positionAvailable = true, x = -20, y = -4, z = 0 })
 	end
 	return out

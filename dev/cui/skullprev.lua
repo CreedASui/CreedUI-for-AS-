@@ -21,6 +21,9 @@ M.waSpots[near] = { x = -2, y = -14 }
 M.waNear[near] = 3.2
 M.waSpots[far] = { x = 25, y = 6 }
 M.waNear[far] = 1.3
+-- the mini-boss out of its lair, between them
+M.waSpots["Sir Zeliek"] = { x = 12, y = -8 }
+M.waNear["Sir Zeliek"] = 2.2
 -- the last boss of the run as the final one, so both kinds show
 M.bosses[table.getn(M.bosses)].final = true
 for i = 1, 30 do M.Frame(1 / 30) end

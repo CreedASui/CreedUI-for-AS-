@@ -12,6 +12,12 @@ local ROW_H = 38          -- name line + bar
 local ROW_GAP = 2
 local DATA_EVERY = 0.1
 local DB_SIZE, DB_GAP, DB_MAX, DB_ROW = 18, 4, 10, 22 -- the debuff icons under a bar
+-- A boss's row, and a guardian's: narrower, thinner and closer, so four guardians up at once
+-- stay a small stack under the bosses' full bars.
+local LOOKS = {
+	boss = { w = 1, row = ROW_H, bar = BAR_H, font = 12, gem = 24, db = DB_SIZE, dbRow = DB_ROW, gap = ROW_GAP },
+	guardian = { w = 0.7, row = 27, bar = 8, font = 11, gem = 18, db = 14, dbRow = 18, gap = 1 },
+}
 local DISPEL = { Magic = { 0.2, 0.6, 1 }, Curse = { 0.6, 0.2, 1 }, Disease = { 0.6, 0.4, 0 }, Poison = { 0, 0.6, 0 } }
 
 local db
@@ -47,7 +53,7 @@ local function NewRow()
 	r.bar = C.NewBar(f, w, BAR_H, true)
 	r.bar.frame:SetPoint("TOPLEFT", f, "TOPLEFT", 0, -(ROW_H - 6 - BAR_H))
 	r.debuffs, r.dh = {}, 0
-	r.name = C.Text(r.bar.top, C.FONT, 12, "OUTLINE", "LEFT", w)
+	r.name = C.Text(r.bar.top, C.FONT, 12, "OUTLINE", "LEFT", w - 130)
 	r.name:SetPoint("BOTTOMLEFT", r.bar.frame, "TOPLEFT", 16, 4)
 	r.value = C.Text(r.bar.top, C.FONT, 12, "OUTLINE", "RIGHT", 220)
 	r.value:SetPoint("BOTTOMRIGHT", r.bar.frame, "TOPRIGHT", 0, 4)
@@ -131,7 +137,9 @@ local function StepDebuffs(r, list, since)
 				n = n + 1
 				local d = r.debuffs[n] or NewDebuff(r)
 				d.frame.data = data
-				C.Place(d.frame, "TOPLEFT", r.bar.frame, "BOTTOMLEFT", 16 + (n - 1) * (DB_SIZE + DB_GAP), -5)
+				local size = r.look.db
+				C.Size(d.frame, size, size)
+				C.Place(d.frame, "TOPLEFT", r.bar.frame, "BOTTOMLEFT", 16 + (n - 1) * (size + DB_GAP), -5)
 				if d.tex ~= data.icon then
 					d.tex = data.icon
 					d.icon:SetTexture(data.icon)
@@ -157,8 +165,8 @@ local function StepDebuffs(r, list, since)
 				if left and left <= 3 and not data.permanent then C.TextColor(d.time, 1, 0.45, 0.25) else C.TextColor(d.time, 1, 0.95, 0.8) end
 				local stacks = tonumber(data.stacks) or 1
 				C.SetText(d.stacks, stacks > 1 and tostring(stacks) or "")
-				local sh = math.floor(DB_SIZE * shade + 0.5)
-				C.Size(d.shade, DB_SIZE, math.max(1, sh))
+				local sh = math.floor(size * shade + 0.5)
+				C.Size(d.shade, size, math.max(1, sh))
 				C.Vis(d.shade, sh >= 1)
 				C.Vis(d.frame, true)
 			end
@@ -168,10 +176,23 @@ local function StepDebuffs(r, list, since)
 	return n
 end
 
-local function RowWidth(r, w)
+-- a row takes a boss's look or a guardian's (rows are reused, so this runs when its unit's kind changes)
+local function Look(r, guardian)
+	local L = guardian and LOOKS.guardian or LOOKS.boss
+	if r.look == L then return end
+	r.look = L
+	local w = math.floor(db.width * L.w + 0.5)
 	r.frame:SetWidth(w)
-	C.BarLayout(r.bar, w, BAR_H)
-	r.name:SetWidth(w)
+	r.frame:SetHeight(L.row)
+	C.BarLayout(r.bar, w, L.bar)
+	r.bar.frame:ClearAllPoints()
+	r.bar.frame:SetPoint("TOPLEFT", r.frame, "TOPLEFT", 0, -(L.row - 6 - L.bar))
+	r.name:SetWidth(math.max(80, w - 130))
+	C.SetFace(r.name, C.FONT, L.font, "OUTLINE")
+	C.SetFace(r.value, C.FONT, L.font, "OUTLINE")
+	r.mark:SetWidth(L.gem)
+	r.mark:SetHeight(L.gem)
+	r.valueText = nil
 end
 
 ------------------------------------------------------------------------ reading the run
@@ -261,6 +282,7 @@ local SAMPLE = {
 
 ------------------------------------------------------------------------ drawing
 local function StepRow(r, e, slotY, dt, now, pal, since)
+	Look(r, r.kind == "guardian")
 	-- gliding into its place in the stack
 	if not r.y then r.y = slotY - 10 end
 	r.y, r.yv = C.Spring(r.y, r.yv, slotY, 13, dt)
@@ -278,7 +300,7 @@ local function StepRow(r, e, slotY, dt, now, pal, since)
 	C.BarStep(r.bar, frac, dt, now)
 	-- its debuffs, just under the bar; the row makes room for them
 	local nd = StepDebuffs(r, (not r.gone) and e.debuffs or nil, since or 0)
-	r.dh = C.Toward(r.dh or 0, nd > 0 and DB_ROW or 0, 10, dt)
+	r.dh = C.Toward(r.dh or 0, nd > 0 and r.look.dbRow or 0, 10, dt)
 
 	-- colors: an enraged boss shifts toward orange and pulses
 	r.rage = C.Toward(r.rage, r.enraged and 1 or 0, 4, dt)
@@ -303,7 +325,7 @@ local function StepRow(r, e, slotY, dt, now, pal, since)
 		r.socketFinal = final
 		r.socket:SetTexture(C.ART .. (final and "SocketFinal" or "Socket"))
 	end
-	local s = final and 30 or 24
+	local s = final and 30 or r.look.gem
 	C.Size(r.socket, s, s)
 	C.Size(r.gem, s * 0.92, s * 0.92)
 	C.Size(r.shine, s * 0.92, s * 0.92)
@@ -418,7 +440,8 @@ local function Step(dt)
 			C.Vis(r.frame, false)
 		else
 			local weight = r.gone and C.Smooth(r.alpha) or 1
-			y = y + (ROW_H + (r.dh or 0) + ROW_GAP) * weight
+			local L = r.look or LOOKS.boss
+			y = y + (L.row + (r.dh or 0) + L.gap) * weight
 			any = true
 		end
 	end

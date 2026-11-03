@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.12.0
+Fixes from playtesting:
+- **Talents:** the Talents tab opens the game's own Talents window, with Azeroth Survivors' real trees, milestones and points (Creed UI's page showed the wrong talents).
+- **Level-up cards:** behind the cards, the character window now goes as dark as the rest of the game instead of showing through half lit.
+- **Addon list:** Creed UI's description in Options → AddOns is one short line instead of a wall of text.
+- **Party frames:** the health bars' class colors are richer and brighter, so every class reads at a glance.
+- **Run summary:** the numbers stay still once it opens (in co-op the run goes on after you fall, and they kept flickering).
+- **Guardian bars:** narrower, thinner and closer together, so several guardians don't crowd the screen; bosses keep their full bars.
+- **Skulls:** guardians get a skull too (in an amber glow), and bosses a fiercer horned skull with smouldering red eyes. Also fixes the skulls switching themselves off with an error after a few bosses had come and gone.
+- **Downed friends:** their class crest shows inside the revive mark, as see-through as the mark.
+- `/creed probe` also lists the game's AZS tables.
+
 ## 1.11.0
 - **Downed friends (co-op):** when a friend goes down, a banner says so with the raid warning sound. A glowing mark shows where they lie (stand on it to bring them back), with their name in their class color and the distance; while you revive them it turns green and counts up. While they're off the screen, a gold arrow at its edge points the way, with the distance.
 - **Stored level-ups:** with the game's Store Level-Ups on, a glowing Level Up! button over the skill bar shows how many wait; click it to pick their cards. It pulses when one more comes.
