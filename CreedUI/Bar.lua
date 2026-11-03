@@ -1,7 +1,7 @@
 -- Creed UI: the skill bar. Your six run abilities and your racial, each with a cooldown that
 -- drains off its icon; the jewelry you picked from the cards (neck, two rings, two trinkets) in sockets
 -- rimmed with their rarity; your run's experience; and docked beside them your kills, gold and
--- the next cache's price (Tally.lua), all on a gold-framed panel with a dragon on each end, wrapped in its wing. Hover anything for the game's own tooltip: an ability's, or what a piece of
+-- the next cache's price (Tally.lua), all on a gold-framed panel with a golden dragon sitting on each end. Hover anything for the game's own tooltip: an ability's, or what a piece of
 -- jewelry gives you. While it's on, the game's bar and build rows are tucked away; turning it
 -- off brings them back. Each ability wears its rank in a little gold-rimmed box on its bottom
 -- right corner, which flashes when a card ranks it up.
@@ -44,14 +44,14 @@ local function ShowTip(s)
 			shown = pcall(GameTooltip.SetInventoryItem, GameTooltip, "player", s.inv)
 		end
 		if not s.has then
-			GameTooltip:AddLine(C.L(s.label), 1, 0.82, 0.3)
+			GameTooltip:AddLine(C.L(s.label), 0.98, 0.85, 0.52)
 			GameTooltip:AddLine(C.L("Empty: pick one from the cards."), 0.8, 0.8, 0.8)
 			shown = true
 		end
 	elseif s.has and type(GameTooltip.SetAction) == "function" then
 		shown = pcall(GameTooltip.SetAction, GameTooltip, s.action)
 	elseif not s.has then
-		GameTooltip:AddLine(C.L(s.kind == "racial" and "Racial ability" or "Empty ability slot"), 1, 0.82, 0.3)
+		GameTooltip:AddLine(C.L(s.kind == "racial" and "Racial ability" or "Empty ability slot"), 0.98, 0.85, 0.52)
 		GameTooltip:AddLine(C.L("A new ability from the cards goes here."), 0.8, 0.8, 0.8)
 		shown = true
 	end
@@ -175,9 +175,10 @@ local function StepDock(dt)
 	if math.abs(w - target) < 0.3 then w = target end
 	if w ~= S.dock then
 		S.dock = w
+		local room = C.PANEL_ROOM or 0 -- each end's room for its dragon (Core)
 		root.panel:ClearAllPoints()
-		root.panel:SetPoint("TOPLEFT", root, "TOPLEFT", 0, 0)
-		root.panel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", w, 0)
+		root.panel:SetPoint("TOPLEFT", root, "TOPLEFT", -room, 0)
+		root.panel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", w + room, 0)
 	end
 	C.Vis(root.dividers[3], w > 20)
 end
@@ -332,7 +333,7 @@ local function StepRank(s, now, pal, shown)
 		if age > RANK_FLASH then r.flashAt = nil end
 	end
 	local g = pal.glow
-	C.Color(r.rim, 0.78 + 0.22 * f, 0.60 + 0.30 * f, 0.22 + 0.40 * f, 1)
+	C.Color(r.rim, 0.91 + 0.09 * f, 0.70 + 0.22 * f, 0.30 + 0.34 * f, 1)
 	C.Color(r.back, 0.05 + (g[1] * 0.7 - 0.05) * f, 0.04 + (g[2] * 0.55 - 0.04) * f, 0.03 + (g[3] * 0.2 - 0.03) * f, 0.92)
 	C.TextColor(r.text, 1, 0.88 + 0.12 * f, 0.55 + 0.45 * f)
 end
@@ -399,7 +400,7 @@ local function StepSlot(s, now, dt, pal)
 				C.TextColor(s.text, 1, 1, 1)
 			else
 				C.SetText(s.text, string.format("%.1f", math.max(0.1, math.ceil(left * 10 - 0.01) / 10)))
-				C.TextColor(s.text, 1, 0.86, 0.3)
+				C.TextColor(s.text, 0.98, 0.85, 0.52)
 			end
 			C.Vis(s.text, true)
 		else
@@ -452,7 +453,7 @@ local function Theme(pal)
 	for i = 1, 7 do
 		local s = slots[i]
 		if s.kind == "racial" then
-			s.bezel:SetVertexColor(1, 0.82, 0.38)
+			s.bezel:SetVertexColor(0.95, 0.79, 0.44)
 		else
 			s.bezel:SetVertexColor(rim[1], rim[2], rim[3])
 		end
@@ -689,9 +690,17 @@ C.OnInit(function()
 	end
 	-- the panel: brushed glass in the timer's gold, a dragon on each end (Core)
 	root.panel = CreateFrame("Frame", nil, root)
-	root.panel:SetPoint("TOPLEFT", root, "TOPLEFT", 0, 0)
-	root.panel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", 0, 0)
+	root.panel:SetPoint("TOPLEFT", root, "TOPLEFT", -(C.PANEL_ROOM or 0), 0)
+	root.panel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", C.PANEL_ROOM or 0, 0)
 	root.deco = C.Panel(root.panel, true)
+	-- a gold diamond at the middle of the top and bottom rails, over the bar's middle
+	for _, edge in ipairs({ "TOP", "BOTTOM" }) do
+		local d = C.Tex(root.panel, "OVERLAY", C.ART .. "Diamond")
+		d:SetWidth(20)
+		d:SetHeight(20)
+		d:SetPoint("CENTER", root, edge, 0, 0)
+		table.insert(root.deco.metal, d)
+	end
 	root.dividers = {}
 	for i = 1, 3 do
 		local d = C.Tex(root.panel, "ARTWORK", C.ART .. "PanelDivider")

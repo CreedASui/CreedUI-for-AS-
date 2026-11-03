@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.14.0
+- **New skill bar look**, from your own bar picture: a painted golden dragon sits on each end of the bar, facing in, wings raised, with room so it never covers a slot; gold diamonds mark the middle of the top and bottom rails.
+- **One gold everywhere:** the panels' metal, the titles and tooltip headings, the borders and the rank boxes all take the same golds as that picture.
+
 ## 1.13.2
 - **Dragons:** the body is one smooth piece now (neck, chest, haunch and thigh flow into each other instead of reading as separate shapes), with a band of domed belly plates down its front. The second wing is folded over the neck instead of sticking up behind it, and the front legs are a pair.
 

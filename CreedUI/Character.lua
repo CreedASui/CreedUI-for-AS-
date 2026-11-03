@@ -545,8 +545,8 @@ local function Theme(pal)
 	C.PanelTheme(W.stats.deco, pal)
 	local mr, mg, mb = C.PanelMetal(pal)
 	W.ring:SetVertexColor(mr, mg, mb)
-	W.name:SetTextColor(1, 0.84, 0.4)
-	W.title:SetTextColor(1, 0.84, 0.4)
+	W.name:SetTextColor(0.98, 0.85, 0.52)
+	W.title:SetTextColor(0.98, 0.85, 0.52)
 	for _, h in ipairs(W.heads) do
 		h.text:SetTextColor(mr * 0.9, mg * 0.9, mb * 0.9)
 		h.line:SetVertexColor(mr, mg, mb, 0.35)
@@ -730,7 +730,7 @@ local function Step(dt)
 		local text = (CharacterNameText and CharacterNameText:GetText()) or Call(UnitName, "player") or ""
 		C.SetText(W.name, text)
 		C.SetText(W.level, (CharacterLevelText and CharacterLevelText:GetText()) or "")
-		W.level:SetTextColor(1, 0.82, 0.3)
+		W.level:SetTextColor(0.98, 0.85, 0.52)
 	end
 	StepFlash(now)
 	S.slotClock = S.slotClock - dt

@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.13.2"
+C.VERSION = "1.14.0"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -777,16 +777,19 @@ end
 ------------------------------------------------------------------------ an MMO panel
 -- A panel in the timer's metal: brushed dark glass inside a thin round rail lit as the timer's
 -- (darkish bronze, one fine bright line on its lit side), the timer's diamonds on its corners,
--- and (asked for) a dragon on each end, an original design: heavy, sitting on its haunches, its
--- folded wing laid over the panel's end so the two meet with no gap, its eye glowing. The art is
--- grey, tinted by C.PanelTheme with the timer's gold as Elwynn Forest shows it.
-local P_RAIL, P_CORNER, P_DRAGON = 8, 16, 104
--- how far its wing lies over the panel's end (the picture's x 216 of 256 on the panel's edge); how
--- far its feet sit below the panel's foot
-local P_OVER, P_FOOT = P_DRAGON * 40 / 256, 4
-local GOLD = { 1.0, 0.8, 0.42 }
--- the dragon's eye in its picture (256 across), facing out on the left
-local EYE_X, EYE_Y = 68 / 256, 43 / 256
+-- and (asked for) a golden dragon sitting on each end, facing in, wings raised, its eye glowing:
+-- painted, from the user's own bar picture (dev/art/cut_dragon.py), in its own colors. The panel
+-- leaves C.PANEL_ROOM at each end for it, so it never covers a slot.
+local P_RAIL, P_CORNER, P_DRAGON = 8, 16, 122
+-- how far it reaches past the panel's end (the picture's x 15 of 370), and below its foot (25 of 370)
+local P_OUT, P_FOOT = P_DRAGON * 15 / 370, P_DRAGON * 25 / 370
+C.PANEL_ROOM = 110
+-- Creed UI's gold, taken from the user's bar picture (dev/art/source/bar_reference.webp): the panel's
+-- metal is its bright rail; its light rail highlight (0.98, 0.85, 0.52) is the gold of titles and
+-- tooltip heads everywhere, its rail gold (0.91, 0.70, 0.30) the gold of borders and rims
+local GOLD = { 0.95, 0.79, 0.44 }
+-- the dragon's eye in its picture, as shares of it (the left dragon, facing in)
+local EYE_X, EYE_Y = 0.872, 0.236
 
 function C.Panel(frame, dragons)
 	local p = { frame = frame, metal = {} }
@@ -818,11 +821,11 @@ function C.Panel(frame, dragons)
 		table.insert(p.metal, d)
 	end
 	if dragons then
-		-- a dragon on each end, facing out, sitting on the panel's foot, its wing over the end rail
+		-- a dragon on each end, facing in, sitting on the panel's foot over its end
 		p.dragons, p.eyes = {}, {}
 		p.eyeLayer = CreateFrame("Frame", nil, frame)
 		p.eyeLayer:SetAllPoints(frame)
-		local out = P_DRAGON - P_OVER
+		local out = P_OUT
 		for i, side in ipairs({ "LEFT", "RIGHT" }) do
 			local k = (side == "LEFT") and -1 or 1
 			local t = C.Tex(frame, "OVERLAY", C.ART .. "PanelDragon")
@@ -853,8 +856,8 @@ function C.PanelTheme(p, pal)
 	p.fill:SetVertexColor(0.5 + tr[1] * 0.3, 0.47 + tr[2] * 0.3, 0.44 + tr[3] * 0.3, 0.95)
 	if p.dragons then
 		for i = 1, 2 do
-			p.dragons[i]:SetVertexColor(mr, mg, mb)
-			p.eyes[i]:SetVertexColor(1, 0.36, 0.08, 0.95) -- the eyes glow ember red
+			p.dragons[i]:SetVertexColor(1, 1, 1) -- painted in its own gold
+			p.eyes[i]:SetVertexColor(1, 0.62, 0.14, 0.95) -- the eyes glow amber, as painted
 		end
 	end
 end
@@ -970,7 +973,7 @@ function C.Movable(frame, key, label, default)
 	box:SetAllPoints(frame)
 	box:SetBackdrop({ bgFile = C.FLAT, edgeFile = C.FLAT, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
 	box:SetBackdropColor(0.1, 0.2, 0.4, 0.35)
-	box:SetBackdropBorderColor(1, 0.82, 0.3, 0.8)
+	box:SetBackdropBorderColor(0.91, 0.70, 0.30, 0.8)
 	box:EnableMouse(true)
 	box:RegisterForDrag("LeftButton")
 	box:SetScript("OnDragStart", function() frame:StartMoving() end)
@@ -981,7 +984,7 @@ function C.Movable(frame, key, label, default)
 	box.text = C.Text(box, C.FONT, 11, "OUTLINE", "CENTER", 260)
 	box.text:SetPoint("CENTER", box, "CENTER", 0, 0)
 	C.LText(box.text, label)
-	box.text:SetTextColor(1, 0.85, 0.4)
+	box.text:SetTextColor(0.98, 0.85, 0.52)
 	box:Hide()
 	m.box = box
 	table.insert(C.movers, m)
@@ -1058,7 +1061,7 @@ end
 local function PaintButton(button)
 	if button.selected then
 		button:SetBackdropColor(0.50, 0.38, 0.07, 1)
-		button:SetBackdropBorderColor(1, 0.82, 0.25, 1)
+		button:SetBackdropBorderColor(0.91, 0.70, 0.30, 1)
 	elseif button.hot then
 		button:SetBackdropColor(0.24, 0.24, 0.28, 1)
 		button:SetBackdropBorderColor(0.65, 0.65, 0.7, 1)
@@ -1110,17 +1113,17 @@ local function PartRow(parent, x, y, info)
 	box:SetPoint("BOTTOMRIGHT", edge, "BOTTOMRIGHT", -1, 1)
 	row.mark = row:CreateTexture(nil, "OVERLAY")
 	row.mark:SetTexture(C.FLAT)
-	row.mark:SetVertexColor(1, 0.82, 0.25, 1)
+	row.mark:SetVertexColor(0.91, 0.70, 0.30, 1)
 	row.mark:SetPoint("TOPLEFT", edge, "TOPLEFT", 3, -3)
 	row.mark:SetPoint("BOTTOMRIGHT", edge, "BOTTOMRIGHT", -3, 3)
 	row.label = HubText(row, 12, 0.92, 0.92, 0.92)
 	row.label:SetPoint("LEFT", edge, "RIGHT", 8, 0)
 	C.LText(row.label, info.name)
 	row:SetScript("OnEnter", function()
-		row.label:SetTextColor(1, 0.85, 0.35)
+		row.label:SetTextColor(0.98, 0.85, 0.52)
 		if GameTooltip and info.note then
 			GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
-			GameTooltip:AddLine(C.L(info.name), 1, 0.82, 0.3)
+			GameTooltip:AddLine(C.L(info.name), 0.98, 0.85, 0.52)
 			GameTooltip:AddLine(C.L(info.note), 1, 1, 1, 1)
 			C.ShowTip()
 		end
@@ -1293,7 +1296,7 @@ local function BuildHub()
 	menu:SetFrameStrata("FULLSCREEN_DIALOG")
 	menu:SetBackdrop({ bgFile = C.FLAT, edgeFile = C.FLAT, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
 	menu:SetBackdropColor(0.05, 0.05, 0.07, 0.98)
-	menu:SetBackdropBorderColor(1, 0.82, 0.25, 0.8)
+	menu:SetBackdropBorderColor(0.91, 0.70, 0.30, 0.8)
 	menu:EnableMouse(true)
 	menu:Hide()
 	menu.items = {}

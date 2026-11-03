@@ -2078,7 +2078,7 @@ do
 	local epic, blue, plain = bezelOf(CharacterMainHandSlot), bezelOf(CharacterChestSlot), bezelOf(CharacterHeadSlot)
 	check(epic and math.abs(epic.bezel.__vc[1] - 163 / 255) < 0.01 and math.abs(epic.bezel.__vc[3] - 238 / 255) < 0.01, "the epic blade's slot in purple")
 	check(blue and math.abs(blue.bezel.__vc[3] - 221 / 255) < 0.01 and blue.glow.__vc[4] > 0.3, "the blue chest's in blue, glowing")
-	check(plain and math.abs(plain.bezel.__vc[1] - 1) < 0.01 and math.abs(plain.bezel.__vc[2] - 0.8) < 0.01 and plain.glow.__vc[4] == 0, "a plain helm's in the panel's gold")
+	check(plain and math.abs(plain.bezel.__vc[1] - 0.95) < 0.01 and math.abs(plain.bezel.__vc[2] - 0.79) < 0.01 and plain.glow.__vc[4] == 0, "a plain helm's in the panel's gold")
 	-- another page: the window's own pieces back, ours away; and back to this one
 	PaperDollFrame:Hide()
 	check(alpha(CharacterFramePortrait) == 1 and alpha(CharacterNameText) == 1 and not M.Visible(bg) and not M.Visible(panel),
@@ -2391,10 +2391,10 @@ do
 			if r - l < 30 then rim = o end
 		end
 	end
-	check(glowBefore == 0 and countTex(slotOf(BF), "Art\\Glow", 0.2) == 1 and rim and rim.__vc[1] > 0.9,
+	check(glowBefore == 0 and countTex(slotOf(BF), "Art\\Glow", 0.2) == 1 and rim and rim.__vc[1] > 0.97 and rim.__vc[3] > 0.5,
 		"and it flashes gold")
 	frames(60)
-	check(rim and rim.__vc[1] < 0.8 and countTex(slotOf(BF), "Art\\Glow", 0.2) == 0, "then cools back")
+	check(rim and rim.__vc[1] < 0.95 and rim.__vc[3] < 0.4 and countTex(slotOf(BF), "Art\\Glow", 0.2) == 0, "then cools back")
 	-- ranked up while the cards are up: the flash waits for the bar to come back
 	M.phase = "choosing"
 	frames(40)
@@ -2404,7 +2404,7 @@ do
 	check(rankOf(BF) == nil or CreedUI.cardsFade > 0.9, "the bar is away while the cards are up")
 	M.phase = "playing"
 	frames(12)
-	check(rankOf(BF) == "3" and rim and rim.__vc[1] > 0.9, "back from the cards, the new rank flashes then")
+	check(rankOf(BF) == "3" and rim and rim.__vc[1] > 0.97, "back from the cards, the new rank flashes then")
 	frames(60)
 	-- two digits fit
 	M.loadout.abilities[2].rank = 12
@@ -2878,6 +2878,29 @@ do
 	check(sizes[8] <= first * 1.4 and math.abs(sizes[8] - sizes[5]) < 0.02, string.format("and stops at about a third bigger (%.2f, %.2f, %.2f)", sizes[5], sizes[8], first * 1.35))
 	frames(150)
 	problems("stacking numbers")
+end
+
+------------------------------------------------------------------ 11j. the bar's dragons sit on its ends, clear of the slots
+do
+	M.phase = "playing"
+	frames(10)
+	local d1, d2 = CreedUIBar.deco.dragons[1], CreedUIBar.deco.dragons[2]
+	local pl, pb, pr, pt = M.Rect(CreedUIBar.panel)
+	local l1, b1, r1, t1 = M.Rect(d1)
+	local l2, b2, r2, t2 = M.Rect(d2)
+	local sl = 9999
+	local sr = -9999
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Button" and o.__parent == CreedUIBar and M.Visible(o) then
+			local l, _, r = M.Rect(o)
+			sl, sr = math.min(sl, l), math.max(sr, r)
+		end
+	end
+	check(math.abs(l1 - (pl - 122 * 15 / 370)) < 1 and r1 < sl, string.format("the left dragon sits on the panel's end, clear of the first slot (%.0f < %.0f)", r1, sl))
+	check(l2 > sr and math.abs(r2 - (pr + 122 * 15 / 370)) < 1, "and the right one on the other end, past the last")
+	check(d1.__vc and d1.__vc[1] == 1 and d1.__vc[2] == 1 and d1.__vc[3] == 1, "painted in its own colors (no tint)")
+	check(t1 > pt + 20, "rising over the panel's top")
+	problems("bar dragons")
 end
 
 ------------------------------------------------------------------ 12. no API at all
