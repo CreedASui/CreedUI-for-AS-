@@ -165,7 +165,7 @@ local function Click()
 end
 
 local function Tip()
-	GameTooltip:AddDoubleLine("Creed UI", "v" .. C.VERSION, 1, 0.82, 0.3, 0.55, 0.55, 0.6)
+	GameTooltip:AddDoubleLine("Creed UI", "v" .. C.VERSION, 0.98, 0.85, 0.52, 0.55, 0.55, 0.6)
 	GameTooltip:AddLine(C.L("Click: open or close the menu"), 1, 1, 1)
 	GameTooltip:AddLine(C.L(C.unlocked and "Right-click: lock the frames" or "Right-click: move the frames"), 1, 1, 1)
 end

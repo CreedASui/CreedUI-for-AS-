@@ -29,7 +29,7 @@ end
 local function ShowTip()
 	if not GameTooltip or C.unlocked then return end
 	GameTooltip:SetOwner(root, "ANCHOR_TOP")
-	GameTooltip:AddLine(C.L("Level Up!"), 1, 0.82, 0.3)
+	GameTooltip:AddLine(C.L("Level Up!"), 0.98, 0.85, 0.52)
 	GameTooltip:AddLine(C.F("{1} level-ups wait. Click to pick their cards.", S.n), 1, 1, 1, 1)
 	C.ShowTip()
 end
@@ -90,7 +90,7 @@ C.OnInit(function()
 	C.PanelTheme(root.deco, C.Pal())
 	root.label = C.Text(root, C.FONT, 14, "OUTLINE", "CENTER", W - 40)
 	root.label:SetPoint("CENTER", root, "CENTER", -12, 0)
-	root.label:SetTextColor(1, 0.86, 0.36)
+	root.label:SetTextColor(0.98, 0.85, 0.52)
 	C.LText(root.label, "Level Up!")
 	-- how many wait, on a red gem at the right end
 	root.gemGlow = C.Tex(root, "ARTWORK", C.ART .. "Glow", "ADD")

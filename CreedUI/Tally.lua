@@ -130,15 +130,15 @@ local function ShowTip()
 	if not GameTooltip then return end
 	local run = type(AZS_RUN) == "table" and AZS_RUN or {}
 	GameTooltip:SetOwner(root, "ANCHOR_TOP")
-	GameTooltip:AddLine(C.L("This run"), 1, 0.82, 0.3)
+	GameTooltip:AddLine(C.L("This run"), 0.98, 0.85, 0.52)
 	GameTooltip:AddDoubleLine(C.L("Kills"), Number(run.kills), 0.85, 0.85, 0.85, 1, 1, 1)
 	if tonumber(run.ek) or tonumber(run.gk) or tonumber(run.bk) then
 		GameTooltip:AddDoubleLine(C.L("Elites / guardians / bosses"), Number(run.ek) .. " / " .. Number(run.gk) .. " / " .. Number(run.bk),
 			0.85, 0.85, 0.85, 1, 1, 1)
 	end
-	GameTooltip:AddDoubleLine(C.L("Gold"), Number(run.gold), 0.85, 0.85, 0.85, 1, 0.86, 0.36)
+	GameTooltip:AddDoubleLine(C.L("Gold"), Number(run.gold), 0.85, 0.85, 0.85, 0.98, 0.85, 0.52)
 	if tonumber(run.ge) then
-		GameTooltip:AddDoubleLine(C.L("Gold earned"), Number(run.ge), 0.85, 0.85, 0.85, 1, 0.86, 0.36)
+		GameTooltip:AddDoubleLine(C.L("Gold earned"), Number(run.ge), 0.85, 0.85, 0.85, 0.98, 0.85, 0.52)
 	end
 	if tonumber(run.chest) and run.chest > 0 then
 		GameTooltip:AddDoubleLine(C.L("Next cache"), C.F("{1} gold", Number(run.chest)), 0.85, 0.85, 0.85, 1, 0.72, 0.4)

@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.13.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.14.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -40,7 +40,8 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   LevelUps.lua      the Level Up! button for stored level-ups (replaces the game's "levels" HUD part)
   Summary.lua       the run's summary panel when it ends (AZS_GetRunSummary)
   Talents.lua       the talent window: trees side by side, learned talents with ranks (meter loadout)
-  Bar.lua           skill bar, each ability's rank box, jewelry, XP/s, the gold panel with its two dragons
+  Bar.lua           skill bar, each ability's rank box, jewelry, XP/s, the gold panel (C.PANEL_ROOM at each
+                    end for its painted dragons, Core's C.Panel)
   Tally.lua         kills / gold / cache, docked inside the bar's panel
   Minimap.lua       metal ring, local clock, zone name
   MinimapButton.lua C.EdgeButton (draggable round buttons on the minimap's edge) and the C button
@@ -94,7 +95,11 @@ README.md, CHANGELOG.md
 
 **Design and code style**
 - **Art must be original.** The user doesn't want anything looking lifted from other addons. All
-  art is drawn by the scripts in `dev/art` (numpy/PIL).
+  art is drawn by the scripts in `dev/art` (numpy/PIL), except the skill bar's dragon (1.14.0): cut
+  from the user's own bar picture (`dev/art/source/bar_reference.webp`, made for them with an image
+  generator) by `dev/art/cut_dragon.py`. `make_dragon.py` is the earlier drawn dragon, kept.
+- **The gold** comes from that picture: panel metal (0.95, 0.79, 0.44), titles and tooltip heads
+  (0.98, 0.85, 0.52), borders and rims (0.91, 0.70, 0.30). Use these for anything gold.
 - The look: dark glass, a gold rail, the timer's metal, diamonds on corners (`C.Panel`). Smooth,
   "eye candy", but calm.
 - **Parts:** every part registers with `C.RegisterPart` (key, name, note, get, set; optional scale),
@@ -110,7 +115,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 547 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 552 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0

@@ -94,7 +94,7 @@ end
 local function Tip()
 	if not GameTooltip then return end
 	GameTooltip:SetOwner(this, "ANCHOR_LEFT")
-	GameTooltip:SetText(C.L("Cache"), 1, 0.82, 0.3)
+	GameTooltip:SetText(C.L("Cache"), 0.98, 0.85, 0.52)
 	local run = type(AZS_RUN) == "table" and AZS_RUN or {}
 	local price, gold = tonumber(run.chest), tonumber(run.gold)
 	if price then
@@ -121,10 +121,10 @@ local function NewPin(i)
 	p.glow:SetVertexColor(1, 0.72, 0.2, 0.55)
 	p.ring = C.Tex(p, "BORDER", C.ART .. "Ring", "ADD")
 	p.ring:SetPoint("CENTER", p, "CENTER", 0, 0)
-	p.ring:SetVertexColor(1, 0.86, 0.42)
+	p.ring:SetVertexColor(0.95, 0.79, 0.44)
 	p.icon = C.Tex(p, "ARTWORK", C.ART .. "Chest")
 	p.icon:SetAllPoints(p)
-	p.icon:SetVertexColor(1, 0.84, 0.36)
+	p.icon:SetVertexColor(0.95, 0.79, 0.44)
 	C.Vis(p.glow, false)
 	C.Vis(p.ring, false)
 	p:EnableMouse(true)
@@ -205,9 +205,9 @@ local function LairTip()
 		GameTooltip:SetText(C.L("Empty lair"), 0.75, 0.75, 0.78)
 		local left = LairLeft(c)
 		if left and left > 0.5 then
-			GameTooltip:AddLine(C.F("{1} comes in {2}", name, C.Clock(math.ceil(left))), 1, 0.86, 0.5)
+			GameTooltip:AddLine(C.F("{1} comes in {2}", name, C.Clock(math.ceil(left))), 0.98, 0.85, 0.52)
 		elseif left then
-			GameTooltip:AddLine(C.F("{1} comes any moment", name), 1, 0.86, 0.5)
+			GameTooltip:AddLine(C.F("{1} comes any moment", name), 0.98, 0.85, 0.52)
 		end
 	end
 	if tonumber(c.flag) == 1 then
@@ -230,7 +230,7 @@ local function NewLairPin(i)
 	p.icon = C.Tex(p, "OVERLAY", C.ART .. "Skull")
 	p.icon:SetPoint("CENTER", p, "CENTER", 0, 0)
 	p.time = C.Text(p, C.FONT, 9, "OUTLINE", "CENTER", 40)
-	p.time:SetTextColor(1, 0.86, 0.5)
+	p.time:SetTextColor(0.98, 0.85, 0.52)
 	C.Vis(p.glow, false)
 	C.Vis(p.ring, false)
 	C.Vis(p.time, false)

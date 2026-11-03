@@ -87,7 +87,7 @@ local function DebuffTip()
 	local d = this.data
 	if not (d and GameTooltip) then return end
 	GameTooltip:SetOwner(this, "ANCHOR_BOTTOM")
-	GameTooltip:SetText(d.name or C.L("Debuff"), 1, 0.82, 0.3)
+	GameTooltip:SetText(d.name or C.L("Debuff"), 0.98, 0.85, 0.52)
 	if (tonumber(d.stacks) or 1) > 1 then GameTooltip:AddLine(C.F("{1} stacks", d.stacks), 1, 1, 1) end
 	if d.permanent then
 		GameTooltip:AddLine(C.L("Lasts while it lives"), 0.8, 0.8, 0.8)

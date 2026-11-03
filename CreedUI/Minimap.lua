@@ -72,7 +72,7 @@ local function Build()
 	r:SetScript("OnEnter", function()
 		if not GameTooltip then return end
 		GameTooltip:SetOwner(this, "ANCHOR_BOTTOM")
-		GameTooltip:SetText(C.L("Local time"), 1, 0.82, 0.3)
+		GameTooltip:SetText(C.L("Local time"), 0.98, 0.85, 0.52)
 		local t = RUN_PHASES[Call(AZS_GetPhase) or ""] and Call(AZS_GetRunTime)
 		if type(t) == "number" then
 			GameTooltip:AddDoubleLine(C.L("Run time"), C.Clock(t), 0.8, 0.8, 0.8, 1, 1, 1)

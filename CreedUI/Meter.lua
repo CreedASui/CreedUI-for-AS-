@@ -1125,7 +1125,7 @@ local function BuildToggle()
 		glow = function() return 1, 0.42, 0.26 end,
 		dim = function() return not db.shown end,
 		tip = function()
-			GameTooltip:AddLine(C.L("Damage meter"), 1, 0.82, 0.3)
+			GameTooltip:AddLine(C.L("Damage meter"), 0.98, 0.85, 0.52)
 			GameTooltip:AddLine(C.L("Click to show or hide it."), 1, 1, 1)
 		end,
 		click = function() db.shown = not db.shown end,
