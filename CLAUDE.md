@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.12.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.12.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -107,7 +107,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 524 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 530 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0

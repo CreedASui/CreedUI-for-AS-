@@ -1889,8 +1889,28 @@ local function Sweep()
 	end
 end
 
+-- The level-up cards: while they're up the numbers step aside (under the game's veil their icons
+-- come out black), and the ones from before are dropped as the cards close, so none of them flies
+-- across the screen to where its enemy has gone meanwhile. New hits show as the fight resumes.
+local cardsWere, layerAlpha = false, 1
+
+local function StepCards()
+	local up = CUI.cardsUp and true or false
+	if cardsWere and not up then
+		ClearAll()
+	end
+	cardsWere = up
+	local a = 1 - Clamp(CUI.cardsFade or 0, 0, 1)
+	if up then a = 0 end
+	if a ~= layerAlpha then
+		layerAlpha = a
+		layer:SetAlpha(a)
+	end
+end
+
 local function Step(now)
 	frameNow = now
+	StepCards()
 	local dt = 0
 	if lastNow then
 		dt = now - lastNow
