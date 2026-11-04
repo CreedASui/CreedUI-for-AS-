@@ -166,7 +166,7 @@ local nameplatesPart
 for i = 1, table.getn(CreedUI.parts) do
 	if CreedUI.parts[i].key == "nameplates" then nameplatesPart = CreedUI.parts[i] end
 end
-check(nameplatesPart ~= nil, "Tiny Plates is registered as an CreedUI option")
+check(nameplatesPart ~= nil, "Tiny Plates is registered as a Creed UI option")
 if nameplatesPart then
 	nameplatesPart.set(false)
 	frames(3)
