@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.14.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.14.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -31,7 +31,8 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Core.lua          helpers, memo writers, language system, the options hub, /creed, panel art,
                     sizers and the resize cursor, tooltip faces, the meter's per-line icons
   Locale.lua        en/fr/de/es/pt rows; Locale_<zh|ru|ja|ko|pl|tr>.lua are generated (dev/tr)
-  Timer.lua         the boss timer (DON'T TOUCH: the user loves it as it is)
+  Timer.lua         the boss timer (DON'T TOUCH unless asked: the user loves it; 1.14.2 made its rims and
+                    sockets C.BRONZE and its gems red, asked for)
   Numbers.lua       floating damage numbers (combat text API)
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
   Skulls.lua        a skull over each boss (horned, red eyes) and guardian (world anchors), sized by distance
@@ -117,7 +118,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 559 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 563 passed, 0 failed
 lua50 cui/timer_tests.lua . ../CreedUI          # 78 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
@@ -201,11 +202,16 @@ before using an API. Known:
    matched), the summary's fields, the Level Up! button, Damage Taken. Ask for screenshots.
    Ideas not done yet: talent/summon timers (`AZS_GetTimers`), arrows to caches and lairs, the
    upcoming bosses (`AZS_GetUpcomingBosses`; ask first, the timer is the user's favorite).
-3. **Talents (1.13.0):** Talents.lua shows the meter loadout's `talents` (`sourceKey`, `rank`, `treeKey`,
-   `specKey`; names and icons in `sources`): learned ones only, no grid, max ranks, branches or paintings.
-   Tree names: the key's last part in title case, through C.L (the game's 24 tree names are rows).
-   Not seen live: the `treeKey` format. The game's own window is `ToggleTalentFrame()`.
-4. **Not yet confirmed in the real client:**
+3. **The user's list, not done yet (2026-11-04):** read the game's latest major patch for needed changes;
+   a Scholomance theme for the timer; active skill counts (totems, blizzards...); the minimap's player
+   arrow over the pins; the pet bar showing its skills with tooltips; more damage number styles to pick
+   from; damage taken as scrolling text by the hero; every text fitting the options; the meter counting
+   echo, windfury and procs right.
+4. **Talents (1.13.0):** the tab opens the game's window again (`ToggleTalentFrame()`, 1.14.2, asked
+   for); `/creed talents` opens Talents.lua's: the meter loadout's `talents` (`sourceKey`, `rank`,
+   `treeKey`, `specKey`; names and icons in `sources`), learned ones only. Tree names: the key's last
+   part in title case, through C.L (the game's 24 tree names are rows). Not seen live: `treeKey`.
+5. **Not yet confirmed in the real client:**
    - the bundled TTFs loading from the addon folder, and CJK rendering;
    - `SetCursor` taking an addon texture (the resize arrow; if it fails, the drawn arrow comes back);
    - the character window's assumptions: stats are read as "Label:" with the value on the same row,
