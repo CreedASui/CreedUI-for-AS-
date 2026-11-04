@@ -2364,6 +2364,7 @@ local function ToggleOptions()
 	if options:IsShown() then
 		options:Hide()
 	else
+		if CUI.AboveHub then CUI.AboveHub(options) end
 		RefreshOptions()
 		options:Show()
 	end
