@@ -2214,7 +2214,7 @@ local function BuildOptions()
 	o:SetWidth(300)
 	o:SetHeight(548)
 	o:SetPoint("CENTER", UIParent, "CENTER", 0, 40)
-	o:SetFrameStrata("DIALOG")
+	if CUI.AboveHub then CUI.AboveHub(o) else o:SetFrameStrata("DIALOG") end
 	o:SetBackdrop({ bgFile = FLAT, edgeFile = FLAT, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
 	o:SetBackdropColor(0.05, 0.05, 0.07, 0.96)
 	o:SetBackdropBorderColor(0, 0, 0, 1)
@@ -2364,6 +2364,7 @@ local function ToggleOptions()
 	if options:IsShown() then
 		options:Hide()
 	else
+		if CUI.AboveHub then CUI.AboveHub(options) end
 		RefreshOptions()
 		options:Show()
 	end

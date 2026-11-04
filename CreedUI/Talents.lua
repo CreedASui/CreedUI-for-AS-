@@ -189,7 +189,7 @@ local function Build()
 	root = CreateFrame("Frame", "CreedUITalents", UIParent)
 	root:SetWidth(640)
 	root:SetHeight(320)
-	root:SetFrameStrata("DIALOG")
+	if C.AboveHub then C.AboveHub(root) else root:SetFrameStrata("DIALOG") end
 	root:EnableMouse(true)
 	root:Hide()
 	root.deco = C.Panel(root, false)
@@ -242,6 +242,7 @@ function C.ToggleTalents()
 		root:Hide()
 	else
 		S.broken = false
+		if C.AboveHub then C.AboveHub(root) end
 		root:Show()
 		local ok = pcall(Refresh)
 		if not ok then S.broken = true end
