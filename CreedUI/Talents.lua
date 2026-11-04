@@ -242,6 +242,7 @@ function C.ToggleTalents()
 		root:Hide()
 	else
 		S.broken = false
+		if C.AboveHub then C.AboveHub(root) end
 		root:Show()
 		local ok = pcall(Refresh)
 		if not ok then S.broken = true end
