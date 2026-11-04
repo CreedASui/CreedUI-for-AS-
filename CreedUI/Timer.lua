@@ -654,6 +654,8 @@ local function ApplyLock()
 end
 
 ------------------------------------------------------------------------ palette
+-- the bosses' gems along the bar: red in every zone
+local GEM_RED = { 0.95, 0.27, 0.20 }
 local function ApplyPalette()
 	local p = S.pal
 	CUI.pal = p
@@ -666,7 +668,10 @@ local function ApplyPalette()
 	local g = p.glow
 	W.flow1:SetVertexColor(g[1], g[2], g[3], 0.5)
 	W.flow2:SetVertexColor(g[1], g[2], g[3], 0.32)
-	local rim = p.rim
+	-- its metal in Creed UI's bronze gold, as every part's (Core's C.BRONZE), in every zone; the
+	-- zone's colors stay in its fill, glow and title
+	local bronze = CUI.BRONZE
+	local rim = bronze and bronze.rim or p.rim
 	W.rimL:SetVertexColor(rim[1], rim[2], rim[3])
 	W.rimM:SetVertexColor(rim[1], rim[2], rim[3])
 	W.rimR:SetVertexColor(rim[1], rim[2], rim[3])
@@ -1206,12 +1211,12 @@ local function StepMarker(m, e, x, isNext, soon, dt, now, visTarget)
 		glowA, gr, gg, gb = 0.40 + 0.32 * pulse, 1, 0.22, 0.10
 		scaleT, shineA, sockA, sockK = 1.12 + 0.04 * pulse, 0.9, 1, 1
 	elseif state == "dead" then
-		local gem = pal.gem
+		local gem = GEM_RED
 		tr, tg, tb = 0.40 + gem[1] * 0.14, 0.40 + gem[2] * 0.14, 0.42 + gem[3] * 0.14
 		glowA, gr, gg, gb = 0, 0, 0, 0
 		scaleT, shineA, sockA, sockK = 0.84, 0.22, 0.85, 0.62
 	else
-		local gem = pal.gem
+		local gem = GEM_RED
 		local k = isNext and 1 or 0.86
 		tr, tg, tb = gem[1] * k, gem[2] * k, gem[3] * k
 		gr, gg, gb = gem[1], gem[2], gem[3]
@@ -1261,7 +1266,7 @@ local function StepMarker(m, e, x, isNext, soon, dt, now, visTarget)
 	local base = final and MARK_FINAL or MARK
 	local s = base * m.scale
 	Size(m.socket, s, s)
-	local rim = pal.rim
+	local rim = CUI.BRONZE and CUI.BRONZE.rim or pal.rim
 	Color(m.socket, rim[1] * m.sockK, rim[2] * m.sockK, rim[3] * m.sockK, m.sockA)
 
 	-- the gem drains from the top while its boss is up

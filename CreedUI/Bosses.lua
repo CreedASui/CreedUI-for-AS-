@@ -7,6 +7,7 @@
 local C = CreedUI
 local DEFAULTS = { enabled = true, scale = 1, width = 380, guardians = true }
 local MAX_ROWS = 6
+local BIGGER = 1.2         -- the bars a fifth bigger than they were (asked for), the size setting on top
 local BAR_H = 12          -- the trough, as the timer's
 local ROW_H = 38          -- name line + bar
 local ROW_GAP = 2
@@ -475,7 +476,7 @@ local function Anchor(f)
 end
 
 local function ApplyScale()
-	root:SetScale(db.scale)
+	root:SetScale(db.scale * BIGGER)
 	for i = 1, table.getn(C.movers) do
 		if C.movers[i].frame == root then C.ApplyPos(C.movers[i]) end
 	end
@@ -497,7 +498,7 @@ C.OnInit(function()
 	root:SetFrameStrata("MEDIUM")
 	root:SetWidth(db.width + 40)
 	root:SetHeight(2 * (ROW_H + ROW_GAP))
-	root:SetScale(db.scale)
+	root:SetScale(db.scale * BIGGER)
 	root:Hide()
 	C.Movable(root, "bosses", "Boss and mini-boss bars", Anchor)
 	if type(AZS_SetOnTopOfScreens) == "function" then pcall(AZS_SetOnTopOfScreens, root, true) end

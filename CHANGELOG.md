@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.14.2
+- **Skill bar:** both ends look the same now (the kills, gold and cache sit at the right end of their room, the rails' diamonds at the frame's middle), so the right side no longer looks stretched.
+- **Boss timer:** its metal (rails and the bosses' sockets) is the dark bronze gold of the rest of Creed UI; its bar, glow and title keep each zone's colors, and the bosses' diamonds are red in every zone.
+- **Talents:** the Talents tab opens the game's own Talents window again (`/creed talents` still opens Creed UI's).
+- **Boss bars** are a fifth bigger, and so are the **skulls over bosses** (guardians' skulls stay as they were).
+
 ## 1.14.1
 - **Bronze gold everywhere:** every frame's metal (your frame, your target and party, the boss bars, the minimap ring, the meter, the luck window and the rest) is the skill bar's bronze gold in every zone, instead of taking the zone's colors. The boss timer keeps its own.
 - **Dragons:** both face out now, perched on the bar's ends with the end rail behind them.

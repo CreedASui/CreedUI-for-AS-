@@ -174,6 +174,8 @@ local function StepDock(dt)
 	local d = C.tallyDock
 	local target = 0
 	if d and d.on then target = math.max(DOCK_ROOM, d.w or 0) + DOCK_GAP end
+	-- the strip sits at the right end of its room, so the gap before the right dragon is the left's
+	C.barDockShift = (d and d.on) and math.max(0, math.max(DOCK_ROOM, d.w or 0) - (d.w or 0)) or 0
 	local w = C.Toward(S.dock or 0, target, 10, dt)
 	if math.abs(w - target) < 0.3 then w = target end
 	if w ~= S.dock then
@@ -696,12 +698,12 @@ C.OnInit(function()
 	root.panel:SetPoint("TOPLEFT", root, "TOPLEFT", -(C.PANEL_ROOM or 0), 0)
 	root.panel:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", C.PANEL_ROOM or 0, 0)
 	root.deco = C.Panel(root.panel, true)
-	-- a gold diamond at the middle of the top and bottom rails, over the bar's middle
+	-- a gold diamond at the middle of the top and bottom rails
 	for _, edge in ipairs({ "TOP", "BOTTOM" }) do
 		local d = C.Tex(root.panel, "OVERLAY", C.ART .. "Diamond")
 		d:SetWidth(20)
 		d:SetHeight(20)
-		d:SetPoint("CENTER", root, edge, 0, 0)
+		d:SetPoint("CENTER", root.panel, edge, 0, 0)
 		table.insert(root.deco.metal, d)
 	end
 	root.dividers = {}

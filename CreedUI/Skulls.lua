@@ -9,12 +9,12 @@
 local C = CreedUI
 local DEFAULTS = { enabled = true, scale = 1 }
 local QUERY = { kinds = { "boss", "finalBoss", "guardian" } }
-local GUARD_SIZE = 0.82     -- a guardian's skull, against a boss's at the same distance
+local GUARD_SIZE = 0.68     -- a guardian's skull, against a boss's at the same distance (as it was)
 local LIST_EVERY = 0.5      -- how often the list of bosses is read again
 local LIFT = 1.2            -- yards over the head
 local FEET_LIFT = 5         -- yards over the feet, for a boss the game can't find the head of
-local WIDTH_YARDS = 1.6     -- the skull's width, in the world
-local MIN_PX, MAX_PX = 22, 64
+local WIDTH_YARDS = 1.92    -- the skull's width, in the world (a fifth bigger than at first, asked for)
+local MIN_PX, MAX_PX = 26, 77
 local MAX_SKULLS = 8
 local GONE = { dead = true, removed = true, departed = true, collected = true, expired = true, unavailable = true }
 local LOST = { unknownAnchor = true, expired = true, worldChanged = true }
