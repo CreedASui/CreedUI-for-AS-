@@ -1064,6 +1064,19 @@ end
 ------------------------------------------------------------------------ the options hub
 local hub, RefreshHub
 
+-- A settings window opened from the hub is a sibling of the hub under UIParent.
+-- Give the whole child window a higher frame level: otherwise the hub's direct
+-- FontStrings can draw over the child's title even while its child controls draw
+-- above the hub. Keep the same DIALOG strata so it stays below true fullscreen
+-- dialogs (such as the game's level-up cards).
+function C.AboveHub(frame)
+	if not frame then return end
+	frame:SetFrameStrata("DIALOG")
+	local level = UIParent:GetFrameLevel() + 10
+	if hub then level = math.max(level, hub:GetFrameLevel() + 10) end
+	frame:SetFrameLevel(level)
+end
+
 local function HubText(parent, size, r, g, b)
 	local fs = parent:CreateFontString(nil, "OVERLAY")
 	C.SetFace(fs, C.FONT, size)
