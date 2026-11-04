@@ -189,7 +189,7 @@ local function Build()
 	root = CreateFrame("Frame", "CreedUITalents", UIParent)
 	root:SetWidth(640)
 	root:SetHeight(320)
-	root:SetFrameStrata("DIALOG")
+	if C.AboveHub then C.AboveHub(root) else root:SetFrameStrata("DIALOG") end
 	root:EnableMouse(true)
 	root:Hide()
 	root.deco = C.Panel(root, false)
