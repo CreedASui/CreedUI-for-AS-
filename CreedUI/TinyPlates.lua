@@ -1015,7 +1015,11 @@ local function ScanNameplates()
 	for i = 1, table.getn(children) do
 		local frame = children[i]
 		local objectType
-		if frame and frame.GetObjectType then objectType = frame:GetObjectType() end
+		if frame then
+			-- Some non-frame WorldFrame children do not expose the widget methods at all.
+			local ok, value = pcall(function() return frame:GetObjectType() end)
+			if ok then objectType = value end
+		end
 		-- WorldFrame can own other UI objects as well as nameplates. Restrict the
 		-- scan to actual frames/buttons before calling visibility or geometry APIs.
 		-- Azeroth Survivors' native plates are Buttons; hidden pooled plates can be 0x0.
