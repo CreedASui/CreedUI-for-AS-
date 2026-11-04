@@ -1014,13 +1014,17 @@ local function ScanNameplates()
 	local children = { WorldFrame:GetChildren() }
 	for i = 1, table.getn(children) do
 		local frame = children[i]
-		-- V controls whether Blizzard/Azeroth Survivors exposes active plates. Only
-		-- snapshot a real, laid-out plate; hidden pooled frames can still be 0x0.
-		if frame and frame.IsVisible and frame:IsVisible()
+		local objectType
+		if frame and frame.GetObjectType then objectType = frame:GetObjectType() end
+		-- WorldFrame can own other UI objects as well as nameplates. Restrict the
+		-- scan to actual frames/buttons before calling visibility or geometry APIs.
+		-- Azeroth Survivors' native plates are Buttons; hidden pooled plates can be 0x0.
+		if (objectType == "Frame" or objectType == "Button")
+				and frame.IsVisible and frame:IsVisible()
 				and frame.GetWidth and frame:GetWidth() > 0
 				and frame.GetHeight and frame:GetHeight() > 0 then
 			RegisterPlate(frame)
-			end
+		end
 	end
 end
 
