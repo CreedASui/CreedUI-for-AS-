@@ -7,6 +7,7 @@ on:
     paths:
       - 'CreedUI/**'
       - 'dev/cui/**'
+      - 'dev/engine_methods.lua'
       - 'dev/bt/sim.lua'
       - '.github/workflows/test-creed-tiny-plates.yml'
   pull_request:
@@ -15,6 +16,7 @@ on:
     paths:
       - 'CreedUI/**'
       - 'dev/cui/**'
+      - 'dev/engine_methods.lua'
       - 'dev/bt/sim.lua'
       - '.github/workflows/test-creed-tiny-plates.yml'
 
