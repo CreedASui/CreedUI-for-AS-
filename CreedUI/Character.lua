@@ -606,7 +606,7 @@ local function FadeWindow()
 end
 
 -- The Talents tab: the character window goes back to its Character page (so it opens there next
--- time) and closes, and Creed UI's talent window opens in its place (the game's own without it).
+-- time) and closes, and the game's own Talents window opens in its place.
 local function OpenGameTalents()
 	local tab = CharacterFrameTab1
 	if tab and tab.Click then
@@ -616,10 +616,11 @@ local function OpenGameTalents()
 		this = was
 	end
 	if type(HideUIPanel) == "function" then HideUIPanel(CharacterFrame) else CharacterFrame:Hide() end
-	if C.ToggleTalents then
-		C.ToggleTalents()
-	elseif type(ToggleTalentFrame) == "function" then
+	-- the game's own Talents window (asked for in place of Creed UI's; /creed talents still opens ours)
+	if type(ToggleTalentFrame) == "function" then
 		ToggleTalentFrame()
+	elseif C.ToggleTalents then
+		C.ToggleTalents()
 	end
 end
 

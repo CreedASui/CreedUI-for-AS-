@@ -279,7 +279,7 @@ local function Anchor(f)
 	if Dockable() then
 		-- in the panel, past the jewelry (offsets in the strip's own scale)
 		local k = CreedUIBar:GetEffectiveScale() / f:GetEffectiveScale()
-		f:SetPoint("LEFT", CreedUIBar, "RIGHT", C.barDockX * k, 0)
+		f:SetPoint("LEFT", CreedUIBar, "RIGHT", (C.barDockX + (C.barDockShift or 0)) * k, 0)
 	elseif CreedUIBar then
 		f:SetPoint("LEFT", CreedUIBar, "BOTTOMRIGHT", 6, 28) -- beside the spells and jewelry
 	else
@@ -305,6 +305,11 @@ local function Dock(mover, dt)
 		end
 		d.on = docked
 		if docked then S.dockK = root:GetEffectiveScale() / CreedUIBar:GetEffectiveScale() end
+		-- the bar keeps a set room for the strip; it sits at the room's right end (the bar says where)
+		if docked and C.barDockShift ~= S.shiftAt then
+			S.shiftAt = C.barDockShift
+			C.ApplyPos(mover)
+		end
 	end
 	-- the room it takes in the panel: its width as laid out this frame, and only its own fade (not
 	-- the cards': the panel keeps its shape while they're up)

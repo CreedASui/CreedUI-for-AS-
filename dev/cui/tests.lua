@@ -2127,14 +2127,13 @@ do
 	this = CharacterFrameTab4
 	CharacterFrameTab4.__scripts.OnClick()
 	frames(3)
-	check(CreedUITalents and M.Visible(CreedUITalents) and M.talentToggles == 0, "the Talents tab opens Creed UI's talent window")
+	check(M.talentToggles == 1 and not (CreedUITalents and M.Visible(CreedUITalents)), "the Talents tab opens the game's own Talents window")
 	check(not M.Visible(CharacterFrame), "and the character window closes for it")
-	CreedUITalents:Hide()
 	check(CreedUITalentPage == nil, "no talent page of Creed UI's own any more")
 	-- opened again: on the Character page, dressed, not straight back to talents
 	CharacterFrame:Show()
 	frames(5)
-	check(M.Visible(PaperDollFrame) and not M.Visible(SkillFrame) and M.Visible(CreedUICharacterBack) and not M.Visible(CreedUITalents),
+	check(M.Visible(PaperDollFrame) and not M.Visible(SkillFrame) and M.Visible(CreedUICharacterBack) and M.talentToggles == 1,
 		"opened again, it's on the Character page, dressed (and the talents didn't open again)")
 	check(alpha(CharacterFramePortrait) == 0 and alpha(M.runPanel) == 0, "the page in our dress: the portrait ours, the game's Run Stats away")
 	CharacterFrame:Hide()
@@ -2155,7 +2154,7 @@ do
 	this = CharacterFrameTab4
 	CharacterFrameTab4.__scripts.OnClick()
 	frames(3)
-	check(M.Visible(SkillFrame) and alpha(SkillFrame) == 1 and SkillListMock.__mouse and not M.Visible(CreedUITalents), "and its Skills page is the game's, untouched")
+	check(M.Visible(SkillFrame) and alpha(SkillFrame) == 1 and SkillListMock.__mouse and M.talentToggles == 1, "and its Skills page is the game's, untouched")
 	this = CharacterFrameTab1
 	CharacterFrameTab1.__scripts.OnClick()
 	M.Slash("character on")
@@ -2220,22 +2219,22 @@ do
 	local head = 330 + 6 * 9 + (3 + 1.2) * 9
 	check(s1 and math.abs(cx - (640 - 5 * 9)) < 1 and math.abs(cy - (head + w / 2)) <= 2.5,
 		string.format("the skull floats just over the boss's head (%.1f, %.1f; head at %.1f)", cx, cy, head))
-	check(s1 and math.abs(w - 22) < 1, "a far boss's skull is small, but not smaller than 22 (" .. w .. ")")
+	check(s1 and math.abs(w - 26) < 1, "a far boss's skull is small, but not smaller than 26 (" .. w .. ")")
 	-- nearer: bigger, up to a limit
 	M.waNear["Anub'Rekhan"] = 3
 	frames(30)
 	local _, _, w1 = center(skullOf("Anub'Rekhan"))
 	local _, _, w2 = center(skullOf("Kel'Thuzad"))
-	check(math.abs(w1 - 43) < 1.5 and math.abs(w2 - 22) < 1, string.format("a near boss's skull is bigger (%.1f vs %.1f)", w1, w2))
+	check(math.abs(w1 - 51.8) < 1.5 and math.abs(w2 - 26) < 1, string.format("a near boss's skull is bigger (%.1f vs %.1f)", w1, w2))
 	M.waNear["Anub'Rekhan"] = 10
 	frames(30)
 	_, _, w1 = center(skullOf("Anub'Rekhan"))
-	check(math.abs(w1 - 64) < 1, "and no bigger than 64 however near (" .. w1 .. ")")
+	check(math.abs(w1 - 77) < 1, "and no bigger than 77 however near (" .. w1 .. ")")
 	M.waNear["Anub'Rekhan"] = nil
 	part.setScale(1.5)
 	frames(30)
 	_, _, w2 = center(skullOf("Kel'Thuzad"))
-	check(math.abs(w2 - 33) < 1, "the size setting scales them (" .. w2 .. ")")
+	check(math.abs(w2 - 39) < 1, "the size setting scales them (" .. w2 .. ")")
 	part.setScale(1)
 	-- the final boss glows gold, the others red
 	local gold, red = 0, 0
@@ -2702,7 +2701,7 @@ do
 	local gw, gh, gx = barOf("Gnoll Packleader")
 	check(bw and gw and gw < bw * 0.75 and gh < bh, string.format("a guardian's bar is narrower and thinner than a boss's (%s x %s vs %s x %s)",
 		tostring(gw), tostring(gh), tostring(bw), tostring(bh)))
-	check(bw and math.abs(bw - CreedUIDB.bosses.width) < 1, "the boss keeps its full bar")
+	check(bw and math.abs(bw - CreedUIDB.bosses.width * 1.2) < 1, "the boss keeps its full bar, a fifth bigger")
 	check(bx and gx and math.abs(bx - gx) < 1, "the guardians' bars sit centered under the boss's")
 	local l, b, r, t = M.Rect(CreedUIBosses)
 	local lowest = 9999
@@ -2719,7 +2718,7 @@ do
 	AZS_UNITS_UPDATED = M.now
 	frames(90)
 	local jw = barOf("Jin'do")
-	check(jw and math.abs(jw - CreedUIDB.bosses.width) < 1, "a reused row takes a boss's full look")
+	check(jw and math.abs(jw - CreedUIDB.bosses.width * 1.2) < 1, "a reused row takes a boss's full look")
 	M.bosses, M.guardians = saveB, saveG
 	frames(30)
 	problems("compact guardians")
@@ -2951,6 +2950,44 @@ do
 	CreedUI.palStamp = CreedUI.palStamp + 1
 	frames(5)
 	problems("bronze")
+end
+
+------------------------------------------------------------------ 11m. the bar's ends even; the timer's metal bronze
+do
+	M.phase = "playing"
+	frames(30)
+	local pl, pb, pr, pt = M.Rect(CreedUIBar.panel)
+	local d1, d2 = CreedUIBar.deco.dragons[1], CreedUIBar.deco.dragons[2]
+	local _, _, r1 = M.Rect(d1)
+	local l2 = M.Rect(d2)
+	local first, last = 9999, -9999
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Button" and o.__parent == CreedUIBar and M.Visible(o) then
+			local l, _, r = M.Rect(o)
+			first = math.min(first, l)
+			last = math.max(last, r)
+		end
+	end
+	local tl, _, tr = M.Rect(CreedUITally)
+	if M.Visible(CreedUITally) then last = math.max(last, tr) end
+	local gapL, gapR = first - r1, l2 - last
+	check(M.Visible(CreedUITally) and math.abs(gapL - gapR) < 16, string.format("the bar's two ends look the same: %.0f and %.0f from the dragons", gapL, gapR))
+	local mid
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Art\\Diamond$") and o.__parent == CreedUIBar.panel and o.__w == 20 then
+			local l, _, r = M.Rect(o)
+			mid = (l + r) / 2
+		end
+	end
+	check(mid and math.abs(mid - (pl + pr) / 2) < 1, "the rails' diamonds sit at the frame's middle")
+	-- the timer: its metal bronze gold, its fill and title the zone's
+	local rimM
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Art\\FrameM$") and under(o, CreedUITimerFrame) and o.__vc then rimM = o end
+	end
+	check(rimM and math.abs(rimM.__vc[1] - 0.95) < 0.01 and math.abs(rimM.__vc[2] - 0.79) < 0.01 and math.abs(rimM.__vc[3] - 0.44) < 0.01,
+		"the timer's rails are bronze gold")
+	problems("bar ends and timer metal")
 end
 
 ------------------------------------------------------------------ 12. no API at all
