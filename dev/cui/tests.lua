@@ -3307,6 +3307,21 @@ do
 		end
 	end
 	check(marksY and beltY and marksY < beltY, "the newest lowest, nearest the skill bar")
+	-- each drop in its rarity's color, known by its set's or weapon's name (the line gives none)
+	SIM.Advance(6, 1 / 30)
+	ChatFrame1:AddMessage("You receive loot: [Dreadmist Mantle] New in your collection!")
+	ChatFrame1:AddMessage("You receive loot: [Deathmist Robe] New in your collection!")
+	ChatFrame1:AddMessage("You receive loot: [Ashbringer] New in your collection!")
+	frames(10)
+	local function colorOf(text)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "FontString" and o.__text == text and under(o, CreedUILoot) then return o.__color end
+		end
+	end
+	local g, b, o = colorOf("Dreadmist Mantle"), colorOf("Deathmist Robe"), colorOf("Ashbringer")
+	check(g and g[2] > 0.9 and g[1] < 0.3, "Dreadmist (Uncommon) in green")
+	check(b and b[3] > 0.8 and b[1] < 0.2, "Deathmist (Tier 0.5) in blue, not Dreadmist's green")
+	check(o and o[1] > 0.9 and o[2] > 0.4 and o[2] < 0.6 and o[3] < 0.1, "Ashbringer (Legendary) in orange")
 	ChatFrame1:AddMessage("Melkor says: You receive loot: nothing, haha")
 	frames(5)
 	check(findText(CreedUILoot, "nothing") == nil, "someone saying the words in chat isn't loot")
