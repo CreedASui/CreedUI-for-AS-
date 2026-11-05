@@ -1066,6 +1066,12 @@ function GetInventoryItemTexture(unit, slot) return M.gear[slot] and M.gear[slot
 function GetInventoryItemQuality(unit, slot) return M.gear[slot] and M.gear[slot].q or nil end
 function GetInventoryItemLink(unit, slot) return M.gear[slot] and M.gear[slot].link or nil end
 function GetInventoryItemCooldown(unit, slot) return 0, 0, 1 end
+-- a party member's menu: what was asked, in M.asked
+M.asked = {}
+M.farAway = {}
+function InspectUnit(u) table.insert(M.asked, "inspect " .. tostring(u)) end
+function FollowUnit(u) table.insert(M.asked, "follow " .. tostring(u)) end
+function CheckInteractDistance(u, d) return not M.farAway[u] end
 -- items by id: M.items[id] = { name, quality, icon }
 function GetItemInfo(id)
 	local it = M.items and M.items[tonumber(id) or id]

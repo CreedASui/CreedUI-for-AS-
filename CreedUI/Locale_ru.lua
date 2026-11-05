@@ -471,4 +471,8 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["the loot window stopped after an error: "] = "окно добычи остановлено после ошибки: ",
 	["{1} in all"] = "всего {1}",
 	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "Добыча забега в маленьком окне: заработанные знаки, затем выпавшее вам снаряжение, новое сверху, со значком и редкостью. Наведите на предмет, чтобы увидеть подсказку.",
+	["Inspect"] = "Осмотреть",
+	["Follow"] = "Следовать",
+	["Whisper"] = "Шепнуть",
+	["Too far away to inspect."] = "Слишком далеко для осмотра.",
 })

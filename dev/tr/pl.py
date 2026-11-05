@@ -277,4 +277,8 @@ T = {
 468: "okno łupu zatrzymało się po błędzie: ",
 469: "łącznie {1}",
 470: "Łup biegu w małym oknie: zdobyte znaki, potem sprzęt, który dla ciebie wypadł, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
+471: "Obejrzyj",
+472: "Podążaj",
+473: "Szepnij",
+474: "Za daleko, by obejrzeć.",
 }

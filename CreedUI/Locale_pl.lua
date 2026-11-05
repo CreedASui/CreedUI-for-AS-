@@ -471,4 +471,8 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["the loot window stopped after an error: "] = "okno łupu zatrzymało się po błędzie: ",
 	["{1} in all"] = "łącznie {1}",
 	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "Łup biegu w małym oknie: zdobyte znaki, potem sprzęt, który dla ciebie wypadł, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
+	["Inspect"] = "Obejrzyj",
+	["Follow"] = "Podążaj",
+	["Whisper"] = "Szepnij",
+	["Too far away to inspect."] = "Za daleko, by obejrzeć.",
 })
