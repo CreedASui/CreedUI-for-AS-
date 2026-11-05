@@ -471,4 +471,8 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["the loot window stopped after an error: "] = "오류로 전리품 창이 멈췄습니다: ",
 	["{1} in all"] = "총 {1}",
 	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "이번 판의 전리품을 작은 창에: 얻은 징표, 그리고 떨어진 장비를 최신순으로 아이콘과 등급과 함께. 가리키면 툴팁이 나옵니다.",
+	["Inspect"] = "살펴보기",
+	["Follow"] = "따라가기",
+	["Whisper"] = "귓속말",
+	["Too far away to inspect."] = "너무 멀어서 살펴볼 수 없습니다.",
 })

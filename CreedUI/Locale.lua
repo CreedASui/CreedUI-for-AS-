@@ -1397,6 +1397,28 @@ local ROWS = {
 		"El botín de la partida en una ventanita: las marcas ganadas y luego el equipo que cayó para ti, el más nuevo primero, con su icono y rareza. Señala uno para ver su descripción.",
 		"O saque da partida numa janelinha: as marcas ganhas e depois o equipamento que caiu para você, o mais novo primeiro, com ícone e raridade. Aponte para um para ver a dica." },
 
+	-- the party frames' right-click menu (1.18.0)
+	{ "Inspect",
+		"Inspecter",
+		"Betrachten",
+		"Inspeccionar",
+		"Inspecionar" },
+	{ "Follow",
+		"Suivre",
+		"Folgen",
+		"Seguir",
+		"Seguir" },
+	{ "Whisper",
+		"Chuchoter",
+		"Flüstern",
+		"Susurrar",
+		"Sussurrar" },
+	{ "Too far away to inspect.",
+		"Trop loin pour inspecter.",
+		"Zu weit entfernt zum Betrachten.",
+		"Demasiado lejos para inspeccionar.",
+		"Longe demais para inspecionar." },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },

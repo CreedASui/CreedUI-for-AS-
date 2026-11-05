@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.18.0
+- **Party frames: right-click menu.** A right click on a friend's frame opens a small menu beside it with their name: **Inspect** (their gear, in the game's own window; it says so when they're too far away), **Follow**, and **Whisper** (the chat box opens with "/w Name" typed). A left click still targets them.
+
 ## 1.17.3
 - **Loot window: marks and boss gear only.** Its head shows the marks you earned this run on an Argent Dawn token, and how many you have in all; the gold and caches are gone. Below, the gear that dropped for you. Both are read from the game's own lines in the chat, in any of its languages (someone typing the same words doesn't count).
 

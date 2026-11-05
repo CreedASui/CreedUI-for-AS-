@@ -471,4 +471,8 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["the loot window stopped after an error: "] = "エラーのため戦利品ウィンドウを止めました: ",
 	["{1} in all"] = "合計 {1}",
 	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "周回の戦利品を小さなウィンドウに：獲得したマーク、そしてドロップした装備を新しい順に、アイコンとレア度付きで。指すとツールチップを表示。",
+	["Inspect"] = "調べる",
+	["Follow"] = "フォロー",
+	["Whisper"] = "ささやく",
+	["Too far away to inspect."] = "遠すぎて調べられません。",
 })

@@ -468,3 +468,7 @@ The run's loot in a small window: its gold and caches, then every item you recei
 the loot window stopped after an error: 
 {1} in all
 The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip.
+Inspect
+Follow
+Whisper
+Too far away to inspect.

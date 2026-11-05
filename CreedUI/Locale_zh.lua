@@ -471,4 +471,8 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["the loot window stopped after an error: "] = "战利品窗口因错误停止：",
 	["{1} in all"] = "共 {1}",
 	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "小窗口显示本局战利品：获得的印记，然后是为你掉落的装备，最新的在前，带图标和品质。指向物品可查看提示。",
+	["Inspect"] = "观察",
+	["Follow"] = "跟随",
+	["Whisper"] = "密语",
+	["Too far away to inspect."] = "距离太远，无法观察。",
 })

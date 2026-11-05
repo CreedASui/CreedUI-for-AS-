@@ -580,6 +580,42 @@ do
 	this = CreedUIParty1
 	CreedUIParty1.__scripts.OnClick()
 	check(M.targeted == "party1", "clicking a friend targets them")
+	-- a right click: Inspect, Follow, Whisper
+	this, arg1 = CreedUIParty1, "RightButton"
+	CreedUIParty1.__scripts.OnClick()
+	arg1 = "LeftButton"
+	check(CreedUIPartyMenu and M.Visible(CreedUIPartyMenu) and findText(CreedUIPartyMenu, "^Melkor$") ~= nil
+		and findText(CreedUIPartyMenu, "^Inspect$") and findText(CreedUIPartyMenu, "^Follow$") and findText(CreedUIPartyMenu, "^Whisper$"),
+		"a right click opens Inspect, Follow and Whisper under their name: " .. (CreedUIPartyMenu and table.concat(textsUnder(CreedUIPartyMenu), " | ") or "none"))
+	local function press(word)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "FontString" and o.__text == word and under(o, CreedUIPartyMenu) then
+				this = o.__parent
+				o.__parent.__scripts.OnClick()
+				return
+			end
+		end
+	end
+	press("Inspect")
+	check(M.asked[table.getn(M.asked)] == "inspect party1" and not M.Visible(CreedUIPartyMenu), "Inspect opens their gear, and the menu closes")
+	this, arg1 = CreedUIParty1, "RightButton"
+	CreedUIParty1.__scripts.OnClick()
+	press("Follow")
+	check(M.asked[table.getn(M.asked)] == "follow party1", "Follow follows them")
+	this, arg1 = CreedUIParty1, "RightButton"
+	CreedUIParty1.__scripts.OnClick()
+	press("Whisper")
+	check(ChatFrameEditBox:GetText() == "/w Melkor ", "Whisper opens the chat box to them: " .. tostring(ChatFrameEditBox:GetText()))
+	ChatFrameEditBox:SetText("")
+	ChatFrameEditBox:Hide()
+	M.farAway.party1 = true
+	local asked = table.getn(M.asked)
+	this, arg1 = CreedUIParty1, "RightButton"
+	CreedUIParty1.__scripts.OnClick()
+	press("Inspect")
+	check(table.getn(M.asked) == asked and chatHas("Too far away to inspect"), "too far away to inspect: it says so")
+	M.farAway.party1 = nil
+	arg1 = "LeftButton"
 	M.unit.party4 = { exists = false }
 	M.Fire("PARTY_MEMBERS_CHANGED")
 	frames(40)
