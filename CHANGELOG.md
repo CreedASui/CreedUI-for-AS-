@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.20.2
+- **Loot pop-up: each drop in its rarity's color.** The game's loot line doesn't say how rare a drop is, so Creed UI knows it by the piece's set or weapon name, in any of the game's languages: Common in white, Uncommon in green, Rare and Tier 0.5 in blue, Epic in purple, Legendary in orange.
+
 ## 1.20.1
 - **Party frames: your friends' shields.** A friend wearing a shield (Power Word: Shield, Ice Barrier, Mana Shield, Frost or Fire Ward, Sacrifice, Divine Shield or Protection, Blessing of Protection) shows it on their health as your own frame does: an icy pane after their health, as big as the shield holds (read from the buff's own words), or a small one when the game doesn't say.
 
