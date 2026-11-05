@@ -3028,7 +3028,7 @@ do
 	frames(40)
 	check(M.Visible(CreedUIPetBar) and visibleAlpha(CreedUIPetBar) > 0.9, "summons out: the pet bar shows")
 	check(countTex(CreedUIPetBar, "SpiritWolf$") == 1 and findText(CreedUIPetBar, "^2$") ~= nil, "the wolves' face and their count: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
-	check(countTex(CreedUIPetBar, "Cannibalize$") == 1, "and the skill the meter saw them use")
+	check(countTex(CreedUIPetBar, "Cannibalize$") == 0, "a skill whose hits haven't been seen isn't shown (no value to give)")
 	-- each kind its own face, by its name; a skill shows what it hits for, not its total
 	table.insert(M.summons, { id = 3, key = "raptor", kind = "pet", name = "Raptor", icon = I .. "INV_Misc_QuestionMark" })
 	local foe = M.Enemy("Ghoul", 2, 4)
@@ -3037,12 +3037,17 @@ do
 	ev.meterSourceKey, ev.meterSource = "bite", "Bite"
 	frames(20)
 	check(countTex(CreedUIPetBar, "Pet_Raptor$") == 1 and countTex(CreedUIPetBar, "QuestionMark$") == 0, "the raptor wears a raptor")
-	-- what each can do shows from the start, before the meter sees it used
-	check(countTex(CreedUIPetBar, "MeleeDamage$") >= 1 and countTex(CreedUIPetBar, "BeastCall$") >= 1 and countTex(CreedUIPetBar, "FerociousBite$") >= 1,
-		"the raptor's Raptor Strike, Kill Command and Bestial Wrath")
+	-- a skill shows once its hits are seen, with its own icon; a buff that deals none never does
+	check(countTex(CreedUIPetBar, "BeastCall$") == 0 and countTex(CreedUIPetBar, "FerociousBite$") == 0,
+		"no Kill Command or Bestial Wrath before any of their hits")
 	table.insert(M.summons, { id = 5, key = "imp", kind = "imp", name = "Imp", icon = I .. "INV_Misc_QuestionMark" })
 	frames(10)
-	check(countTex(CreedUIPetBar, "SummonImp$") == 1 and countTex(CreedUIPetBar, "FireBolt$") == 1, "a new Imp shows its Firebolt")
+	check(countTex(CreedUIPetBar, "SummonImp$") == 1 and countTex(CreedUIPetBar, "FireBolt$") == 0, "a new Imp: its face, no Firebolt yet")
+	M.Hit(M.Enemy("Ghoul", 2, 4), 222, "strike", false)
+	local fe = M.world.events[M.world.nEvents]
+	fe.meterSourceKey, fe.meterSource = "ability:imp_firebolt:r1", "Firebolt"
+	frames(10)
+	check(countTex(CreedUIPetBar, "FireBolt$") == 1 and findText(CreedUIPetBar, "^222$") ~= nil, "its Firebolt shows once it hits, with the game's icon for it")
 	table.remove(M.summons)
 	check(findText(CreedUIPetBar, "^350$") ~= nil and findText(CreedUIPetBar, "700") == nil,
 		"Bite shows what it hits for (350), not its total (700): " .. table.concat(textsUnder(CreedUIPetBar), " | "))

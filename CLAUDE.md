@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.17.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.17.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -49,7 +49,8 @@ CreedUI/            the addon (this folder name is the install folder; never ren
                     (GetPetActionInfo...) when the game fills them, else AZS_GetSummonGroups with the
                     skills Meter.lua saw each summon use (C.petSkills, by summonKey), each with what it
                     hits for (C.hitValues, from Numbers.lua's combat text events; 1.16.1). Faces by name (FACES);
-                    each pet's skills from the game's own descriptions (KNOWS, 1.16.2); their tooltips
+                    each pet's skills from the game's own descriptions (KNOWS, 1.16.2), shown only once
+                    their hits are seen (1.17.2, asked for: Kill Command, Bite showed nothing live); their tooltips
                     (1.16.3) show the measured hits (C.hitValues: last, avg, low/high, crit, C.HitRate)
                     and AZS_STATS.pet (the game exposes no pet damage formulas)
   Bar.lua           skill bar, each ability's rank box, jewelry, XP/s, the gold panel (C.PANEL_ROOM at each
@@ -134,7 +135,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 599 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 600 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)

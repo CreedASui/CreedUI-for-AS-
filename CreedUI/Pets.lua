@@ -266,20 +266,29 @@ local function Step(dt, now)
 			C.SetText(s.count, (s.n > 1) and tostring(s.n) or "")
 			C.SetText(s.time, s.left and tostring(math.ceil(s.left)) or "")
 			x = x + K.slot + K.gap
-			local list = SkillsOf(grp, skills[grp.key] or skills[grp.name])
+			-- only the skills whose hits have been seen: a value we can't read isn't shown (a buff such
+			-- as Bestial Wrath deals none of its own; one the game reports apart never shows up here)
+			local all = SkillsOf(grp, skills[grp.key] or skills[grp.name])
+			local list = {}
+			for k = 1, table.getn(all) do
+				local hv = C.hitValues and (C.hitValues[all[k].key or ""] or C.hitValues[all[k].name or ""]
+					or C.hitValues[C.SkillKey(all[k].name) or ""])
+				if hv and hv.last then
+					all[k].hv = hv
+					table.insert(list, all[k])
+				end
+			end
 			s.hasSkills = table.getn(list) > 0
 			for k = 1, math.min(table.getn(list), K.skills) do
 				n = n + 1
 				local sk = Put(n, x, K.skill, "skill")
-				-- its value: what it hits for now (the last plain hit), as a skill's tooltip would say
-				local hv = C.hitValues and (C.hitValues[list[k].key or ""] or C.hitValues[list[k].name or ""]
-					or C.hitValues[C.SkillKey(list[k].name) or ""])
-				sk.name, sk.value, sk.hv, sk.does = C.L(list[k].name), hv and hv.last, hv, list[k].does
+				local hv = list[k].hv
+				sk.name, sk.value, sk.hv, sk.does = C.L(list[k].name), hv.last, hv, list[k].does
 				sk.icon:SetTexture(list[k].icon or "Interface\\Icons\\INV_Misc_QuestionMark")
 				C.Vis(sk.shade, false)
 				C.Vis(sk.glow, false)
 				C.SetText(sk.count, "")
-				C.SetText(sk.time, sk.value and C.Short(sk.value) or "")
+				C.SetText(sk.time, C.Short(sk.value))
 				x = x + K.skill + K.gap
 			end
 			x = x + K.gap * 2

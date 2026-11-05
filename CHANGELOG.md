@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.17.2
+- **Pet bar: only skills with a real value.** A pet's skill shows once its hits are seen, with what it hits for; one whose damage the game doesn't report on its own (Bestial Wrath, and any the game folds into another skill) no longer sits there empty.
+- **Hit values kept apart:** each hit now counts toward the skill the game's meter puts it under, so two skills can't share one value.
+
 ## 1.17.1
 - **Move and size the chat:** with the frames unlocked (right-click the C on the minimap), a Chat box lies over the chat: drag it to move the chat, drag its corner grip to make it wider, narrower, taller or shorter. Its place and size are kept; resetting the frames puts the game's back.
 - **Move the hero's numbers:** the spot the damage-taken and heal numbers rise from is now a box you can drag too, like every other part.
