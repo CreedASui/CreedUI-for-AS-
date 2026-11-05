@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.17.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.17.3**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -60,9 +60,10 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   MinimapButton.lua C.EdgeButton (a draggable round button on the minimap's edge): the C button only
   Chests.lua        caches and guardians' lairs as pins on the minimap
   Meter.lua         damage meter (shown or hidden from the options hub since 1.14.3)
-  Loot.lua          the run's loot window (1.17.0): CHAT_MSG_LOOT item links (GetItemInfo for icon and
-                    rarity), AZS_RUN gold and chest; new run = AZS_GetRunTime going back. Not seen live:
-                    whether the game's drops come as CHAT_MSG_LOOT (its own "LOOT" toast is native)
+  Loot.lua          the run's loot window (1.17.0): marks (Argent Dawn token) and boss gear, read from
+                    the game's chat lines ("You receive loot:", "marks.earned", all 14 languages, from
+                    the client's JSON) by wrapping each ChatFrame's AddMessage (1.17.3); new run =
+                    AZS_GetRunTime going back
   Luck.lua          luck medallion (shown or hidden from the options hub since 1.14.3)
   TinyPlates.lua    nameplates (contributor JamieeLee, 1.14.3): based on Valorless's MIT-licensed
   TinyPlatesOptions.lua  ASTinyPlates (TinyPlates-LICENSE.txt); its own panel from the hub's button
@@ -135,7 +136,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 600 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 602 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)

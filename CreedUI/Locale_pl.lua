@@ -469,4 +469,6 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["and {1} more"] = "i {1} więcej",
 	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "Łup biegu w małym oknie: złoto i skrzynie, potem każdy otrzymany przedmiot, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
 	["the loot window stopped after an error: "] = "okno łupu zatrzymało się po błędzie: ",
+	["{1} in all"] = "łącznie {1}",
+	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "Łup biegu w małym oknie: zdobyte znaki, potem sprzęt, który dla ciebie wypadł, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
 })

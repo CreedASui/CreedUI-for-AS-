@@ -275,4 +275,6 @@ T = {
 466: "i {1} więcej",
 467: "Łup biegu w małym oknie: złoto i skrzynie, potem każdy otrzymany przedmiot, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
 468: "okno łupu zatrzymało się po błędzie: ",
+469: "łącznie {1}",
+470: "Łup biegu w małym oknie: zdobyte znaki, potem sprzęt, który dla ciebie wypadł, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
 }

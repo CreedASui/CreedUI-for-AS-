@@ -1,4 +1,4 @@
--- 1.17.0: the run's loot window under the minimap, five items in. Writes out/loot.txt.
+-- 1.17.0 (1.17.3: marks at its head, read from the chat): the run's loot window, five items in. Writes out/loot.txt.
 MOCK_SCRATCH = arg[1]
 local DIR, OUT = arg[2], arg[3]
 dofile(MOCK_SCRATCH .. "/cui/mock_cui.lua")
@@ -21,9 +21,11 @@ M.items = { [1] = { name = "Necropile Robe", quality = 3, icon = I .. "INV_Chest
 local colors = { "ff0070dd", "ffa335ee", "ffffffff", "ff1eff00", "ffff8000" }
 for i = 1, 5 do
 	M.runTime = 60 + i * 47
-	M.Fire("CHAT_MSG_LOOT", "You receive loot: |c" .. colors[i] .. "|Hitem:" .. i .. ":0:0:0|h[" .. M.items[i].name .. "]|h|r" .. (i == 3 and "x3" or "") .. ".")
+	ChatFrame1:AddMessage("You receive loot: |c" .. colors[i] .. "|Hitem:" .. i .. ":0:0:0|h[" .. M.items[i].name .. "]|h|r" .. (i == 3 and "x3" or "") .. ".")
 	SIM.Advance(0.1, 1 / 30)
 end
+ChatFrame1:AddMessage("You earn 12 marks (348 in all).")
+ChatFrame1:AddMessage("You earn 8 marks (356 in all).")
 SIM.Advance(0.5, 1 / 30)
 M.Dump(OUT .. "/loot.txt")
 print("problems: " .. table.getn(M.problems))

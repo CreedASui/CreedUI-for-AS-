@@ -469,4 +469,6 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["and {1} more"] = "ve {1} tane daha",
 	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "Koşunun ganimeti küçük bir pencerede: altını ve sandıkları, sonra aldığın her eşya, en yenisi önce, simgesi ve nadirliğiyle. Açıklaması için birinin üstüne gel.",
 	["the loot window stopped after an error: "] = "ganimet penceresi bir hatadan sonra durdu: ",
+	["{1} in all"] = "toplam {1}",
+	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "Koşunun ganimeti küçük bir pencerede: kazandığın nişanlar, sonra senin için düşen teçhizat, en yenisi önce, simgesi ve nadirliğiyle. Açıklaması için birinin üstüne gel.",
 })

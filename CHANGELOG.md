@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.17.3
+- **Loot window: marks and boss gear only.** Its head shows the marks you earned this run on an Argent Dawn token, and how many you have in all; the gold and caches are gone. Below, the gear that dropped for you. Both are read from the game's own lines in the chat, in any of its languages (someone typing the same words doesn't count).
+
 ## 1.17.2
 - **Pet bar: only skills with a real value.** A pet's skill shows once its hits are seen, with what it hits for; one whose damage the game doesn't report on its own (Bestial Wrath, and any the game folds into another skill) no longer sits there empty.
 - **Hit values kept apart:** each hit now counts toward the skill the game's meter puts it under, so two skills can't share one value.
