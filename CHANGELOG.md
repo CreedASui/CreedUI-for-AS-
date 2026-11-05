@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.19.1
+- **Inspect from the party menu opens their gear.** It now works as the game's own menu does: your friend becomes your target and the target is inspected (the game's inspect window works from the target). The game itself says when they're too far away.
+
 ## 1.19.0
 - **Loot pop-up instead of the loot window.** When the game gives you loot, a Creed UI pop-up rises in over the skill bar in place of the game's own: the item's icon in a metal slot, its name, and whether it's new to your collection (in green) or one you already had. Marks you earn pop up too, on an Argent Dawn token, with how many you have in all. Up to three stack, and each melts away after a few seconds. The loot window is gone; turning the Loot part off brings back the game's own pop-up.
 

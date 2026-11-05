@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.19.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.19.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -46,7 +46,8 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
   Skulls.lua        a skull over each boss (horned, red eyes) and guardian, a gold chest over each cache
                     (world anchors, kind `cache`; 1.15.0), sized by distance
-  Party.lua         party frames; right click: Inspect (InspectUnit), Follow (FollowUnit), Whisper
+  Party.lua         party frames; right click: Inspect (TargetUnit then InspectUnit("target"), as the
+                    game's own menu; 1.19.1: InspectUnit("party1") opened nothing live), Follow (FollowUnit), Whisper
                     (ChatFrame_SendTell, else the chat box with "/w Name"); 1.18.0                   Chat.lua     dressed chat, kept clear of the dragon; moved and sized while unlocked (db.place,
                     the game's own kept as db.home; C.resetStamp tells it of a reset)
   Downed.lua        friends down: banner + sound, a revive mark on their spot, edge arrows (world anchors)
@@ -147,7 +148,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 610 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 609 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
