@@ -1385,6 +1385,18 @@ local ROWS = {
 		"la ventana de botín se detuvo tras un error: ",
 		"a janela de saque parou após um erro: " },
 
+	-- the loot window's marks (1.17.3)
+	{ "{1} in all",
+		"{1} au total",
+		"insgesamt {1}",
+		"{1} en total",
+		"{1} no total" },
+	{ "The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip.",
+		"Le butin de la partie dans une petite fenêtre : les marques gagnées, puis l'équipement tombé pour vous, le plus récent d'abord, avec son icône et sa rareté. Survolez-en un pour son infobulle.",
+		"Die Beute des Laufs in einem kleinen Fenster: die verdienten Marken, dann die Ausrüstung, die für dich fiel, die neueste zuerst, mit Symbol und Seltenheit. Zeige auf eine für ihren Tooltip.",
+		"El botín de la partida en una ventanita: las marcas ganadas y luego el equipo que cayó para ti, el más nuevo primero, con su icono y rareza. Señala uno para ver su descripción.",
+		"O saque da partida numa janelinha: as marcas ganhas e depois o equipamento que caiu para você, o mais novo primeiro, com ícone e raridade. Aponte para um para ver a dica." },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },

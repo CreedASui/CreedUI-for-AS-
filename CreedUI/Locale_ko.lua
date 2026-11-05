@@ -469,4 +469,6 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["and {1} more"] = "외 {1}개",
 	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "이번 판의 전리품을 작은 창에: 골드와 보물 상자, 그리고 받은 아이템을 최신순으로 아이콘과 등급과 함께. 가리키면 툴팁이 나옵니다.",
 	["the loot window stopped after an error: "] = "오류로 전리품 창이 멈췄습니다: ",
+	["{1} in all"] = "총 {1}",
+	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "이번 판의 전리품을 작은 창에: 얻은 징표, 그리고 떨어진 장비를 최신순으로 아이콘과 등급과 함께. 가리키면 툴팁이 나옵니다.",
 })

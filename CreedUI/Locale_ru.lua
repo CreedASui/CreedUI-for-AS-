@@ -469,4 +469,6 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["and {1} more"] = "и ещё {1}",
 	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "Добыча забега в маленьком окне: золото и тайники, затем каждый полученный предмет, новые сверху, со значком и редкостью. Наведите на предмет, чтобы увидеть подсказку.",
 	["the loot window stopped after an error: "] = "окно добычи остановлено после ошибки: ",
+	["{1} in all"] = "всего {1}",
+	["The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip."] = "Добыча забега в маленьком окне: заработанные знаки, затем выпавшее вам снаряжение, новое сверху, со значком и редкостью. Наведите на предмет, чтобы увидеть подсказку.",
 })

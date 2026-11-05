@@ -3207,8 +3207,8 @@ do
 	check(findText(CreedUILoot, "^Nothing yet this run%.$") ~= nil, "an empty run says so")
 	M.items = { [16801] = { name = "Arcanist Belt", quality = 4, icon = "Interface\\Icons\\INV_Belt_30" } }
 	M.runTime = 95
-	M.Fire("CHAT_MSG_LOOT", "You receive loot: |cffa335ee|Hitem:16801:0:0:0|h[Arcanist Belt]|h|r.")
-	M.Fire("CHAT_MSG_LOOT", "You receive loot: |cff1eff00|Hitem:2000:0:0:0|h[Green Ring]|h|rx2.")
+	ChatFrame1:AddMessage("You receive loot: |cffa335ee|Hitem:16801:0:0:0|h[Arcanist Belt]|h|r.")
+	ChatFrame1:AddMessage("Vous recevez du butin : |cff1eff00Green Ring|rx2.", 1, 1, 0)
 	frames(10)
 	check(findText(CreedUILoot, "^Green Ring x2$") ~= nil and findText(CreedUILoot, "^Arcanist Belt$") ~= nil,
 		"each item received, with its count: " .. table.concat(textsUnder(CreedUILoot), " | "))
@@ -3222,9 +3222,15 @@ do
 	belt.__parent.__scripts.OnEnter()
 	check(M.tip.shown and M.tip.link == "item:16801:0:0:0", "pointing at it shows the item's own tooltip")
 	belt.__parent.__scripts.OnLeave()
-	M.Fire("CHAT_MSG_LOOT", "You receive loot: 5 Silver.")
+	-- marks earned, on their token; other lines add nothing
+	ChatFrame1:AddMessage("You earn 5 marks (120 in all).")
+	ChatFrame1:AddMessage("Du erhältst 3 Marken (insgesamt 123).")
+	ChatFrame1:AddMessage("Melkor says: You receive loot: nothing, haha")
 	frames(5)
-	check(table.getn(textsUnder(CreedUILoot)) > 0 and findText(CreedUILoot, "Silver") == nil, "a line with no item adds none")
+	check(findText(CreedUILoot, "^%+8$") ~= nil and findText(CreedUILoot, "123") ~= nil and countTex(CreedUILoot, "Token_ArgentDawn$") == 1,
+		"marks earned this run, on an Argent Dawn token: " .. table.concat(textsUnder(CreedUILoot), " | "))
+	check(findText(CreedUILoot, "nothing") == nil, "someone saying the words in chat isn't loot")
+	check(findText(CreedUILoot, "368") == nil and countTex(CreedUILoot, "Art\\\\Coin$") == 0, "no gold or caches in it")
 	-- a new run starts it over
 	M.runTime = 0
 	frames(10)

@@ -275,4 +275,6 @@ T = {
 466: "ve {1} tane daha",
 467: "Koşunun ganimeti küçük bir pencerede: altını ve sandıkları, sonra aldığın her eşya, en yenisi önce, simgesi ve nadirliğiyle. Açıklaması için birinin üstüne gel.",
 468: "ganimet penceresi bir hatadan sonra durdu: ",
+469: "toplam {1}",
+470: "Koşunun ganimeti küçük bir pencerede: kazandığın nişanlar, sonra senin için düşen teçhizat, en yenisi önce, simgesi ve nadirliğiyle. Açıklaması için birinin üstüne gel.",
 }
