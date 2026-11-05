@@ -118,6 +118,14 @@ function C.Place(r, point, rel, relPoint, x, y)
 end
 
 ------------------------------------------------------------------------ numbers as text
+-- a skill's plain key: "ability:kill_command:r3" or "Kill Command" both "kill_command"
+function C.SkillKey(k)
+	if type(k) ~= "string" or k == "" then return nil end
+	k = string.gsub(k, ":r%d+.*$", "")
+	k = string.gsub(k, "^.*:", "")
+	return string.lower((string.gsub(k, "[%s%-']+", "_")))
+end
+
 -- What each skill hits for, by its meter line (and its name): the last plain hit, an average of
 -- the last few that settles as they come, the lowest and highest, the last crit, and how many hits
 -- the last ten seconds saw. DoT ticks aside; crits apart from the plain hits.
@@ -125,13 +133,15 @@ C.hitValues = {}
 function C.NoteHitValue(ev)
 	local amount = tonumber(ev.amount)
 	if ev.kind ~= "damage" or not amount or amount <= 0 or ev.periodic then return end
-	local keys = { ev.meterSourceKey, ev.meterSource, ev.abilityName }
+	-- by its meter line, its name, and its plain key ("ability:kill_command:r3" as "kill_command",
+	-- every rank one), so a skill is found however the hit names it
+	local keys = { ev.meterSourceKey, ev.meterSource, ev.abilityName, C.SkillKey(ev.meterSourceKey) }
 	local v
-	for i = 1, 3 do
+	for i = 1, 4 do
 		if keys[i] ~= nil and C.hitValues[keys[i]] then v = C.hitValues[keys[i]] end
 	end
 	if not v then v = { times = {} } end
-	for i = 1, 3 do
+	for i = 1, 4 do
 		if keys[i] ~= nil then C.hitValues[keys[i]] = v end
 	end
 	if ev.critical then

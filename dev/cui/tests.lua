@@ -3066,6 +3066,12 @@ do
 		and string.find(tip, "Hits per second", 1, true), "Bite's tooltip: what it does, its hits, its crit, the pet bonus: " .. tip)
 	bite.__scripts.OnLeave()
 	AZS_STATS.pet = petWas
+	-- Kill Command's hits come under its key, not its name: still its own value
+	M.Hit(foe, 1234, "strike", false)
+	ev = M.world.events[M.world.nEvents]
+	ev.meterSourceKey, ev.meterSource, ev.abilityName = "ability:kill_command:r2", nil, nil
+	frames(10)
+	check(findText(CreedUIPetBar, "^1,234$") ~= nil, "Kill Command's hits register by its key: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
 	table.remove(M.summons)
 	local pl, pb, pr = M.Rect(CreedUIPetBar)
 	local bl, bb, br, bt = M.Rect(CreedUIBar)

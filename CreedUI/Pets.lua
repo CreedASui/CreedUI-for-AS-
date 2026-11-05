@@ -272,7 +272,8 @@ local function Step(dt, now)
 				n = n + 1
 				local sk = Put(n, x, K.skill, "skill")
 				-- its value: what it hits for now (the last plain hit), as a skill's tooltip would say
-				local hv = C.hitValues and (C.hitValues[list[k].key or ""] or C.hitValues[list[k].name or ""])
+				local hv = C.hitValues and (C.hitValues[list[k].key or ""] or C.hitValues[list[k].name or ""]
+					or C.hitValues[C.SkillKey(list[k].name) or ""])
 				sk.name, sk.value, sk.hv, sk.does = C.L(list[k].name), hv and hv.last, hv, list[k].does
 				sk.icon:SetTexture(list[k].icon or "Interface\\Icons\\INV_Misc_QuestionMark")
 				C.Vis(sk.shade, false)

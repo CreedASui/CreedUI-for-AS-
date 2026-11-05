@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.16.3
+- **Kill Command on the pet bar:** its hits now register under it (the game names them by the skill's key, not its name), so its value and tooltip fill in like the others'.
 - **Pet skill tooltips:** point at a pet's skill for what it does and its damage as it is now: what it just hit for, what it usually hits for, its lowest to highest hit, its last crit, its hits per second, and your Pet Damage bonus. The numbers come from its own hits, so they already carry your stats, gear and buffs, and change as soon as those do.
 
 ## 1.16.2

@@ -130,7 +130,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 581 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 582 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
