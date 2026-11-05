@@ -464,4 +464,9 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Cleaves up to 10 enemies; every third swing deals double damage."] = "最大10体をなぎ払い、3回に1回は2倍のダメージ。",
 	["Burns the enemies around it."] = "周囲の敵を焼きます。",
 	["Hurls Shadow Bolts at your enemies."] = "敵にシャドウボルトを放ちます。",
+	["Loot"] = "戦利品",
+	["Nothing yet this run."] = "この周回ではまだ何もありません。",
+	["and {1} more"] = "ほか {1} 個",
+	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "周回の戦利品を小さなウィンドウに：ゴールドとキャッシュ、そして手に入れたアイテムを新しい順に、アイコンとレア度付きで。指すとツールチップを表示。",
+	["the loot window stopped after an error: "] = "エラーのため戦利品ウィンドウを止めました: ",
 })

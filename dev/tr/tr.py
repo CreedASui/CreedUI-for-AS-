@@ -270,4 +270,9 @@ T = {
 461: "10 düşmana kadar yarar; her üçüncü vuruş iki kat hasar verir.",
 462: "Etrafındaki düşmanları yakar.",
 463: "Düşmanlarına Gölge oku fırlatır.",
+464: "Ganimet",
+465: "Bu koşuda henüz bir şey yok.",
+466: "ve {1} tane daha",
+467: "Koşunun ganimeti küçük bir pencerede: altını ve sandıkları, sonra aldığın her eşya, en yenisi önce, simgesi ve nadirliğiyle. Açıklaması için birinin üstüne gel.",
+468: "ganimet penceresi bir hatadan sonra durdu: ",
 }

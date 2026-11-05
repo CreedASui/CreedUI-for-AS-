@@ -464,4 +464,9 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Cleaves up to 10 enemies; every third swing deals double damage."] = "Рассекает до 10 врагов; каждый третий удар — двойной урон.",
 	["Burns the enemies around it."] = "Сжигает врагов вокруг себя.",
 	["Hurls Shadow Bolts at your enemies."] = "Мечет Стрелы Тьмы во врагов.",
+	["Loot"] = "Добыча",
+	["Nothing yet this run."] = "Пока ничего в этом забеге.",
+	["and {1} more"] = "и ещё {1}",
+	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "Добыча забега в маленьком окне: золото и тайники, затем каждый полученный предмет, новые сверху, со значком и редкостью. Наведите на предмет, чтобы увидеть подсказку.",
+	["the loot window stopped after an error: "] = "окно добычи остановлено после ошибки: ",
 })

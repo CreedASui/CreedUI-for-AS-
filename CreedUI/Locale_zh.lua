@@ -464,4 +464,9 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["Cleaves up to 10 enemies; every third swing deals double damage."] = "顺劈最多 10 个敌人；每第三击造成双倍伤害。",
 	["Burns the enemies around it."] = "灼烧周围的敌人。",
 	["Hurls Shadow Bolts at your enemies."] = "向你的敌人投掷暗影箭。",
+	["Loot"] = "战利品",
+	["Nothing yet this run."] = "本局还没有收获。",
+	["and {1} more"] = "还有 {1} 件",
+	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "小窗口显示本局战利品：金币和宝箱，然后是你获得的每件物品，最新的在前，带图标和品质。指向物品可查看提示。",
+	["the loot window stopped after an error: "] = "战利品窗口因错误停止：",
 })

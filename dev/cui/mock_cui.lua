@@ -619,6 +619,7 @@ GameTooltip = {
 		M.tip.lines = { text }
 	end,
 	SetAction = function(self, slot) M.tip.lines = { "Action " .. tostring(slot) }; M.tip.action = slot end,
+	SetHyperlink = function(self, link) M.tip.lines = { "Item " .. tostring(link) }; M.tip.link = link end,
 	SetPetAction = function(self, slot) M.tip.lines = { "Pet action " .. tostring(slot) }; M.tip.petAction = slot end,
 	SetInventoryItem = function(self, unit, slot) M.tip.lines = { "Item in slot " .. tostring(slot) }; M.tip.inv = slot end,
 	SetUnit = function(self, unit) M.tip.lines = { "Unit " .. tostring(unit) }; M.tip.unit = unit end,
@@ -883,7 +884,7 @@ function M.Frame(dt)
 end
 
 M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Hurt.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Pets.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua",
-	"Chests.lua", "Meter.lua", "Luck.lua", "Summary.lua", "Character.lua", "Talents.lua", "Chat.lua" }
+	"Chests.lua", "Meter.lua", "Luck.lua", "Loot.lua", "Summary.lua", "Character.lua", "Talents.lua", "Chat.lua" }
 function M.Load(dir)
 	for i = 1, table.getn(M.files) do
 		local chunk, err = loadfile(dir .. "/" .. M.files[i])
@@ -1065,6 +1066,12 @@ function GetInventoryItemTexture(unit, slot) return M.gear[slot] and M.gear[slot
 function GetInventoryItemQuality(unit, slot) return M.gear[slot] and M.gear[slot].q or nil end
 function GetInventoryItemLink(unit, slot) return M.gear[slot] and M.gear[slot].link or nil end
 function GetInventoryItemCooldown(unit, slot) return 0, 0, 1 end
+-- items by id: M.items[id] = { name, quality, icon }
+function GetItemInfo(id)
+	local it = M.items and M.items[tonumber(id) or id]
+	if not it then return nil end
+	return it.name, "item:" .. tostring(id), it.quality, 1, "Armor", "Misc", 1, "", it.icon
+end
 -- the 1.12 pet bar: M.petActions = { { name, icon, token, active, autoAllowed, auto, cdStart, cdDur }, ... } (nil: no pet bar)
 M.petCast = {}
 function PetHasActionBar() return M.petActions ~= nil end

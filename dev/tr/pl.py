@@ -270,4 +270,9 @@ T = {
 461: "Rozpłatuje do 10 wrogów; co trzeci cios zadaje podwójne obrażenia.",
 462: "Pali wrogów wokół siebie.",
 463: "Ciska Pociskami cienia we wrogów.",
+464: "Łup",
+465: "Na razie nic w tym biegu.",
+466: "i {1} więcej",
+467: "Łup biegu w małym oknie: złoto i skrzynie, potem każdy otrzymany przedmiot, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
+468: "okno łupu zatrzymało się po błędzie: ",
 }

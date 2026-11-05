@@ -461,3 +461,8 @@ Hits 2 enemies at once.
 Cleaves up to 10 enemies; every third swing deals double damage.
 Burns the enemies around it.
 Hurls Shadow Bolts at your enemies.
+Loot
+Nothing yet this run.
+and {1} more
+The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip.
+the loot window stopped after an error: 

@@ -3194,6 +3194,39 @@ do
 	problems("number motions")
 end
 
+------------------------------------------------------------------ 11f. the run's loot
+do
+	SIM.StartRun("naxx", { killAfter = 60 })
+	M.runTime = 30
+	frames(10)
+	check(findText(CreedUILoot, "^Nothing yet this run%.$") ~= nil, "an empty run says so")
+	M.items = { [16801] = { name = "Arcanist Belt", quality = 4, icon = "Interface\\Icons\\INV_Belt_30" } }
+	M.runTime = 95
+	M.Fire("CHAT_MSG_LOOT", "You receive loot: |cffa335ee|Hitem:16801:0:0:0|h[Arcanist Belt]|h|r.")
+	M.Fire("CHAT_MSG_LOOT", "You receive loot: |cff1eff00|Hitem:2000:0:0:0|h[Green Ring]|h|rx2.")
+	frames(10)
+	check(findText(CreedUILoot, "^Green Ring x2$") ~= nil and findText(CreedUILoot, "^Arcanist Belt$") ~= nil,
+		"each item received, with its count: " .. table.concat(textsUnder(CreedUILoot), " | "))
+	check(countTex(CreedUILoot, "INV_Belt_30$") == 1 and findText(CreedUILoot, "^1:35$") ~= nil, "its icon and the moment of the run it came")
+	local belt
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text == "Arcanist Belt" and under(o, CreedUILoot) then belt = o end
+	end
+	check(belt and belt.__color and belt.__color[1] > 0.6 and belt.__color[3] > 0.9, "in its rarity's color (epic purple)")
+	this = belt.__parent
+	belt.__parent.__scripts.OnEnter()
+	check(M.tip.shown and M.tip.link == "item:16801:0:0:0", "pointing at it shows the item's own tooltip")
+	belt.__parent.__scripts.OnLeave()
+	M.Fire("CHAT_MSG_LOOT", "You receive loot: 5 Silver.")
+	frames(5)
+	check(table.getn(textsUnder(CreedUILoot)) > 0 and findText(CreedUILoot, "Silver") == nil, "a line with no item adds none")
+	-- a new run starts it over
+	M.runTime = 0
+	frames(10)
+	check(findText(CreedUILoot, "Arcanist") == nil and findText(CreedUILoot, "^Nothing yet this run%.$") ~= nil, "a new run starts empty")
+	problems("loot")
+end
+
 ------------------------------------------------------------------ 12. no API at all
 M.RemoveAPI()
 AZS_TARGET = nil

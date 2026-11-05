@@ -464,4 +464,9 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Cleaves up to 10 enemies; every third swing deals double damage."] = "10 düşmana kadar yarar; her üçüncü vuruş iki kat hasar verir.",
 	["Burns the enemies around it."] = "Etrafındaki düşmanları yakar.",
 	["Hurls Shadow Bolts at your enemies."] = "Düşmanlarına Gölge oku fırlatır.",
+	["Loot"] = "Ganimet",
+	["Nothing yet this run."] = "Bu koşuda henüz bir şey yok.",
+	["and {1} more"] = "ve {1} tane daha",
+	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "Koşunun ganimeti küçük bir pencerede: altını ve sandıkları, sonra aldığın her eşya, en yenisi önce, simgesi ve nadirliğiyle. Açıklaması için birinin üstüne gel.",
+	["the loot window stopped after an error: "] = "ganimet penceresi bir hatadan sonra durdu: ",
 })
