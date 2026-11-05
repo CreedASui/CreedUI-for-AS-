@@ -3266,6 +3266,19 @@ do
 	check(findText(CreedUILoot, "^%+8$") ~= nil and findText(CreedUILoot, "123") ~= nil and countTex(CreedUILoot, "Token_ArgentDawn$") == 1,
 		"marks earned this run, on an Argent Dawn token: " .. table.concat(textsUnder(CreedUILoot), " | "))
 	check(findText(CreedUILoot, "nothing") == nil, "someone saying the words in chat isn't loot")
+	-- the game's line as it comes: a plain name in brackets, then whether it's new to the collection
+	ChatFrame1:AddMessage("You receive loot: [Novice's Boots] New in your collection!")
+	ChatFrame1:AddMessage("Du erhältst Beute: [Signet of the Fallen] Bereits gesammelt")
+	frames(5)
+	check(findText(CreedUILoot, "^Novice's Boots$") ~= nil and findText(CreedUILoot, "^Signet of the Fallen$") ~= nil,
+		"the name alone, no brackets or collection words: " .. table.concat(textsUnder(CreedUILoot), " | "))
+	check(countTex(CreedUILoot, "INV_Boots_01$") == 1 and countTex(CreedUILoot, "INV_Jewelry_Ring_01$") == 2 and countTex(CreedUILoot, "QuestionMark$") == 0,
+		"an icon by what it is: boots, a ring (the signet, and the Green Ring before)")
+	local news = 0
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text == "New" and under(o, CreedUILoot) and visibleAlpha(o) > 0.05 then news = news + 1 end
+	end
+	check(news == 1, "a New tag on the one new to the collection only: " .. news)
 	check(findText(CreedUILoot, "368") == nil and countTex(CreedUILoot, "Art\\\\Coin$") == 0, "no gold or caches in it")
 	-- a new run starts it over
 	M.runTime = 0

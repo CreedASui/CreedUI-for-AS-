@@ -475,4 +475,7 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Follow"] = "フォロー",
 	["Whisper"] = "ささやく",
 	["Too far away to inspect."] = "遠すぎて調べられません。",
+	["New"] = "新規",
+	["New in your collection!"] = "コレクションに新しく追加！",
+	["Already in your collection."] = "入手済みです。",
 })

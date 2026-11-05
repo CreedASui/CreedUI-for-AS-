@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.18.1
+- **Loot window: an icon for every drop.** The game's loot line names the item but doesn't say what it looks like, so each one gets an icon by what it is (boots, a helm, a ring, a sword...), or its own when the game gives it. Its name shows without brackets, and gear new to your collection gets a green **New** tag (its tooltip says which are new and which you already had).
+
 ## 1.18.0
 - **Party frames: right-click menu.** A right click on a friend's frame opens a small menu beside it with their name: **Inspect** (their gear, in the game's own window; it says so when they're too far away), **Follow**, and **Whisper** (the chat box opens with "/w Name" typed). A left click still targets them.
 

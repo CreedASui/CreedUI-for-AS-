@@ -475,4 +475,7 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["Follow"] = "跟随",
 	["Whisper"] = "密语",
 	["Too far away to inspect."] = "距离太远，无法观察。",
+	["New"] = "新",
+	["New in your collection!"] = "收藏新增！",
+	["Already in your collection."] = "已收藏。",
 })

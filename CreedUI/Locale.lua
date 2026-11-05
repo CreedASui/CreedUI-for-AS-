@@ -1419,6 +1419,23 @@ local ROWS = {
 		"Demasiado lejos para inspeccionar.",
 		"Longe demais para inspecionar." },
 
+	-- the loot window's collection tags (1.18.1)
+	{ "New",
+		"Nouveau",
+		"Neu",
+		"Nuevo",
+		"Novo" },
+	{ "New in your collection!",
+		"Nouveau dans votre collection !",
+		"Neu in deiner Sammlung!",
+		"¡Nuevo en tu colección!",
+		"Novo na sua coleção!" },
+	{ "Already in your collection.",
+		"Déjà dans votre collection.",
+		"Bereits in deiner Sammlung.",
+		"Ya en tu colección.",
+		"Já na sua coleção." },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },

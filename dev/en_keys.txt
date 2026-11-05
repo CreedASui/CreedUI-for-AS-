@@ -472,3 +472,6 @@ Inspect
 Follow
 Whisper
 Too far away to inspect.
+New
+New in your collection!
+Already in your collection.
