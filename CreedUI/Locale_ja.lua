@@ -434,4 +434,8 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Numbers arc up and fall away to the side."] = "数字が弧を描いて跳ね、横へ落ちます。",
 	["Numbers scroll straight up, quickly."] = "数字がまっすぐ素早く上へ流れます。",
 	["Numbers punch in big and stay put; crits shake."] = "数字が大きく飛び出してその場に留まり、クリティカルは揺れます。",
+	["Hits for"] = "1回のダメージ",
+	["Usually"] = "通常",
+	["Its value shows once it hits."] = "当たると数値が表示されます。",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "受けたダメージが赤い数字で英雄の横に浮かび、重い一撃ほど大きく、回復した体力は反対側に緑で浮かびます。",
 })

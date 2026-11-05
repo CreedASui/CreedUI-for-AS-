@@ -434,4 +434,8 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Numbers arc up and fall away to the side."] = "Sayılar kavis çizerek yükselir ve yana düşer.",
 	["Numbers scroll straight up, quickly."] = "Sayılar hızla dümdüz yukarı kayar.",
 	["Numbers punch in big and stay put; crits shake."] = "Sayılar büyük çıkar ve yerinde kalır; kritikler titrer.",
+	["Hits for"] = "Vuruş",
+	["Usually"] = "Genelde",
+	["Its value shows once it hits."] = "Vurduğunda değeri görünür.",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "Sana vuranlar kahramanının yanında kırmızı sayılarla yükselir, ağır darbeler daha büyük; geri kazandığın can diğer tarafta yeşil yükselir.",
 })

@@ -434,4 +434,8 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["Numbers arc up and fall away to the side."] = "Liczby wylatują łukiem i opadają w bok.",
 	["Numbers scroll straight up, quickly."] = "Liczby szybko suną prosto w górę.",
 	["Numbers punch in big and stay put; crits shake."] = "Liczby wskakują duże i stoją w miejscu; krytyki drżą.",
+	["Hits for"] = "Trafia za",
+	["Usually"] = "Zwykle",
+	["Its value shows once it hits."] = "Wartość pojawi się po trafieniu.",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "To, co cię trafia, unosi się przy bohaterze czerwonymi liczbami, mocne ciosy większe; odzyskane zdrowie unosi się na zielono z drugiej strony.",
 })

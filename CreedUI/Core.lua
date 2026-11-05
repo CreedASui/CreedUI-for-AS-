@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.16.0"
+C.VERSION = "1.16.1"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -118,6 +118,27 @@ function C.Place(r, point, rel, relPoint, x, y)
 end
 
 ------------------------------------------------------------------------ numbers as text
+-- What each skill hits for, by its meter line (and its name): the last plain hit, and an average
+-- of the last few that settles as they come. Crits and DoT ticks aside, it is the skill's value.
+C.hitValues = {}
+function C.NoteHitValue(ev)
+	local amount = tonumber(ev.amount)
+	if ev.kind ~= "damage" or not amount or amount <= 0 or ev.critical or ev.periodic then return end
+	local keys = { ev.meterSourceKey, ev.meterSource, ev.abilityName }
+	for i = 1, 3 do
+		local k = keys[i]
+		if k ~= nil then
+			local v = C.hitValues[k]
+			if not v then
+				v = { last = amount, avg = amount }
+				C.hitValues[k] = v
+			else
+				v.last, v.avg = amount, v.avg + (amount - v.avg) * 0.25
+			end
+		end
+	end
+end
+
 function C.Short(n)
 	n = n or 0
 	local neg = n < 0

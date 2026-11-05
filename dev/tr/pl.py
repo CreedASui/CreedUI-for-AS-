@@ -240,4 +240,8 @@ T = {
 431: "Liczby wylatują łukiem i opadają w bok.",
 432: "Liczby szybko suną prosto w górę.",
 433: "Liczby wskakują duże i stoją w miejscu; krytyki drżą.",
+434: "Trafia za",
+435: "Zwykle",
+436: "Wartość pojawi się po trafieniu.",
+437: "To, co cię trafia, unosi się przy bohaterze czerwonymi liczbami, mocne ciosy większe; odzyskane zdrowie unosi się na zielono z drugiej strony.",
 }

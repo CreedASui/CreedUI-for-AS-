@@ -173,7 +173,7 @@ local function SourceLines(snap, tab)
 					local sk = (type(src.name) == "string" and src.name ~= "") and src.name or tostring(skill)
 					local it = list.at[sk]
 					if not it then
-						it = { name = sk, amount = 0 }
+						it = { name = sk, key = row.sourceKey, amount = 0 }
 						list.at[sk] = it
 						table.insert(list, it)
 					end

@@ -240,4 +240,8 @@ T = {
 431: "Sayılar kavis çizerek yükselir ve yana düşer.",
 432: "Sayılar hızla dümdüz yukarı kayar.",
 433: "Sayılar büyük çıkar ve yerinde kalır; kritikler titrer.",
+434: "Vuruş",
+435: "Genelde",
+436: "Vurduğunda değeri görünür.",
+437: "Sana vuranlar kahramanının yanında kırmızı sayılarla yükselir, ağır darbeler daha büyük; geri kazandığın can diğer tarafta yeşil yükselir.",
 }

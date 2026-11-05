@@ -2996,6 +2996,18 @@ do
 	check(red and (l + r) / 2 < (ul + ur) / 2 and (b + t) / 2 > (ub + ut) / 2, "beside the hero, at the middle of the screen")
 	SIM.Advance(2, 1 / 30)
 	check(findText(CreedUIHurt, "^%-750$") == nil, "and it fades away")
+	-- the health you get back, in green on the other side
+	AZS_HEALING = { { name = "Renew", dmg = 250 } }
+	SIM.Advance(0.3, 1 / 30)
+	local green
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text == "+250" and under(o, CreedUIHurt) then green = o end
+	end
+	check(green and green.__color and green.__color[2] > 0.9 and green.__color[1] < 0.5, "a heal rises as a green +250")
+	local gl, gb, gr, gt = M.Rect(green)
+	local hl, hb, hr, ht = M.Rect(UIParent)
+	check(green and (gl + gr) / 2 > (hl + hr) / 2, "on the hero's other side")
+	AZS_HEALING = nil
 	M.Slash("") -- the options open and close without trouble
 	problems("damage taken")
 end
@@ -3017,6 +3029,17 @@ do
 	check(M.Visible(CreedUIPetBar) and visibleAlpha(CreedUIPetBar) > 0.9, "summons out: the pet bar shows")
 	check(countTex(CreedUIPetBar, "SpiritWolf$") == 1 and findText(CreedUIPetBar, "^2$") ~= nil, "the wolves' face and their count: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
 	check(countTex(CreedUIPetBar, "Cannibalize$") == 1, "and the skill the meter saw them use")
+	-- each kind its own face, by its name; a skill shows what it hits for, not its total
+	table.insert(M.summons, { id = 3, key = "raptor", kind = "pet", name = "Raptor", icon = I .. "INV_Misc_QuestionMark" })
+	local foe = M.Enemy("Ghoul", 2, 4)
+	M.Hit(foe, 350, "strike", false)
+	local ev = M.world.events[M.world.nEvents]
+	ev.meterSourceKey, ev.meterSource = "bite", "Bite"
+	frames(20)
+	check(countTex(CreedUIPetBar, "Pet_Raptor$") == 1 and countTex(CreedUIPetBar, "QuestionMark$") == 0, "the raptor wears a raptor")
+	check(findText(CreedUIPetBar, "^350$") ~= nil and findText(CreedUIPetBar, "700") == nil,
+		"Bite shows what it hits for (350), not its total (700): " .. table.concat(textsUnder(CreedUIPetBar), " | "))
+	table.remove(M.summons)
 	local pl, pb, pr = M.Rect(CreedUIPetBar)
 	local bl, bb, br, bt = M.Rect(CreedUIBar)
 	check(pb >= bt and pl < (bl + br) / 2, string.format("over the skill bar, on its left (%.0f over %.0f)", pb, bt))

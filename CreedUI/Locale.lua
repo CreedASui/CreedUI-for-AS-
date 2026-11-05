@@ -1200,6 +1200,30 @@ local ROWS = {
 		"Los números entran grandes y se quedan quietos; los críticos tiemblan.",
 		"Os números entram grandes e ficam parados; críticos tremem." },
 
+	-- the pet skills' values (1.16.1)
+	{ "Hits for",
+		"Frappe pour",
+		"Trifft für",
+		"Golpea por",
+		"Acerta por" },
+	{ "Usually",
+		"En général",
+		"Meistens",
+		"Normalmente",
+		"Normalmente" },
+	{ "Its value shows once it hits.",
+		"Sa valeur s'affiche dès qu'il touche.",
+		"Ihr Wert erscheint, sobald sie trifft.",
+		"Su valor aparece en cuanto golpea.",
+		"Seu valor aparece assim que acerta." },
+
+	-- heals received (1.16.1)
+	{ "What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side.",
+		"Ce qui vous frappe s'élève près de votre héros en chiffres rouges, les coups lourds plus gros ; la vie récupérée s'élève en vert de l'autre côté.",
+		"Was dich trifft, steigt neben deinem Helden als rote Zahlen auf, schwere Treffer größer; zurückgewonnene Gesundheit steigt grün auf der anderen Seite auf.",
+		"Lo que te golpea sube junto a tu héroe en números rojos, los golpes fuertes más grandes; la salud que recuperas sube en verde al otro lado.",
+		"O que te atinge sobe ao lado do herói em números vermelhos, golpes pesados maiores; a vida recuperada sobe em verde do outro lado." },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },
