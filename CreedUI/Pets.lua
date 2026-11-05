@@ -4,7 +4,8 @@
 -- it, right-click to switch its autocast, point at it for the game's tooltip, a dark veil while it
 -- cools down. Otherwise each kind of summon you have out (Spirit Wolves, Treants, an Infernal...)
 -- shows its face, how many there are and the seconds the first one has left, followed by the
--- skills you've seen it use (from the damage meter), each with what it hits for under it.
+-- skills it has (what the game says each summon does, and any more the meter sees it use), each
+-- with what it hits for under it.
 -- Nothing out, nothing shows; it hides behind the level-up cards.
 
 local C = CreedUI
@@ -30,9 +31,58 @@ local FACES = {
 	{ "vulture", "Ability_Hunter_Pet_Vulture" }, { "carrion", "Ability_Hunter_Pet_Vulture" },
 }
 
-local function Face(grp)
+-- What each kind of summon can do, as the game's own words tell it: its skills in the order they
+-- show, each with its icon. Found by the same words as its face; a skill the meter sees it use that
+-- isn't here comes after them.
+local I = "Interface\\Icons\\"
+local MELEE = { "Melee", I .. "Ability_MeleeDamage" }
+local BITE = { "Bite", I .. "Ability_Racial_Cannibalize" }
+local BEAST = { { "Kill Command", I .. "Ability_Hunter_BeastCall" }, { "Bestial Wrath", I .. "Ability_Druid_FerociousBite" } }
+local KNOWS = {
+	{ "spirit wolf", { BITE, MELEE } },
+	{ "devilsaur", { BITE, BEAST[1], BEAST[2] } },
+	{ "wolf", { BITE, BEAST[1], BEAST[2] } },
+	{ "raptor", { { "Raptor Strike", I .. "Ability_MeleeDamage" }, BEAST[1], BEAST[2] } },
+	{ "water elemental", { { "Frostbolt", I .. "Spell_Frost_FrostBolt02" } } },
+	{ "imp", { { "Firebolt", I .. "Spell_Fire_FireBolt" } } },
+	{ "voidwalker", { { "Shadow Cleave", I .. "Ability_Warrior_Cleave" }, MELEE } },
+	{ "felguard", { { "Cleave", I .. "Ability_Warrior_Cleave" }, MELEE } },
+	{ "infernal", { { "Hellfire", I .. "Spell_Fire_Incinerate" }, MELEE } },
+	{ "doomguard", { { "Shadow Bolt", I .. "Spell_Shadow_ShadowBolt" }, MELEE } },
+	{ "treant", { MELEE } },
+}
+
+local function Words(grp)
 	-- its words, each after a space (Lua 5.0 has no word edges in its patterns)
-	local words = " " .. string.gsub(string.lower(tostring(grp.key or "") .. " " .. tostring(grp.name or "")), "[^%a]+", " ")
+	return " " .. string.gsub(string.lower(tostring(grp.key or "") .. " " .. tostring(grp.name or "")), "[^%a]+", " ")
+end
+
+-- its skills: the known ones, then the ones the meter saw it use; { name, icon, key } each
+local function SkillsOf(grp, seen)
+	local out, has = {}, {}
+	local words = Words(grp)
+	for i = 1, table.getn(KNOWS) do
+		if string.find(words, " " .. KNOWS[i][1]) then
+			local list = KNOWS[i][2]
+			for k = 1, table.getn(list) do
+				table.insert(out, { name = list[k][1], icon = list[k][2] })
+				has[list[k][1]] = true
+			end
+			break
+		end
+	end
+	seen = seen or {}
+	for k = 1, table.getn(seen) do
+		if not has[seen[k].name or ""] then
+			table.insert(out, { name = seen[k].name, icon = seen[k].icon, key = seen[k].key })
+			has[seen[k].name or ""] = true
+		end
+	end
+	return out
+end
+
+local function Face(grp)
+	local words = Words(grp)
 	for i = 1, table.getn(FACES) do
 		if string.find(words, " " .. FACES[i][1]) then return "Interface\\Icons\\" .. FACES[i][2] end
 	end
@@ -192,14 +242,14 @@ local function Step(dt, now)
 			C.SetText(s.count, (s.n > 1) and tostring(s.n) or "")
 			C.SetText(s.time, s.left and tostring(math.ceil(s.left)) or "")
 			x = x + K.slot + K.gap
-			local list = skills[grp.key] or skills[grp.name] or {}
+			local list = SkillsOf(grp, skills[grp.key] or skills[grp.name])
 			s.hasSkills = table.getn(list) > 0
 			for k = 1, math.min(table.getn(list), K.skills) do
 				n = n + 1
 				local sk = Put(n, x, K.skill, "skill")
 				-- its value: what it hits for now (the last plain hit), as a skill's tooltip would say
 				local hv = C.hitValues and (C.hitValues[list[k].key or ""] or C.hitValues[list[k].name or ""])
-				sk.name, sk.amount, sk.value, sk.avg = list[k].name, list[k].amount, hv and hv.last, hv and hv.avg
+				sk.name, sk.value, sk.avg = C.L(list[k].name), hv and hv.last, hv and hv.avg
 				sk.icon:SetTexture(list[k].icon or "Interface\\Icons\\INV_Misc_QuestionMark")
 				C.Vis(sk.shade, false)
 				C.Vis(sk.glow, false)
