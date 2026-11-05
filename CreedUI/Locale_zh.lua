@@ -416,4 +416,11 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["Pink"] = "粉色",
 	["Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window."] = "造成伤害、治疗、首领伤害和队伍 DPS，带图标、每秒数值和占比；重置只在此窗口重新计数。拖动标题移动，拖动角落调整大小。在 Creed UI 选项中显示或隐藏；启用时取代游戏的统计窗口。",
 	["Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window."] = "你的幸运显示在青铜徽章上，稀有、史诗、传说卡牌的几率显示为三颗宝石（N 分之 1）；获得的幸运显示在徽章上。拖动两侧加宽，拖动角落调整大小；在 Creed UI 选项中显示或隐藏。",
+	["Pet bar"] = "宠物栏",
+	["Over the skill bar on the left: your pet's own buttons (click to use, right-click for autocast), or each kind of summon you have out with its count, time left and the skills it has used."] = "技能栏上方左侧：宠物自己的按钮（点击使用，右键切换自动施放），或每种召唤物的数量、剩余时间和它用过的技能。",
+	["{1} out"] = "{1} 个在场",
+	["{1} s left"] = "剩余 {1} 秒",
+	["Its skills show here once it uses them."] = "它用过技能后会显示在这里。",
+	["the pet bar stopped after an error: "] = "宠物栏因错误停止：",
+	["A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far."] = "每个首领和醒着的守护者头上有骷髅，每个宝箱上有金色箱子，无论在屏幕何处：近大远小。",
 })

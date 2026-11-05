@@ -222,4 +222,11 @@ T = {
 413: "Różowy",
 414: "Zadane obrażenia, leczenie, obrażenia bossów i DPS drużyny z ikonami, na sekundę i udziałami; Reset liczy od nowa tylko w tym oknie. Przeciągnij tytuł, by przesunąć, róg, by zmienić rozmiar. Pokaż lub ukryj w opcjach Creed UI; włączone zastępuje okno gry.",
 415: "Twoje szczęście na brązowym medalionie i szansa na rzadką, epicką lub legendarną kartę jako trzy klejnoty (1 na N); zdobyte szczęście widać na medalionie. Przeciągnij boki, by poszerzyć, rogi, by zmienić rozmiar; pokaż lub ukryj w opcjach Creed UI.",
+416: "Pasek zwierzaka",
+417: "Nad paskiem umiejętności po lewej: przyciski zwierzaka (klik, by użyć, prawy klik — automatyczne rzucanie) albo każdy rodzaj przywołańca z liczbą, pozostałym czasem i użytymi umiejętnościami.",
+418: "{1} przywołanych",
+419: "zostało {1} s",
+420: "Jego umiejętności pojawią się tu, gdy ich użyje.",
+421: "pasek zwierzaka zatrzymał się po błędzie: ",
+422: "Czaszka nad każdym bossem i przebudzonym strażnikiem oraz złota skrzynia nad każdym skarbem, gdziekolwiek są na ekranie: duże z bliska, małe z daleka.",
 }

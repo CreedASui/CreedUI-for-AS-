@@ -416,4 +416,11 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Pink"] = "ピンク",
 	["Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window."] = "与ダメージ、回復、ボスへのダメージ、パーティーDPSをアイコン、毎秒、割合で表示。リセットはこのウィンドウだけ数え直します。タイトルをドラッグで移動、角でサイズ変更。Creed UI のオプションで表示を切り替え、有効な間はゲームのウィンドウの代わりになります。",
 	["Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window."] = "幸運を青銅のメダルに、レア・エピック・レジェンダリーのカードの確率を3つの宝石（N分の1）で表示。得た幸運はメダルに出ます。端をドラッグで幅、角でサイズ変更。Creed UI のオプションで表示を切り替えます。",
+	["Pet bar"] = "ペットバー",
+	["Over the skill bar on the left: your pet's own buttons (click to use, right-click for autocast), or each kind of summon you have out with its count, time left and the skills it has used."] = "スキルバーの上の左側：ペットのボタン（クリックで使用、右クリックで自動詠唱）、または召喚物の種類ごとの数、残り時間、使ったスキル。",
+	["{1} out"] = "{1} 体",
+	["{1} s left"] = "残り {1} 秒",
+	["Its skills show here once it uses them."] = "スキルは使うとここに表示されます。",
+	["the pet bar stopped after an error: "] = "エラーのためペットバーを止めました: ",
+	["A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far."] = "各ボスと目覚めたガーディアンの上にドクロ、各キャッシュの上に金の宝箱。画面のどこにいても表示：近いと大きく、遠いと小さく。",
 })

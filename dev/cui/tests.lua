@@ -2993,6 +2993,66 @@ do
 	problems("damage taken")
 end
 
+------------------------------------------------------------------ 11c. the pet bar; a gold chest over each cache
+do
+	SIM.StartRun("naxx", { killAfter = 60 })
+	M.petActions, M.summons = nil, {}
+	frames(30)
+	check(not M.Visible(CreedUIPetBar) or visibleAlpha(CreedUIPetBar) < 0.05, "no pet out: no pet bar")
+	-- summons: each kind's face, count and the skills the meter saw it use
+	local I = "Interface\\Icons\\"
+	M.summons = { { id = 1, key = "spirit_wolf", kind = "pet", name = "Spirit Wolf", icon = I .. "Spell_Nature_SpiritWolf" },
+		{ id = 2, key = "spirit_wolf", kind = "pet", name = "Spirit Wolf", icon = I .. "Spell_Nature_SpiritWolf" } }
+	CreedUIDB.meter.tab = "damage"
+	table.insert(M.meter.damage, { key = "bite", name = "Bite", icon = I .. "Ability_Racial_Cannibalize", amount = 700,
+		actor = { id = "P1", kind = "pet", name = "Spirit Wolf", summonKey = "spirit_wolf" } })
+	frames(40)
+	check(M.Visible(CreedUIPetBar) and visibleAlpha(CreedUIPetBar) > 0.9, "summons out: the pet bar shows")
+	check(countTex(CreedUIPetBar, "SpiritWolf$") == 1 and findText(CreedUIPetBar, "^2$") ~= nil, "the wolves' face and their count: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
+	check(countTex(CreedUIPetBar, "Cannibalize$") == 1, "and the skill the meter saw them use")
+	local pl, pb, pr = M.Rect(CreedUIPetBar)
+	local bl, bb, br, bt = M.Rect(CreedUIBar)
+	check(pb >= bt and pl < (bl + br) / 2, string.format("over the skill bar, on its left (%.0f over %.0f)", pb, bt))
+	-- the game's own pet buttons, when it gives them
+	M.petActions = { { name = "PET_ACTION_ATTACK", token = true, icon = "PET_ATTACK_TEXTURE", active = false },
+		{ name = "Furious Howl", icon = I .. "Ability_Hunter_Pet_Wolf", autoAllowed = true, auto = true, cdStart = M.now, cdDur = 10 } }
+	PET_ACTION_ATTACK, PET_ATTACK_TEXTURE = "Attack", "Interface\\Icons\\Ability_GhoulFrenzy"
+	frames(10)
+	check(countTex(CreedUIPetBar, "GhoulFrenzy$") == 1 and countTex(CreedUIPetBar, "Pet_Wolf$") == 1 and countTex(CreedUIPetBar, "SpiritWolf$") == 0,
+		"the pet's own buttons replace the summons")
+	local howl
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Pet_Wolf$") and under(o, CreedUIPetBar) then howl = o.__parent end
+	end
+	this, arg1 = howl, "LeftButton"
+	howl.__scripts.OnClick()
+	arg1 = "RightButton"
+	howl.__scripts.OnClick()
+	check(M.petCast[1] == "cast 2" and M.petCast[2] == "auto 2", "a click uses it, a right click switches its autocast: " .. table.concat(M.petCast, ", "))
+	howl.__scripts.OnEnter()
+	check(M.tip.shown and M.tip.petAction == 2, "pointing at it shows the game's tooltip")
+	howl.__scripts.OnLeave()
+	M.petActions, M.summons = nil, {}
+	table.remove(M.meter.damage)
+	frames(40)
+	check(not M.Visible(CreedUIPetBar) or visibleAlpha(CreedUIPetBar) < 0.05, "and it goes when the pets do")
+	-- a cache on the field wears a gold chest; taken, it fades
+	AZS_CHESTS = { { id = 7, x = 100, y = 170, z = 0, mx = -1, my = -1 } }
+	AZS_CHESTS_UPDATED = M.now
+	frames(40)
+	local chest
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Art\\Chest$") and not under(o, CreedUIChests) and not under(o, CreedUITally)
+			and visibleAlpha(o) > 0.5 then chest = o end
+	end
+	check(chest ~= nil and chest.__vc and chest.__vc[3] < 0.6, "a gold chest over the cache in the world")
+	AZS_CHESTS[1].taken = true
+	frames(60)
+	check(not chest or not M.Visible(chest) or visibleAlpha(chest) < 0.05, "taken, its chest fades")
+	AZS_CHESTS = {}
+	problems("pet bar and cache marks")
+end
+
 ------------------------------------------------------------------ 12. no API at all
 M.RemoveAPI()
 AZS_TARGET = nil

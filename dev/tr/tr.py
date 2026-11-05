@@ -222,4 +222,11 @@ T = {
 413: "Pembe",
 414: "Verilen hasar, iyileştirme, boss hasarı ve grup DPS'i simgelerle, saniye başına ve paylarla; Sıfırla yalnızca bu pencerede yeniden sayar. Taşımak için başlığı, boyutlandırmak için köşeyi sürükle. Creed UI seçeneklerinden göster veya gizle; açıkken oyunun penceresinin yerini alır.",
 415: "Şansın bronz bir madalyonda, Nadir, Destansı veya Efsanevi kart olasılığı üç mücevherde (N'de 1); kazandığın şans madalyonda görünür. Genişletmek için kenarlarını, boyutlandırmak için köşelerini sürükle; Creed UI seçeneklerinden göster veya gizle.",
+416: "Evcil hayvan çubuğu",
+417: "Yetenek çubuğunun üstünde solda: evcil hayvanının düğmeleri (kullanmak için tıkla, otomatik kullanım için sağ tıkla) ya da her çağırma türü sayısı, kalan süresi ve kullandığı yeteneklerle.",
+418: "{1} tane",
+419: "{1} sn kaldı",
+420: "Yeteneklerini kullandıkça burada görünür.",
+421: "evcil hayvan çubuğu bir hatadan sonra durdu: ",
+422: "Her boss ve uyanık muhafızın üstünde bir kafatası, her sandığın üstünde altın bir sandık, ekranın neresinde olurlarsa: yakındayken büyük, uzaktayken küçük.",
 }

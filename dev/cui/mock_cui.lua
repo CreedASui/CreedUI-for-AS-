@@ -619,6 +619,7 @@ GameTooltip = {
 		M.tip.lines = { text }
 	end,
 	SetAction = function(self, slot) M.tip.lines = { "Action " .. tostring(slot) }; M.tip.action = slot end,
+	SetPetAction = function(self, slot) M.tip.lines = { "Pet action " .. tostring(slot) }; M.tip.petAction = slot end,
 	SetInventoryItem = function(self, unit, slot) M.tip.lines = { "Item in slot " .. tostring(slot) }; M.tip.inv = slot end,
 	SetUnit = function(self, unit) M.tip.lines = { "Unit " .. tostring(unit) }; M.tip.unit = unit end,
 	SetTalent = function(self, tab, i) M.tip.lines = { "Talent " .. tostring(tab) .. "." .. tostring(i) } end,
@@ -876,7 +877,7 @@ function M.Frame(dt)
 	end
 end
 
-M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Hurt.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua",
+M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Hurt.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Pets.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua",
 	"Chests.lua", "Meter.lua", "Luck.lua", "Summary.lua", "Character.lua", "Talents.lua", "Chat.lua" }
 function M.Load(dir)
 	for i = 1, table.getn(M.files) do
@@ -1059,6 +1060,21 @@ function GetInventoryItemTexture(unit, slot) return M.gear[slot] and M.gear[slot
 function GetInventoryItemQuality(unit, slot) return M.gear[slot] and M.gear[slot].q or nil end
 function GetInventoryItemLink(unit, slot) return M.gear[slot] and M.gear[slot].link or nil end
 function GetInventoryItemCooldown(unit, slot) return 0, 0, 1 end
+-- the 1.12 pet bar: M.petActions = { { name, icon, token, active, autoAllowed, auto, cdStart, cdDur }, ... } (nil: no pet bar)
+M.petCast = {}
+function PetHasActionBar() return M.petActions ~= nil end
+function GetPetActionInfo(i)
+	local a = M.petActions and M.petActions[i]
+	if not a then return nil end
+	return a.name, nil, a.icon, a.token, a.active, a.autoAllowed, a.auto
+end
+function GetPetActionCooldown(i)
+	local a = M.petActions and M.petActions[i]
+	if not a then return 0, 0, 1 end
+	return a.cdStart or 0, a.cdDur or 0, 1
+end
+function CastPetAction(i) table.insert(M.petCast, "cast " .. tostring(i)) end
+function TogglePetAutocast(i) table.insert(M.petCast, "auto " .. tostring(i)); local a = M.petActions and M.petActions[i]; if a then a.auto = not a.auto end end
 M.loaded = {}
 function IsAddOnLoaded(name) return M.loaded[name] and 1 or nil end
 M.cvars = { CombatDamage = "1" }
@@ -1198,6 +1214,13 @@ local function WACatalog()
 		if d.anchorId then
 			table.insert(out, { anchorId = d.anchorId, kind = "downedPartyMember", name = d.name, entityState = "downed",
 				attachments = { "position" }, positionAvailable = true, x = d.wx or 0, y = d.wy or 0, z = 0 })
+		end
+	end
+	if type(AZS_CHESTS) == "table" then
+		for i = 1, table.getn(AZS_CHESTS) do
+			local c = AZS_CHESTS[i]
+			table.insert(out, { anchorId = "cache:" .. tostring(c.id), kind = "cache", entityState = c.taken and "collected" or "available",
+				attachments = { "position" }, positionAvailable = true, x = 12 + 6 * i, y = -10, z = 0, cacheId = c.id })
 		end
 	end
 	for i = 1, table.getn(M.guardians or {}) do

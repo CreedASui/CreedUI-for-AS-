@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.15.0
+- **Pet bar** (new part): just over the skill bar on its left. When the game gives your pet its own buttons, they're here: click to use, right-click to switch autocast, point at one for the game's tooltip, with a dark veil while it cools down. Otherwise each kind of summon you have out (Spirit Wolves, Treants, an Infernal...) shows its face, how many there are, the seconds left, and the skills you've seen it use, each with its damage on its tooltip.
+- **Caches marked in the world:** every cache on the field wears a gold chest in a gold glow, so one that drops is easy to find. It fades once taken. (Part of Boss skulls, so the same toggle turns it off.)
+
 ## 1.14.3
 - **Scholomance** (the game's 0.140.0 zone): the boss timer has its own look there, bone and ghostly green, and knows its five bosses (Kirtonos the Herald, Ras Frostwhisper, Doctor Theolen Krastinov, Lord Alexei Barov, Darkmaster Gandling) even right after a /reload.
 - **Damage meter:** every pet's and summon's skills (a hunter's Kill Command, a wolf's bite, an Infernal's Immolation...) are counted together on one **Pet** line. Point at it to see its best skill. Totems keep their own lines.

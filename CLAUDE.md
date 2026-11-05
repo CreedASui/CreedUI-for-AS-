@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.14.3**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.15.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -37,12 +37,16 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Hurt.lua          damage taken as red numbers by the hero (new hits on AZS_TAKEN; the combat text
                     API carries outgoing hits only)
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
-  Skulls.lua        a skull over each boss (horned, red eyes) and guardian (world anchors), sized by distance
+  Skulls.lua        a skull over each boss (horned, red eyes) and guardian, a gold chest over each cache
+                    (world anchors, kind `cache`; 1.15.0), sized by distance
   Party.lua         party frames                   Chat.lua     dressed chat, kept clear of the dragon
   Downed.lua        friends down: banner + sound, a revive mark on their spot, edge arrows (world anchors)
   LevelUps.lua      the Level Up! button for stored level-ups (replaces the game's "levels" HUD part)
   Summary.lua       the run's summary panel when it ends (AZS_GetRunSummary)
   Talents.lua       the talent window: trees side by side, learned talents with ranks (meter loadout)
+  Pets.lua          the pet bar over the skill bar's left end (1.15.0): the 1.12 pet buttons
+                    (GetPetActionInfo...) when the game fills them, else AZS_GetSummonGroups with the
+                    skills Meter.lua saw each summon use (C.petSkills, by summonKey)
   Bar.lua           skill bar, each ability's rank box, jewelry, XP/s, the gold panel (C.PANEL_ROOM at each
                     end for its painted dragons, Core's C.Panel)
   Tally.lua         kills / gold / cache, docked inside the bar's panel
@@ -122,7 +126,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 551 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 563 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
@@ -208,7 +212,7 @@ before using an API. Known:
    Ideas not done yet: talent/summon timers (`AZS_GetTimers`), arrows to caches and lairs, the
    upcoming bosses (`AZS_GetUpcomingBosses`; ask first, the timer is the user's favorite).
 3. **The user's list, not done yet (2026-11-04):** active skill counts (totems, blizzards...); the pet
-   bar showing its skills with tooltips; more damage number styles to pick from; the meter counting
+   bar (done in 1.15.0; not seen live: whether the game fills the 1.12 pet buttons); more damage number styles to pick from; the meter counting
    echo and procs right (since 0.141.0 the game files Windfury under Windfury Weapon and pet skills
    under the pet; 1.14.3 puts every pet's and summon's skills on one Pet line, asked for).
    Done in 1.14.3: Scholomance timer theme (zone key `scholomance`), damage taken by the hero
