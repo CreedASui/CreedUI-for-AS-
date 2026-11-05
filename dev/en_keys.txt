@@ -435,3 +435,14 @@ Hits for
 Usually
 Its value shows once it hits.
 What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side.
+Melee
+Bite
+Kill Command
+Bestial Wrath
+Raptor Strike
+Frostbolt
+Firebolt
+Shadow Cleave
+Cleave
+Hellfire
+Shadow Bolt

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.16.2
+- **Pet bar: what each pet can do, from the start.** Every pet shows its skills as soon as it's out, as the game describes them: the Wolf's Bite, the Raptor's Raptor Strike, Kill Command and Bestial Wrath for the hunter's beasts, the Imp's Firebolt, the Voidwalker's Shadow Cleave, the Felguard's Cleave, the Infernal's Hellfire, the Doomguard's Shadow Bolt, the Water Elemental's Frostbolt, and Melee for those that fight in close. Each one's hit value fills in under it once it lands; any other skill the meter sees a pet use is added after.
+
 ## 1.16.1
 - **Heals received:** the health you get back (heals, life drained) now rises beside your hero too, as green "+" numbers on the other side from the red damage ones. Part of Damage taken, so the same switch turns both off.
 - **Pet bar faces:** each summon shows its own picture by its name: a wolf for the Wolf, a raptor for the Raptor, the Spirit Wolf, Imp, Voidwalker, Infernal, Doomguard, Water Elemental and Treant their own, and every hunter beast family (cat, bear, owl, gorilla, scorpid, turtle...) theirs.

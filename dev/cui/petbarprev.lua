@@ -16,6 +16,7 @@ local I = "Interface\\Icons\\"
 M.summons = { { id = 1, key = "spirit_wolf", kind = "pet", name = "Spirit Wolf", icon = I .. "Spell_Nature_SpiritWolf" },
 	{ id = 2, key = "spirit_wolf", kind = "pet", name = "Spirit Wolf", icon = I .. "Spell_Nature_SpiritWolf" },
 	{ id = 4, key = "raptor", kind = "pet", name = "Raptor", icon = I .. "INV_Misc_QuestionMark" },
+	{ id = 5, key = "imp", kind = "imp", name = "Imp", icon = I .. "INV_Misc_QuestionMark" },
 	{ id = 3, key = "infernal", kind = "infernal", name = "Infernal", icon = I .. "Spell_Shadow_SummonInfernal" } }
 local wolf = { id = "P1", kind = "pet", name = "Spirit Wolf", summonKey = "spirit_wolf" }
 M.meter = { damage = {

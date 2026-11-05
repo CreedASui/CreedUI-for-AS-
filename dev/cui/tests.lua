@@ -3037,6 +3037,13 @@ do
 	ev.meterSourceKey, ev.meterSource = "bite", "Bite"
 	frames(20)
 	check(countTex(CreedUIPetBar, "Pet_Raptor$") == 1 and countTex(CreedUIPetBar, "QuestionMark$") == 0, "the raptor wears a raptor")
+	-- what each can do shows from the start, before the meter sees it used
+	check(countTex(CreedUIPetBar, "MeleeDamage$") >= 1 and countTex(CreedUIPetBar, "BeastCall$") >= 1 and countTex(CreedUIPetBar, "FerociousBite$") >= 1,
+		"the raptor's Raptor Strike, Kill Command and Bestial Wrath")
+	table.insert(M.summons, { id = 5, key = "imp", kind = "imp", name = "Imp", icon = I .. "INV_Misc_QuestionMark" })
+	frames(10)
+	check(countTex(CreedUIPetBar, "SummonImp$") == 1 and countTex(CreedUIPetBar, "FireBolt$") == 1, "a new Imp shows its Firebolt")
+	table.remove(M.summons)
 	check(findText(CreedUIPetBar, "^350$") ~= nil and findText(CreedUIPetBar, "700") == nil,
 		"Bite shows what it hits for (350), not its total (700): " .. table.concat(textsUnder(CreedUIPetBar), " | "))
 	table.remove(M.summons)
