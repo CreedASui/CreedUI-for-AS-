@@ -125,7 +125,7 @@ local function Step(dt, now)
 				C.SetFace(l.text, C.FONT, size, "OUTLINE")
 			end
 			-- damage on the hero's left, drifting left; healing on the right, drifting right
-			C.Place(l.text, "CENTER", root, "CENTER", l.side * (K.x + K.drift * age) + 14 * l.lane, K.y + K.rise * C.Smooth(age))
+			C.Place(l.text, "CENTER", root.spot, "CENTER", l.side * (K.x + K.drift * age) + 14 * l.lane, K.rise * C.Smooth(age))
 			C.Alpha(l.text, 1 - C.Smooth((age - 0.6) / 0.4))
 		end
 	end
@@ -150,6 +150,15 @@ C.OnInit(function()
 	root:SetFrameStrata("LOW")
 	root:SetScale(db.scale)
 	C.Vis(root, false)
+	-- where the numbers rise from: by the hero at first, and wherever it is dragged (frames unlocked)
+	root.spot = CreateFrame("Frame", "CreedUIHurtSpot", UIParent)
+	root.spot:SetWidth(-2 * K.x + 60)
+	root.spot:SetHeight(40)
+	root.spot:SetScale(db.scale)
+	C.Movable(root.spot, "hurt", "Damage taken", function(f)
+		f:ClearAllPoints()
+		f:SetPoint("CENTER", UIParent, "CENTER", 0, K.y)
+	end)
 	local driver = CreateFrame("Frame", "CreedUIHurtDriver")
 	driver:SetScript("OnUpdate", function()
 		if S.broken or not db.enabled then return end
@@ -183,6 +192,7 @@ C.RegisterPart({
 		if db then
 			db.scale = v
 			root:SetScale(v)
+			root.spot:SetScale(v)
 		end
 	end,
 })
