@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.16.3
+- **Pet skill tooltips:** point at a pet's skill for what it does and its damage as it is now: what it just hit for, what it usually hits for, its lowest to highest hit, its last crit, its hits per second, and your Pet Damage bonus. The numbers come from its own hits, so they already carry your stats, gear and buffs, and change as soon as those do.
+
 ## 1.16.2
 - **Pet bar: what each pet can do, from the start.** Every pet shows its skills as soon as it's out, as the game describes them: the Wolf's Bite, the Raptor's Raptor Strike, Kill Command and Bestial Wrath for the hunter's beasts, the Imp's Firebolt, the Voidwalker's Shadow Cleave, the Felguard's Cleave, the Infernal's Hellfire, the Doomguard's Shadow Bolt, the Water Elemental's Frostbolt, and Melee for those that fight in close. Each one's hit value fills in under it once it lands; any other skill the meter sees a pet use is added after.
 

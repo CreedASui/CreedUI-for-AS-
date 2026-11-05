@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.16.2"
+C.VERSION = "1.16.3"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -118,25 +118,43 @@ function C.Place(r, point, rel, relPoint, x, y)
 end
 
 ------------------------------------------------------------------------ numbers as text
--- What each skill hits for, by its meter line (and its name): the last plain hit, and an average
--- of the last few that settles as they come. Crits and DoT ticks aside, it is the skill's value.
+-- What each skill hits for, by its meter line (and its name): the last plain hit, an average of
+-- the last few that settles as they come, the lowest and highest, the last crit, and how many hits
+-- the last ten seconds saw. DoT ticks aside; crits apart from the plain hits.
 C.hitValues = {}
 function C.NoteHitValue(ev)
 	local amount = tonumber(ev.amount)
-	if ev.kind ~= "damage" or not amount or amount <= 0 or ev.critical or ev.periodic then return end
+	if ev.kind ~= "damage" or not amount or amount <= 0 or ev.periodic then return end
 	local keys = { ev.meterSourceKey, ev.meterSource, ev.abilityName }
+	local v
 	for i = 1, 3 do
-		local k = keys[i]
-		if k ~= nil then
-			local v = C.hitValues[k]
-			if not v then
-				v = { last = amount, avg = amount }
-				C.hitValues[k] = v
-			else
-				v.last, v.avg = amount, v.avg + (amount - v.avg) * 0.25
-			end
-		end
+		if keys[i] ~= nil and C.hitValues[keys[i]] then v = C.hitValues[keys[i]] end
 	end
+	if not v then v = { times = {} } end
+	for i = 1, 3 do
+		if keys[i] ~= nil then C.hitValues[keys[i]] = v end
+	end
+	if ev.critical then
+		v.crit = amount
+	else
+		v.avg = v.avg and (v.avg + (amount - v.avg) * 0.25) or amount
+		v.last = amount
+		if not v.low or amount < v.low then v.low = amount end
+		if not v.high or amount > v.high then v.high = amount end
+	end
+	local now = GetTime()
+	table.insert(v.times, now)
+	while table.getn(v.times) > 0 and (now - v.times[1] > 10 or table.getn(v.times) > 200) do table.remove(v.times, 1) end
+end
+
+-- its hits per second over the last ten seconds
+function C.HitRate(v)
+	if not v or not v.times then return 0 end
+	local now, n = GetTime(), 0
+	for i = 1, table.getn(v.times) do
+		if now - v.times[i] <= 10 then n = n + 1 end
+	end
+	return n / 10
 end
 
 function C.Short(n)
