@@ -580,6 +580,16 @@ do
 	this = CreedUIParty1
 	CreedUIParty1.__scripts.OnClick()
 	check(M.targeted == "party1", "clicking a friend targets them")
+	-- a friend's shield on their health, as your own frame shows yours
+	check((CreedUIParty1.creedBar.shield or 0) == 0, "no shield, no pane")
+	M.unit.party1.buffs = { "Interface\\Icons\\Spell_Nature_Regeneration", "Interface\\Icons\\Spell_Holy_PowerWordShield" }
+	frames(18)
+	check(CreedUIParty1.creedBar.shield > 0 and CreedUIParty1.creedBar.shieldTex.__shown ~= false and M.Visible(CreedUIParty1.creedBar.shieldTex),
+		"Power Word: Shield on a friend shows its icy pane on their health: " .. tostring(CreedUIParty1.creedBar.shield))
+	M.unit.party1.buffs = nil
+	frames(18)
+	frames(12)
+	check(CreedUIParty1.creedBar.shield == 0 and not M.Visible(CreedUIParty1.creedBar.shieldTex), "and it goes when the shield does")
 	-- a right click: Inspect, Follow, Whisper
 	this, arg1 = CreedUIParty1, "RightButton"
 	CreedUIParty1.__scripts.OnClick()
