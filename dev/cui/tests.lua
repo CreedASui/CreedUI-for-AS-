@@ -748,6 +748,13 @@ do
 	M.meter.party = { { key = "H1", name = "Creed", class = "rogue", amount = 20000 }, { key = "H2", name = "Melkor", class = "mage", amount = 15000 } }
 	frames(30)
 	check(findText(CreedUIMeter, "^1%. Creed$") ~= nil and findText(CreedUIMeter, "^2%. Melkor$") ~= nil, "Party DPS lists the heroes")
+	-- each hero's best skill in a tag on their line
+	M.meter.partySkills = { { owner = "H1", key = "ss", name = "Sinister Strike", amount = 12000 },
+		{ owner = "H1", key = "bs", name = "Backstab", amount = 8000 }, { owner = "H2", key = "fb", name = "Fireball", amount = 15000 } }
+	frames(30)
+	check(findText(CreedUIMeter, "^Sinister") ~= nil and findText(CreedUIMeter, "^Fireball$") ~= nil and findText(CreedUIMeter, "^Backstab$") == nil,
+		"each hero's best skill shows on their line: " .. table.concat(textsUnder(CreedUIMeter), " | "))
+	M.meter.partySkills = nil
 	check(countTex(CreedUIMeter, "^Portrait:pk1$") == 1, "with their portraits")
 	-- the title opens the four views
 	local head = CreedUIMeter.head
@@ -3051,6 +3058,84 @@ do
 	check(not chest or not M.Visible(chest) or visibleAlpha(chest) < 0.05, "taken, its chest fades")
 	AZS_CHESTS = {}
 	problems("pet bar and cache marks")
+end
+
+------------------------------------------------------------------ 11d. how many of a spell are out, on its slot
+do
+	SIM.StartRun("naxx", { killAfter = 60 })
+	local saved1, saved2 = M.actions[1], M.actions[2]
+	M.actions[1] = { tex = "Interface\\Icons\\Spell_Frost_IceStorm", start = 0, dur = 0 }
+	M.actions[2] = { tex = "Interface\\Icons\\Spell_Fire_SearingTotem", start = 0, dur = 0 }
+	frames(10)
+	local function countOn(i)
+		local want = M.actions[i].tex
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex == want and under(o, CreedUIBar) then
+				local b = o.__parent
+				for _, f in ipairs(M.All()) do
+					if f.__kind == "FontString" and f.__text and f.__text ~= "" and under(f, b) and string.find(f.__text, "^%d+$") and visibleAlpha(f) > 0.05 then
+						return f.__text
+					end
+				end
+				return nil
+			end
+		end
+	end
+	for k = 1, 3 do
+		M.actions[1].start, M.actions[1].dur = M.now, 2
+		frames(75) -- cast again as its two seconds of cooldown run out
+	end
+	check(countOn(1) == "3", "three Blizzards burning at once: " .. tostring(countOn(1)))
+	M.actions[1].start, M.actions[1].dur = 0, 0
+	frames(300)
+	check(countOn(1) == nil, "and none once they've burned out: " .. tostring(countOn(1)))
+	M.totems = { { key = "searing", name = "Searing Totem", icon = "Interface\\Icons\\Spell_Fire_SearingTotem", count = 2, cap = 3 } }
+	frames(10)
+	check(countOn(2) == "2", "the totems standing, by the game's count: " .. tostring(countOn(2)))
+	M.totems = nil
+	M.actions[1], M.actions[2] = saved1, saved2
+	frames(10)
+	problems("active counts")
+end
+
+------------------------------------------------------------------ 11e. damage numbers: four ways to move
+do
+	frames(200)
+	local function track(motion, amount)
+		CreedUIDB.numbers.motion = motion
+		local e = M.Enemy("Dummy " .. motion, 3, 3)
+		M.Hit(e, amount, "strike", false)
+		local text = tostring(amount)
+		local function at()
+			for _, o in ipairs(M.All()) do
+				if o.__kind == "FontString" and o.__text and under(o, CreedUINumbersLayer) and visibleAlpha(o) > 0.05 and M.Plain(o.__text) == text then
+					local h = o.__parent
+					while h and h.__parent ~= CreedUINumbersLayer do h = h.__parent end
+					local l, b, r, t = M.Rect(h or o)
+					return (l + r) / 2, (b + t) / 2
+				end
+			end
+		end
+		frames(2)
+		local x0, y0 = at()
+		frames(18)
+		local x1, y1 = at()
+		frames(120)
+		if not (x0 and x1) then return 0, 0 end
+		return x1 - x0, y1 - y0
+	end
+	local sx, sy = track("smooth", 431)
+	local rx, ry = track("rise", 432)
+	local fx, fy = track("fountain", 433)
+	local ix, iy = track("impact", 434)
+	check(sy > 2 and math.abs(sx) < 1, string.format("smooth: drifts up (%.1f, %.1f)", sx, sy))
+	check(ry > sy * 2 and math.abs(rx) < 1, string.format("rise: climbs much faster (%.1f against %.1f)", ry, sy))
+	check(math.abs(fx) > 15, string.format("fountain: arcs off to the side (%.1f, %.1f)", fx, fy))
+	check(math.abs(iy) < 1 and math.abs(ix) < 1, string.format("impact: stays put (%.1f, %.1f)", ix, iy))
+	M.Slash("numbers rise")
+	check(CreedUIDB.numbers.motion == "rise", "/creed numbers rise picks it")
+	CreedUIDB.numbers.motion = "smooth"
+	problems("number motions")
 end
 
 ------------------------------------------------------------------ 12. no API at all

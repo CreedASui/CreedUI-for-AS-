@@ -420,3 +420,14 @@ Over the skill bar on the left: your pet's own buttons (click to use, right-clic
 Its skills show here once it uses them.
 the pet bar stopped after an error: 
 A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far.
+Motion
+motion: 
+/creed numbers smooth, fountain, rise or impact - how the numbers move
+Smooth
+Fountain
+Rise
+Impact
+Numbers drift up gently and melt away.
+Numbers arc up and fall away to the side.
+Numbers scroll straight up, quickly.
+Numbers punch in big and stay put; crits shake.
