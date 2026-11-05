@@ -19,9 +19,16 @@ picture of the change.
 ## 2. Releases
 
 The repository holds everything since 1.8.3. Claude Code sessions here may push only their own
-branch and can't make tags or GitHub releases: the user makes each release on GitHub's website
-(tag `v<version>`, title **Creed UI <version>**, the version's `CHANGELOG.md` entry as text, and
-`CreedUi-<version>.zip` attached). Give them those steps and the zip.
+branch and can't make tags or GitHub releases. Releases are made by the **Release** workflow
+(`.github/workflows/release.yml`, after the SurvivorsForge creator guide, steps 5 and 6): the user
+opens **Actions → Release → Run workflow** on GitHub and types the version. It sets `## Version`
+in the .toc and `C.VERSION` in Core.lua, commits, tags `v<version>`, zips only the `CreedUI/`
+folder as **`CreedUi-<version>.zip`**, and creates the release **Creed UI <version>** with that
+version's `CHANGELOG.md` entry as its text. So a session ships by merging the work with its
+CHANGELOG entry (bumping the version itself is optional; the workflow does it), then telling the
+user the version to type. On SurvivorsForge the release zip name is `CreedUi-*.zip` and the addon
+folder `CreedUI`. If the workflow's push is refused: Settings → Actions → General → Workflow
+permissions → Read and write.
 
 ## 3. Layout
 
