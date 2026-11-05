@@ -381,4 +381,8 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["Your talents show here during a run."] = "Talenty pojawiają się tu podczas wyprawy.",
 	["No talents learned yet."] = "Brak poznanych talentów.",
 	["the talent window stopped after an error: "] = "okno talentów zatrzymało się po błędzie: ",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger."] = "To, co cię trafia, unosi się przy bohaterze czerwonymi liczbami, mocne ciosy większe.",
+	["the damage you take stopped showing after an error: "] = "otrzymywane obrażenia przestały się wyświetlać po błędzie: ",
+	["Scholomance"] = "Scholomance",
+	["Pet"] = "Zwierzak",
 })

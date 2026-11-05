@@ -187,4 +187,8 @@ T = {
 378: "Yeteneklerin oyun sırasında burada görünür.",
 379: "Henüz yetenek öğrenilmedi.",
 380: "yetenek penceresi bir hatadan sonra durdu: ",
+381: "Sana vuranlar kahramanının yanında kırmızı sayılarla yükselir, ağır darbeler daha büyük.",
+382: "bir hatadan sonra alınan hasar artık gösterilmiyor: ",
+383: "Scholomance",
+384: "Evcil hayvan",
 }

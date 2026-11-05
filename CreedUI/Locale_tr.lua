@@ -381,4 +381,8 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Your talents show here during a run."] = "Yeteneklerin oyun sırasında burada görünür.",
 	["No talents learned yet."] = "Henüz yetenek öğrenilmedi.",
 	["the talent window stopped after an error: "] = "yetenek penceresi bir hatadan sonra durdu: ",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger."] = "Sana vuranlar kahramanının yanında kırmızı sayılarla yükselir, ağır darbeler daha büyük.",
+	["the damage you take stopped showing after an error: "] = "bir hatadan sonra alınan hasar artık gösterilmiyor: ",
+	["Scholomance"] = "Scholomance",
+	["Pet"] = "Evcil hayvan",
 })

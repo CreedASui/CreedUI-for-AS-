@@ -378,3 +378,7 @@ What this run plays with
 Your talents show here during a run.
 No talents learned yet.
 the talent window stopped after an error: 
+What hits you rises beside your hero as red numbers, heavier blows bigger.
+the damage you take stopped showing after an error: 
+Scholomance
+Pet

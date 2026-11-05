@@ -187,4 +187,8 @@ T = {
 378: "Talenty pojawiają się tu podczas wyprawy.",
 379: "Brak poznanych talentów.",
 380: "okno talentów zatrzymało się po błędzie: ",
+381: "To, co cię trafia, unosi się przy bohaterze czerwonymi liczbami, mocne ciosy większe.",
+382: "otrzymywane obrażenia przestały się wyświetlać po błędzie: ",
+383: "Scholomance",
+384: "Zwierzak",
 }

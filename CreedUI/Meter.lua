@@ -113,7 +113,7 @@ local function Line(i)
 		S.list[i] = e
 	end
 	e.icon, e.portrait, e.classKey, e.color, e.proc, e.top, e.topRate, e.school = nil, nil, nil, nil, false, nil, nil, nil
-	e.skill, e.pet = nil, nil
+	e.skill, e.pet, e.petLine = nil, nil, nil
 	return e
 end
 
@@ -137,10 +137,10 @@ local function SchoolOf(snap, row)
 	return best
 end
 
--- a source view: your own skills, each on its line, and each summon's skills on theirs
--- ("Infernal: Immolation"), all the summons of one kind counted together
+-- a source view: your own skills, each on its line; every pet's and summon's skills together on
+-- one Pet line (its tooltip names the best of them); a totem's on lines of their own
 local function SourceLines(snap, tab)
-	local n, at = 0, {}
+	local n, at, petParts = 0, {}, {}
 	local list = type(snap.rows) == "table" and snap.rows or {}
 	local actors = type(snap.actors) == "table" and snap.actors or {}
 	local sources = type(snap.sources) == "table" and snap.sources or {}
@@ -156,7 +156,13 @@ local function SourceLines(snap, tab)
 			local src = sources[row.sourceKey] or {}
 			local skill = (type(src.name) == "string" and src.name ~= "" and src.name) or src.abilityKey or src.talentKey
 				or (string.gsub(tostring(row.sourceKey), ":r%d+.*$", ""))
-			local key = "s" .. tostring(skill) .. "|" .. who .. (proc and "#p" or "")
+			local pet = not own and not actor.totemKey and actor.kind ~= "totem"
+			local key = pet and "pet" or ("s" .. tostring(skill) .. "|" .. who .. (proc and "#p" or ""))
+			if pet then
+				local part = (type(actor.name) == "string" and actor.name ~= "" and (actor.name .. ": ") or "")
+					.. ((type(src.name) == "string" and src.name ~= "") and src.name or tostring(skill))
+				petParts[part] = (petParts[part] or 0) + amount
+			end
 			local rate = RateValue(S.checkpoint and row.checkpointAverage or row.periodAverage) or RateValue(row.displayRate) or 0
 			local e = at[key] and S.list[at[key]]
 			if e then
@@ -173,12 +179,18 @@ local function SourceLines(snap, tab)
 				e.share = tonumber(row.share) or 0
 				local name = type(src.name) == "string" and src.name or tostring(row.sourceKey)
 				e.skill = name
-				if not own and type(actor.name) == "string" and actor.name ~= "" and not string.find(name, actor.name, 1, true) then
+				if pet then
+					e.petLine, e.proc = true, false
+					name = C.L("Pet")
+					e.skill = name
+				elseif not own and type(actor.name) == "string" and actor.name ~= "" and not string.find(name, actor.name, 1, true) then
 					e.pet = actor.name -- shown in a tag after the skill (the tooltip has both)
 					name = actor.name .. ": " .. name
 				end
 				e.name = name
-				if type(src.icon) == "table" and src.icon.status == "ready" and type(src.icon.path) == "string" then
+				if pet and type(actor.portrait) == "table" and actor.portrait.status == "ready" then
+					e.portrait = actor.portrait.portraitKey -- the Pet line wears the pet's face
+				elseif type(src.icon) == "table" and src.icon.status == "ready" and type(src.icon.path) == "string" then
 					e.icon = src.icon.path
 				elseif not own and type(actor.portrait) == "table" and actor.portrait.status == "ready" then
 					e.portrait = actor.portrait.portraitKey -- a summon's own swing: its face
@@ -186,6 +198,13 @@ local function SourceLines(snap, tab)
 				local school = tab ~= "healing" and SchoolOf(snap, row) or nil
 				e.school = school
 			end
+		end
+	end
+	local pl = at["pet"] and S.list[at["pet"]]
+	if pl then
+		local most = -1
+		for part, amount in pairs(petParts) do
+			if amount > most then pl.top, most = part, amount end
 		end
 	end
 	return n
@@ -982,7 +1001,7 @@ local function StepRow(r, e, rank, slot, max, dt, now)
 	local cc = (db.tab == "party" and e.color) or nil
 	if cc then
 		C.TextColor(r.name, 0.4 + cc[1] * 0.6, 0.4 + cc[2] * 0.6, 0.4 + cc[3] * 0.6)
-	elseif e.pet then
+	elseif e.pet or e.petLine then
 		C.TextColor(r.name, 1, 0.86, 0.6) -- a summon's line in its tag's gold, even when the tag finds no room
 	else
 		C.TextColor(r.name, 1, 0.97, 0.92)

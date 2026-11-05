@@ -923,6 +923,32 @@ local ROWS = {
 		"la ventana de talentos se detuvo tras un error: ",
 		"a janela de talentos parou após um erro: " },
 
+	-- damage taken by the hero
+	{ "What hits you rises beside your hero as red numbers, heavier blows bigger.",
+		"Ce qui vous frappe s'élève près de votre héros en chiffres rouges, les coups lourds plus gros.",
+		"Was dich trifft, steigt neben deinem Helden als rote Zahlen auf, schwere Treffer größer.",
+		"Lo que te golpea sube junto a tu héroe en números rojos, los golpes fuertes más grandes.",
+		"O que te atinge sobe ao lado do herói em números vermelhos, golpes pesados maiores." },
+	{ "the damage you take stopped showing after an error: ",
+		"les dégâts subis ne s'affichent plus après une erreur : ",
+		"der erlittene Schaden wird nach einem Fehler nicht mehr gezeigt: ",
+		"el daño recibido dejó de mostrarse tras un error: ",
+		"o dano sofrido deixou de aparecer após um erro: " },
+
+	-- Scholomance (0.140.0)
+	{ "Scholomance",
+		"Scholomance",
+		"Scholomance",
+		"Scholomance",
+		"Scholomance" },
+
+	-- the meter's Pet line (1.14.3)
+	{ "Pet",
+		"Familier",
+		"Begleiter",
+		"Mascota",
+		"Mascote" },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },

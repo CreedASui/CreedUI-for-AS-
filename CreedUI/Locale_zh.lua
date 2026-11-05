@@ -381,4 +381,8 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["Your talents show here during a run."] = "冒险中你的天赋会显示在这里。",
 	["No talents learned yet."] = "尚未学习天赋。",
 	["the talent window stopped after an error: "] = "天赋窗口出错后已停止：",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger."] = "你受到的伤害以红色数字在英雄旁升起，重击更大。",
+	["the damage you take stopped showing after an error: "] = "受到的伤害因错误停止显示：",
+	["Scholomance"] = "通灵学院",
+	["Pet"] = "宠物",
 })

@@ -381,4 +381,8 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Your talents show here during a run."] = "ラン中はここにタレントが表示されます。",
 	["No talents learned yet."] = "まだタレントを習得していません。",
 	["the talent window stopped after an error: "] = "タレントウィンドウはエラーで停止しました：",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger."] = "受けたダメージが赤い数字で英雄の横に浮かび、重い一撃ほど大きく。",
+	["the damage you take stopped showing after an error: "] = "エラーのため受けたダメージの表示を止めました: ",
+	["Scholomance"] = "スカロマンス",
+	["Pet"] = "ペット",
 })

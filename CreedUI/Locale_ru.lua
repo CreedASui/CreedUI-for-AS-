@@ -381,4 +381,8 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Your talents show here during a run."] = "Таланты видны здесь во время забега.",
 	["No talents learned yet."] = "Таланты ещё не изучены.",
 	["the talent window stopped after an error: "] = "окно талантов остановилось после ошибки: ",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger."] = "Удары по вам всплывают у героя красными числами, тяжёлые крупнее.",
+	["the damage you take stopped showing after an error: "] = "получаемый урон больше не показывается после ошибки: ",
+	["Scholomance"] = "Некроситет",
+	["Pet"] = "Питомец",
 })

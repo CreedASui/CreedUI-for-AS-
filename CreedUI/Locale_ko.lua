@@ -381,4 +381,8 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["Your talents show here during a run."] = "도전 중에 특성이 여기에 표시됩니다.",
 	["No talents learned yet."] = "아직 배운 특성이 없습니다.",
 	["the talent window stopped after an error: "] = "특성 창이 오류로 멈췄습니다: ",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger."] = "받은 피해가 영웅 옆에 빨간 숫자로 떠오르며, 큰 타격일수록 커집니다.",
+	["the damage you take stopped showing after an error: "] = "오류로 받은 피해 표시가 멈췄습니다: ",
+	["Scholomance"] = "스칼로맨스",
+	["Pet"] = "소환수",
 })
