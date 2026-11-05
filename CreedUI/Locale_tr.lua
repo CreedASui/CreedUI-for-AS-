@@ -416,4 +416,11 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Pink"] = "Pembe",
 	["Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window."] = "Verilen hasar, iyileştirme, boss hasarı ve grup DPS'i simgelerle, saniye başına ve paylarla; Sıfırla yalnızca bu pencerede yeniden sayar. Taşımak için başlığı, boyutlandırmak için köşeyi sürükle. Creed UI seçeneklerinden göster veya gizle; açıkken oyunun penceresinin yerini alır.",
 	["Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window."] = "Şansın bronz bir madalyonda, Nadir, Destansı veya Efsanevi kart olasılığı üç mücevherde (N'de 1); kazandığın şans madalyonda görünür. Genişletmek için kenarlarını, boyutlandırmak için köşelerini sürükle; Creed UI seçeneklerinden göster veya gizle.",
+	["Pet bar"] = "Evcil hayvan çubuğu",
+	["Over the skill bar on the left: your pet's own buttons (click to use, right-click for autocast), or each kind of summon you have out with its count, time left and the skills it has used."] = "Yetenek çubuğunun üstünde solda: evcil hayvanının düğmeleri (kullanmak için tıkla, otomatik kullanım için sağ tıkla) ya da her çağırma türü sayısı, kalan süresi ve kullandığı yeteneklerle.",
+	["{1} out"] = "{1} tane",
+	["{1} s left"] = "{1} sn kaldı",
+	["Its skills show here once it uses them."] = "Yeteneklerini kullandıkça burada görünür.",
+	["the pet bar stopped after an error: "] = "evcil hayvan çubuğu bir hatadan sonra durdu: ",
+	["A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far."] = "Her boss ve uyanık muhafızın üstünde bir kafatası, her sandığın üstünde altın bir sandık, ekranın neresinde olurlarsa: yakındayken büyük, uzaktayken küçük.",
 })

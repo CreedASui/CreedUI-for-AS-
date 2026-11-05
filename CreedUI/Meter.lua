@@ -140,7 +140,7 @@ end
 -- a source view: your own skills, each on its line; every pet's and summon's skills together on
 -- one Pet line (its tooltip names the best of them); a totem's on lines of their own
 local function SourceLines(snap, tab)
-	local n, at, petParts = 0, {}, {}
+	local n, at, petParts, petSkills = 0, {}, {}, {}
 	local list = type(snap.rows) == "table" and snap.rows or {}
 	local actors = type(snap.actors) == "table" and snap.actors or {}
 	local sources = type(snap.sources) == "table" and snap.sources or {}
@@ -162,6 +162,24 @@ local function SourceLines(snap, tab)
 				local part = (type(actor.name) == "string" and actor.name ~= "" and (actor.name .. ": ") or "")
 					.. ((type(src.name) == "string" and src.name ~= "") and src.name or tostring(skill))
 				petParts[part] = (petParts[part] or 0) + amount
+				if tab == "damage" then
+					-- for the pet bar: the skills each kind of summon has used, by its key
+					local who = tostring(actor.summonKey or actor.name or "?")
+					local list = petSkills[who]
+					if not list then
+						list = { at = {} }
+						petSkills[who] = list
+					end
+					local sk = (type(src.name) == "string" and src.name ~= "") and src.name or tostring(skill)
+					local it = list.at[sk]
+					if not it then
+						it = { name = sk, amount = 0 }
+						list.at[sk] = it
+						table.insert(list, it)
+					end
+					it.amount = it.amount + amount
+					if not it.icon and type(src.icon) == "table" and src.icon.status == "ready" then it.icon = src.icon.path end
+				end
 			end
 			local rate = RateValue(S.checkpoint and row.checkpointAverage or row.periodAverage) or RateValue(row.displayRate) or 0
 			local e = at[key] and S.list[at[key]]
@@ -199,6 +217,12 @@ local function SourceLines(snap, tab)
 				e.school = school
 			end
 		end
+	end
+	if tab == "damage" then
+		for _, list in pairs(petSkills) do
+			table.sort(list, function(a, b) return a.amount > b.amount end)
+		end
+		C.petSkills = petSkills
 	end
 	local pl = at["pet"] and S.list[at["pet"]]
 	if pl then

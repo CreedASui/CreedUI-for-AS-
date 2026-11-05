@@ -413,3 +413,10 @@ Yellow
 Pink
 Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window.
 Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window.
+Pet bar
+Over the skill bar on the left: your pet's own buttons (click to use, right-click for autocast), or each kind of summon you have out with its count, time left and the skills it has used.
+{1} out
+{1} s left
+Its skills show here once it uses them.
+the pet bar stopped after an error: 
+A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far.

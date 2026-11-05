@@ -416,4 +416,11 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Pink"] = "Розовый",
 	["Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window."] = "Нанесённый урон, исцеление, урон по боссам и DPS группы со значками, в секунду и долями; Сброс считает заново только в этом окне. Тяните заголовок, чтобы двигать, угол — чтобы менять размер. Показ и скрытие — в настройках Creed UI; включённое, оно заменяет окно игры.",
 	["Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window."] = "Ваша удача на бронзовом медальоне и шанс редкой, эпической или легендарной карты тремя камнями (1 из N); полученная удача видна на медальоне. Тяните края, чтобы расширить, углы — чтобы менять размер; показ и скрытие — в настройках Creed UI.",
+	["Pet bar"] = "Панель питомца",
+	["Over the skill bar on the left: your pet's own buttons (click to use, right-click for autocast), or each kind of summon you have out with its count, time left and the skills it has used."] = "Над панелью умений слева: кнопки питомца (щелчок — применить, правый щелчок — автоприменение) или каждый вид призванных с числом, оставшимся временем и умениями, которые он применял.",
+	["{1} out"] = "призвано: {1}",
+	["{1} s left"] = "осталось {1} с",
+	["Its skills show here once it uses them."] = "Его умения появятся здесь, как только он их применит.",
+	["the pet bar stopped after an error: "] = "панель питомца остановлена после ошибки: ",
+	["A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far."] = "Череп над каждым боссом и бодрствующим стражем и золотой сундук над каждым тайником, где бы они ни были на экране: вблизи крупнее, вдали меньше.",
 })

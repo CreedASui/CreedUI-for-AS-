@@ -416,4 +416,11 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["Pink"] = "분홍",
 	["Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window."] = "가한 피해, 치유, 보스 피해, 파티 DPS를 아이콘, 초당 수치, 비율로 표시합니다. 초기화는 이 창에서만 다시 셉니다. 제목을 끌어 옮기고 모서리로 크기를 바꿉니다. Creed UI 옵션에서 표시하거나 숨기며, 켜져 있으면 게임의 창을 대신합니다.",
 	["Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window."] = "행운을 청동 메달에, 희귀·영웅·전설 카드 확률을 보석 세 개(N분의 1)로 표시합니다. 얻은 행운은 메달에 나타납니다. 옆면을 끌어 넓히고 모서리로 크기를 바꿉니다. Creed UI 옵션에서 표시하거나 숨깁니다.",
+	["Pet bar"] = "소환수 바",
+	["Over the skill bar on the left: your pet's own buttons (click to use, right-click for autocast), or each kind of summon you have out with its count, time left and the skills it has used."] = "스킬 바 위 왼쪽: 소환수의 버튼(클릭하여 사용, 오른쪽 클릭으로 자동 시전), 또는 소환물 종류마다 수, 남은 시간, 사용한 기술.",
+	["{1} out"] = "{1}마리",
+	["{1} s left"] = "{1}초 남음",
+	["Its skills show here once it uses them."] = "기술을 사용하면 여기에 표시됩니다.",
+	["the pet bar stopped after an error: "] = "오류로 소환수 바가 멈췄습니다: ",
+	["A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far."] = "각 보스와 깨어난 수호자 위에 해골, 각 보물 상자 위에 금색 상자를 화면 어디에 있든 표시합니다: 가까우면 크게, 멀면 작게.",
 })

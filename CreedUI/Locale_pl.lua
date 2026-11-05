@@ -416,4 +416,11 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["Pink"] = "Różowy",
 	["Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window."] = "Zadane obrażenia, leczenie, obrażenia bossów i DPS drużyny z ikonami, na sekundę i udziałami; Reset liczy od nowa tylko w tym oknie. Przeciągnij tytuł, by przesunąć, róg, by zmienić rozmiar. Pokaż lub ukryj w opcjach Creed UI; włączone zastępuje okno gry.",
 	["Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window."] = "Twoje szczęście na brązowym medalionie i szansa na rzadką, epicką lub legendarną kartę jako trzy klejnoty (1 na N); zdobyte szczęście widać na medalionie. Przeciągnij boki, by poszerzyć, rogi, by zmienić rozmiar; pokaż lub ukryj w opcjach Creed UI.",
+	["Pet bar"] = "Pasek zwierzaka",
+	["Over the skill bar on the left: your pet's own buttons (click to use, right-click for autocast), or each kind of summon you have out with its count, time left and the skills it has used."] = "Nad paskiem umiejętności po lewej: przyciski zwierzaka (klik, by użyć, prawy klik — automatyczne rzucanie) albo każdy rodzaj przywołańca z liczbą, pozostałym czasem i użytymi umiejętnościami.",
+	["{1} out"] = "{1} przywołanych",
+	["{1} s left"] = "zostało {1} s",
+	["Its skills show here once it uses them."] = "Jego umiejętności pojawią się tu, gdy ich użyje.",
+	["the pet bar stopped after an error: "] = "pasek zwierzaka zatrzymał się po błędzie: ",
+	["A skull over each boss and awake guardian, and a gold chest over each cache, wherever they are on the screen: large when near, small when far."] = "Czaszka nad każdym bossem i przebudzonym strażnikiem oraz złota skrzynia nad każdym skarbem, gdziekolwiek są na ekranie: duże z bliska, małe z daleka.",
 })
