@@ -446,3 +446,18 @@ Shadow Cleave
 Cleave
 Hellfire
 Shadow Bolt
+Range
+Crits for
+Hits per second
+Pet Damage
+Its own swings at the enemy in front of it.
+Bites the enemy you attack.
+Sends each pet charging at its own target, bosses and elites first.
+Its bites strike 5 more enemies for 150% damage each.
+Strikes three times in quick succession.
+Hurls Frostbolts at your enemies.
+Hurls bolts of fire at your enemies.
+Hits 2 enemies at once.
+Cleaves up to 10 enemies; every third swing deals double damage.
+Burns the enemies around it.
+Hurls Shadow Bolts at your enemies.

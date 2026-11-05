@@ -35,20 +35,21 @@ local FACES = {
 -- show, each with its icon. Found by the same words as its face; a skill the meter sees it use that
 -- isn't here comes after them.
 local I = "Interface\\Icons\\"
-local MELEE = { "Melee", I .. "Ability_MeleeDamage" }
-local BITE = { "Bite", I .. "Ability_Racial_Cannibalize" }
-local BEAST = { { "Kill Command", I .. "Ability_Hunter_BeastCall" }, { "Bestial Wrath", I .. "Ability_Druid_FerociousBite" } }
+local MELEE = { "Melee", I .. "Ability_MeleeDamage", "Its own swings at the enemy in front of it." }
+local BITE = { "Bite", I .. "Ability_Racial_Cannibalize", "Bites the enemy you attack." }
+local BEAST = { { "Kill Command", I .. "Ability_Hunter_BeastCall", "Sends each pet charging at its own target, bosses and elites first." },
+	{ "Bestial Wrath", I .. "Ability_Druid_FerociousBite", "Its bites strike 5 more enemies for 150% damage each." } }
 local KNOWS = {
 	{ "spirit wolf", { BITE, MELEE } },
 	{ "devilsaur", { BITE, BEAST[1], BEAST[2] } },
 	{ "wolf", { BITE, BEAST[1], BEAST[2] } },
-	{ "raptor", { { "Raptor Strike", I .. "Ability_MeleeDamage" }, BEAST[1], BEAST[2] } },
-	{ "water elemental", { { "Frostbolt", I .. "Spell_Frost_FrostBolt02" } } },
-	{ "imp", { { "Firebolt", I .. "Spell_Fire_FireBolt" } } },
-	{ "voidwalker", { { "Shadow Cleave", I .. "Ability_Warrior_Cleave" }, MELEE } },
-	{ "felguard", { { "Cleave", I .. "Ability_Warrior_Cleave" }, MELEE } },
-	{ "infernal", { { "Hellfire", I .. "Spell_Fire_Incinerate" }, MELEE } },
-	{ "doomguard", { { "Shadow Bolt", I .. "Spell_Shadow_ShadowBolt" }, MELEE } },
+	{ "raptor", { { "Raptor Strike", I .. "Ability_MeleeDamage", "Strikes three times in quick succession." }, BEAST[1], BEAST[2] } },
+	{ "water elemental", { { "Frostbolt", I .. "Spell_Frost_FrostBolt02", "Hurls Frostbolts at your enemies." } } },
+	{ "imp", { { "Firebolt", I .. "Spell_Fire_FireBolt", "Hurls bolts of fire at your enemies." } } },
+	{ "voidwalker", { { "Shadow Cleave", I .. "Ability_Warrior_Cleave", "Hits 2 enemies at once." }, MELEE } },
+	{ "felguard", { { "Cleave", I .. "Ability_Warrior_Cleave", "Cleaves up to 10 enemies; every third swing deals double damage." }, MELEE } },
+	{ "infernal", { { "Hellfire", I .. "Spell_Fire_Incinerate", "Burns the enemies around it." }, MELEE } },
+	{ "doomguard", { { "Shadow Bolt", I .. "Spell_Shadow_ShadowBolt", "Hurls Shadow Bolts at your enemies." }, MELEE } },
 	{ "treant", { MELEE } },
 }
 
@@ -65,7 +66,7 @@ local function SkillsOf(grp, seen)
 		if string.find(words, " " .. KNOWS[i][1]) then
 			local list = KNOWS[i][2]
 			for k = 1, table.getn(list) do
-				table.insert(out, { name = list[k][1], icon = list[k][2] })
+				table.insert(out, { name = list[k][1], icon = list[k][2], does = list[k][3] })
 				has[list[k][1]] = true
 			end
 			break
@@ -117,6 +118,34 @@ local function Groups()
 	local ok, groups = pcall(AZS_GetSummonGroups)
 	if not ok or type(groups) ~= "table" or table.getn(groups) == 0 then return nil end
 	return groups
+end
+
+------------------------------------------------------------------------ a skill's tooltip
+-- What it does, then its damage as it is now, read off its own hits: they carry your stats (your
+-- pets' damage bonus, gear, buffs) as they stand, so a change shows at its next hit.
+local function Num(n) return C.Commas(math.floor(n + 0.5)) end
+
+local function SkillTip(s)
+	if s.does then GameTooltip:AddLine(C.L(s.does), 1, 1, 1, 1) end
+	local v = s.hv
+	if v and (v.last or v.crit) then
+		if v.last then
+			GameTooltip:AddDoubleLine(C.L("Hits for"), Num(v.last), 0.8, 0.8, 0.8, 1, 1, 1)
+			GameTooltip:AddDoubleLine(C.L("Usually"), Num(v.avg), 0.8, 0.8, 0.8, 1, 1, 1)
+			if v.high and v.high > v.low then
+				GameTooltip:AddDoubleLine(C.L("Range"), Num(v.low) .. " - " .. Num(v.high), 0.8, 0.8, 0.8, 1, 1, 1)
+			end
+		end
+		if v.crit then GameTooltip:AddDoubleLine(C.L("Crits for"), Num(v.crit), 0.8, 0.8, 0.8, 1, 0.82, 0.3) end
+		local rate = C.HitRate(v)
+		if rate > 0 then GameTooltip:AddDoubleLine(C.L("Hits per second"), string.format("%.1f", rate), 0.8, 0.8, 0.8, 1, 1, 1) end
+	else
+		GameTooltip:AddLine(C.L("Its value shows once it hits."), 0.7, 0.7, 0.7, 1)
+	end
+	local bonus = type(AZS_STATS) == "table" and tonumber(AZS_STATS.pet)
+	if bonus and bonus ~= 0 then
+		GameTooltip:AddDoubleLine(C.L("Pet Damage"), string.format("%+.0f%%", bonus * 100), 0.8, 0.8, 0.8, 0.4, 1, 0.4)
+	end
 end
 
 ------------------------------------------------------------------------ the slots
@@ -175,12 +204,7 @@ local function NewSlot(i)
 			if s.left then GameTooltip:AddLine(C.F("{1} s left", math.ceil(s.left)), 1, 1, 1) end
 			if not s.hasSkills then GameTooltip:AddLine(C.L("Its skills show here once it uses them."), 0.7, 0.7, 0.7, 1) end
 		elseif s.kind == "skill" then
-			if s.value then
-				GameTooltip:AddDoubleLine(C.L("Hits for"), C.Commas(math.floor(s.value + 0.5)), 0.8, 0.8, 0.8, 1, 1, 1)
-				GameTooltip:AddDoubleLine(C.L("Usually"), C.Commas(math.floor(s.avg + 0.5)), 0.8, 0.8, 0.8, 1, 1, 1)
-			else
-				GameTooltip:AddLine(C.L("Its value shows once it hits."), 0.7, 0.7, 0.7, 1)
-			end
+			SkillTip(s)
 		end
 		C.ShowTip()
 	end)
@@ -248,8 +272,9 @@ local function Step(dt, now)
 				n = n + 1
 				local sk = Put(n, x, K.skill, "skill")
 				-- its value: what it hits for now (the last plain hit), as a skill's tooltip would say
-				local hv = C.hitValues and (C.hitValues[list[k].key or ""] or C.hitValues[list[k].name or ""])
-				sk.name, sk.value, sk.avg = C.L(list[k].name), hv and hv.last, hv and hv.avg
+				local hv = C.hitValues and (C.hitValues[list[k].key or ""] or C.hitValues[list[k].name or ""]
+					or C.hitValues[C.SkillKey(list[k].name) or ""])
+				sk.name, sk.value, sk.hv, sk.does = C.L(list[k].name), hv and hv.last, hv, list[k].does
 				sk.icon:SetTexture(list[k].icon or "Interface\\Icons\\INV_Misc_QuestionMark")
 				C.Vis(sk.shade, false)
 				C.Vis(sk.glow, false)

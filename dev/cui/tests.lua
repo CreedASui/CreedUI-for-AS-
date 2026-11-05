@@ -3046,6 +3046,32 @@ do
 	table.remove(M.summons)
 	check(findText(CreedUIPetBar, "^350$") ~= nil and findText(CreedUIPetBar, "700") == nil,
 		"Bite shows what it hits for (350), not its total (700): " .. table.concat(textsUnder(CreedUIPetBar), " | "))
+	-- its tooltip: what it does and its damage now, as a skill's would
+	M.Hit(foe, 900, "strike", false, true)
+	ev = M.world.events[M.world.nEvents]
+	ev.meterSourceKey, ev.meterSource = "bite", "Bite"
+	AZS_STATS = AZS_STATS or {}
+	local petWas = AZS_STATS.pet
+	AZS_STATS.pet = 0.25
+	frames(10)
+	local bite
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Cannibalize$") and under(o, CreedUIPetBar) then bite = o.__parent end
+	end
+	this = bite
+	bite.__scripts.OnEnter()
+	local tip = table.concat(M.tip.lines, " / ")
+	check(string.find(tip, "Bites the enemy you attack.", 1, true) and string.find(tip, "Hits for | 350", 1, true)
+		and string.find(tip, "Crits for | 900", 1, true) and string.find(tip, "Pet Damage | +25%", 1, true)
+		and string.find(tip, "Hits per second", 1, true), "Bite's tooltip: what it does, its hits, its crit, the pet bonus: " .. tip)
+	bite.__scripts.OnLeave()
+	AZS_STATS.pet = petWas
+	-- Kill Command's hits come under its key, not its name: still its own value
+	M.Hit(foe, 1234, "strike", false)
+	ev = M.world.events[M.world.nEvents]
+	ev.meterSourceKey, ev.meterSource, ev.abilityName = "ability:kill_command:r2", nil, nil
+	frames(10)
+	check(findText(CreedUIPetBar, "^1,234$") ~= nil, "Kill Command's hits register by its key: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
 	table.remove(M.summons)
 	local pl, pb, pr = M.Rect(CreedUIPetBar)
 	local bl, bb, br, bt = M.Rect(CreedUIBar)
