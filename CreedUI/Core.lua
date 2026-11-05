@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.17.1"
+C.VERSION = "1.17.2"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -135,13 +135,19 @@ function C.NoteHitValue(ev)
 	if ev.kind ~= "damage" or not amount or amount <= 0 or ev.periodic then return end
 	-- by its meter line, its name, and its plain key ("ability:kill_command:r3" as "kill_command",
 	-- every rank one), so a skill is found however the hit names it
-	local keys = { ev.meterSourceKey, ev.meterSource, ev.abilityName, C.SkillKey(ev.meterSourceKey) }
+	-- the meter's line decides which skill a hit is; its ability name only when it has none
+	local keys
+	if ev.meterSourceKey ~= nil then
+		keys = { ev.meterSourceKey, C.SkillKey(ev.meterSourceKey), ev.meterSource }
+	else
+		keys = { ev.meterSource, ev.abilityName, C.SkillKey(ev.meterSource or ev.abilityName) }
+	end
 	local v
-	for i = 1, 4 do
+	for i = 1, 3 do
 		if keys[i] ~= nil and C.hitValues[keys[i]] then v = C.hitValues[keys[i]] end
 	end
 	if not v then v = { times = {} } end
-	for i = 1, 4 do
+	for i = 1, 3 do
 		if keys[i] ~= nil then C.hitValues[keys[i]] = v end
 	end
 	if ev.critical then
