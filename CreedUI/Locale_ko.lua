@@ -437,4 +437,5 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["Hits for"] = "타격당",
 	["Usually"] = "보통",
 	["Its value shows once it hits."] = "적중하면 수치가 표시됩니다.",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "받은 피해가 영웅 옆에 빨간 숫자로 떠오르며 큰 타격일수록 커지고, 회복한 생명력은 반대쪽에 초록색으로 떠오릅니다.",
 })

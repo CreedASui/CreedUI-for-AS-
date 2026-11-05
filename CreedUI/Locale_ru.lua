@@ -437,4 +437,5 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Hits for"] = "Бьёт на",
 	["Usually"] = "Обычно",
 	["Its value shows once it hits."] = "Значение появится после первого удара.",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "Удары по вам всплывают у героя красными числами, тяжёлые крупнее; восстановленное здоровье — зелёными с другой стороны.",
 })

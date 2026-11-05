@@ -437,4 +437,5 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Hits for"] = "Vuruş",
 	["Usually"] = "Genelde",
 	["Its value shows once it hits."] = "Vurduğunda değeri görünür.",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "Sana vuranlar kahramanının yanında kırmızı sayılarla yükselir, ağır darbeler daha büyük; geri kazandığın can diğer tarafta yeşil yükselir.",
 })

@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.16.1
+- **Heals received:** the health you get back (heals, life drained) now rises beside your hero too, as green "+" numbers on the other side from the red damage ones. Part of Damage taken, so the same switch turns both off.
 - **Pet bar faces:** each summon shows its own picture by its name: a wolf for the Wolf, a raptor for the Raptor, the Spirit Wolf, Imp, Voidwalker, Infernal, Doomguard, Water Elemental and Treant their own, and every hunter beast family (cat, bear, owl, gorilla, scorpid, turtle...) theirs.
 - **Pet skills show their value:** under each pet skill, what it hits for now (its last plain hit), and on its tooltip that and what it usually hits for, instead of the damage it has added up. Read from the hits the damage numbers see, so they need the damage numbers on.
 

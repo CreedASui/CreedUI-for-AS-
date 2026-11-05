@@ -2,7 +2,8 @@
 -- What hits you rises beside your hero as red numbers: each new hit from the game's own
 -- damage-taken list (the one the meter's Damage Taken tab reads), a few blows at a time gathered
 -- into one number, bigger and brighter for a heavy one. They hide behind the level-up cards and
--- out of a run. Off, nothing shows.
+-- out of a run. The health you get back (heals, life drained) rises the same way in green on the
+-- hero's other side. Off, nothing shows.
 
 local C = CreedUI
 local DEFAULTS = { enabled = true, scale = 1 }
@@ -15,7 +16,7 @@ local K = {
 
 local db
 local root
-local S = { seen = {}, primed = false, gather = 0, pending = 0, pool = {}, live = {}, broken = false, maxHp = 1 }
+local S = { seen = {}, healSeen = {}, healPending = 0, primed = false, gather = 0, pending = 0, pool = {}, live = {}, broken = false, maxHp = 1 }
 
 local function Phase()
 	if type(AZS_GetPhase) ~= "function" then return nil end
@@ -23,26 +24,31 @@ local function Phase()
 	return ok and phase or nil
 end
 
--- what is new on the game's list since the last look
-local function NewDamage()
-	local list = type(AZS_TAKEN) == "table" and AZS_TAKEN or {}
+-- what is new on one of the game's lists since the last look: the damage taken ({ source, dmg })
+-- or the healing got ({ name, dmg })
+local function NewOn(list, field, seenKey)
+	list = type(list) == "table" and list or {}
 	local fresh, add, now = {}, 0, {}
 	for i = 1, table.getn(list) do
 		local l = list[i]
 		local dmg = type(l) == "table" and tonumber(l.dmg)
-		if dmg and l.source ~= nil then
-			local key = tostring(l.source)
+		if dmg and l[field] ~= nil then
+			local key = tostring(l[field])
 			now[key] = (now[key] or 0) + dmg
 		end
 	end
+	local seen = S[seenKey]
 	for key, dmg in pairs(now) do
-		local was = S.seen[key] or 0
+		local was = seen[key] or 0
 		if dmg > was then add = add + (dmg - was) end
 		fresh[key] = dmg
 	end
-	S.seen = fresh
+	S[seenKey] = fresh
 	return add
 end
+
+local function NewDamage() return NewOn(AZS_TAKEN, "source", "seen") end
+local function NewHealing() return NewOn(AZS_HEALING, "name", "healSeen") end
 
 local function Number()
 	local n = table.remove(S.pool)
@@ -51,7 +57,7 @@ local function Number()
 	return n
 end
 
-local function Spawn(amount, now)
+local function Spawn(amount, now, heal)
 	if table.getn(S.live) >= K.max then
 		local old = table.remove(S.live, 1)
 		C.Vis(old.text, false)
@@ -61,9 +67,14 @@ local function Spawn(amount, now)
 	local heavy = math.min(1, amount / (hp * 0.15)) -- a fifth of your health or so is a heavy blow
 	local text = Number()
 	local n = table.getn(S.live)
-	table.insert(S.live, { text = text, t0 = now, heavy = heavy, lane = math.mod(n, 3) - 1 })
-	C.SetText(text, "-" .. C.Short(amount))
-	C.TextColor(text, 1, 0.30 - 0.12 * heavy, 0.22 - 0.1 * heavy)
+	table.insert(S.live, { text = text, t0 = now, heavy = heavy, lane = math.mod(n, 3) - 1, side = heal and -1 or 1 })
+	if heal then
+		C.SetText(text, "+" .. C.Short(amount))
+		C.TextColor(text, 0.36 - 0.1 * heavy, 1, 0.42 - 0.12 * heavy)
+	else
+		C.SetText(text, "-" .. C.Short(amount))
+		C.TextColor(text, 1, 0.30 - 0.12 * heavy, 0.22 - 0.1 * heavy)
+	end
 	C.Vis(text, true)
 end
 
@@ -72,6 +83,7 @@ local function Step(dt, now)
 	if phase ~= "playing" and phase ~= "choosing" and phase ~= "paused" then
 		-- out of a run: forget what was seen, so the next run starts clean
 		S.seen, S.pending, S.primed = {}, 0, false
+		S.healSeen, S.healPending = {}, 0
 		for i = table.getn(S.live), 1, -1 do
 			local l = table.remove(S.live, i)
 			C.Vis(l.text, false)
@@ -83,15 +95,18 @@ local function Step(dt, now)
 	if not S.primed then
 		S.primed = true
 		NewDamage() -- what was already there when the run (or a /reload) began is old news
-		S.pending = 0
+		NewHealing()
+		S.pending, S.healPending = 0, 0
 	end
 	S.maxHp = tonumber(UnitHealthMax and UnitHealthMax("player")) or S.maxHp
 	S.pending = S.pending + NewDamage()
+	S.healPending = S.healPending + NewHealing()
 	S.gather = S.gather - dt
 	if S.gather <= 0 then
 		S.gather = K.gather
 		if S.pending >= 1 then Spawn(S.pending, now) end
-		S.pending = 0
+		if S.healPending >= 1 then Spawn(S.healPending, now, true) end
+		S.pending, S.healPending = 0, 0
 	end
 	C.Vis(root, true)
 	C.Alpha(root, 1 - C.cardsFade)
@@ -109,7 +124,8 @@ local function Step(dt, now)
 				l.text.hurtSize = size
 				C.SetFace(l.text, C.FONT, size, "OUTLINE")
 			end
-			C.Place(l.text, "CENTER", root, "CENTER", K.x + K.drift * age + 14 * l.lane, K.y + K.rise * C.Smooth(age))
+			-- damage on the hero's left, drifting left; healing on the right, drifting right
+			C.Place(l.text, "CENTER", root, "CENTER", l.side * (K.x + K.drift * age) + 14 * l.lane, K.y + K.rise * C.Smooth(age))
 			C.Alpha(l.text, 1 - C.Smooth((age - 0.6) / 0.4))
 		end
 	end
@@ -153,7 +169,7 @@ end)
 
 C.RegisterPart({
 	key = "hurt", name = "Damage taken",
-	note = "What hits you rises beside your hero as red numbers, heavier blows bigger.",
+	note = "What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side.",
 	get = function() return db and db.enabled end,
 	set = function(on)
 		if db then

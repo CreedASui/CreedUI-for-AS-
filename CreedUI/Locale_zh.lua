@@ -437,4 +437,5 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["Hits for"] = "每次命中",
 	["Usually"] = "通常",
 	["Its value shows once it hits."] = "命中后会显示其数值。",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "你受到的伤害以红色数字在英雄旁升起，重击更大；恢复的生命以绿色数字在另一侧升起。",
 })

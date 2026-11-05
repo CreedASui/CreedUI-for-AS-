@@ -243,4 +243,5 @@ T = {
 434: "Vuruş",
 435: "Genelde",
 436: "Vurduğunda değeri görünür.",
+437: "Sana vuranlar kahramanının yanında kırmızı sayılarla yükselir, ağır darbeler daha büyük; geri kazandığın can diğer tarafta yeşil yükselir.",
 }

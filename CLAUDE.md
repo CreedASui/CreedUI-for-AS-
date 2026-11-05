@@ -35,7 +35,7 @@ CreedUI/            the addon (this folder name is the install folder; never ren
                     sockets C.BRONZE and its gems red, asked for)
   Numbers.lua       floating damage numbers (combat text API)
   Hurt.lua          damage taken as red numbers by the hero (new hits on AZS_TAKEN; the combat text
-                    API carries outgoing hits only)
+                    API carries outgoing hits only), heals got as green ones (AZS_HEALING; 1.16.1)
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
   Skulls.lua        a skull over each boss (horned, red eyes) and guardian, a gold chest over each cache
                     (world anchors, kind `cache`; 1.15.0), sized by distance
@@ -127,7 +127,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 576 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 578 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)

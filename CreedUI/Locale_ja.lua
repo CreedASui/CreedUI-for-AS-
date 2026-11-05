@@ -437,4 +437,5 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Hits for"] = "1回のダメージ",
 	["Usually"] = "通常",
 	["Its value shows once it hits."] = "当たると数値が表示されます。",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "受けたダメージが赤い数字で英雄の横に浮かび、重い一撃ほど大きく、回復した体力は反対側に緑で浮かびます。",
 })

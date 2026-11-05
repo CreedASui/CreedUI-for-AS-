@@ -22,12 +22,14 @@ M.meter = { damage = {
 	{ key = "melee", name = "Melee", amount = 2600, actor = { id = "P1", kind = "pet", name = "Wolf", summonKey = "wolf" } },
 } }
 AZS_TAKEN = {}
+AZS_HEALING = {}
 SIM.Advance(2, 1 / 30)
 AZS_TAKEN = { { source = "Risen Construct", dmg = 420 } }
 SIM.Advance(0.5, 1 / 30)
 AZS_TAKEN = { { source = "Risen Construct", dmg = 420 }, { source = "Kirtonos the Herald", dmg = 1650 } }
 SIM.Advance(0.35, 1 / 30)
 AZS_TAKEN[1].dmg = 610
+AZS_HEALING = { { name = "Lifesteal", dmg = 380 } }
 SIM.Advance(0.25, 1 / 30)
 M.Dump(OUT .. "/pet.txt")
 print("problems: " .. table.getn(M.problems))

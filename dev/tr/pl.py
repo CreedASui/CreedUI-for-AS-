@@ -243,4 +243,5 @@ T = {
 434: "Trafia za",
 435: "Zwykle",
 436: "Wartość pojawi się po trafieniu.",
+437: "To, co cię trafia, unosi się przy bohaterze czerwonymi liczbami, mocne ciosy większe; odzyskane zdrowie unosi się na zielono z drugiej strony.",
 }

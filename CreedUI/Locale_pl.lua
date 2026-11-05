@@ -437,4 +437,5 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["Hits for"] = "Trafia za",
 	["Usually"] = "Zwykle",
 	["Its value shows once it hits."] = "Wartość pojawi się po trafieniu.",
+	["What hits you rises beside your hero as red numbers, heavier blows bigger; the health you get back rises in green on the other side."] = "To, co cię trafia, unosi się przy bohaterze czerwonymi liczbami, mocne ciosy większe; odzyskane zdrowie unosi się na zielono z drugiej strony.",
 })

@@ -2996,6 +2996,18 @@ do
 	check(red and (l + r) / 2 < (ul + ur) / 2 and (b + t) / 2 > (ub + ut) / 2, "beside the hero, at the middle of the screen")
 	SIM.Advance(2, 1 / 30)
 	check(findText(CreedUIHurt, "^%-750$") == nil, "and it fades away")
+	-- the health you get back, in green on the other side
+	AZS_HEALING = { { name = "Renew", dmg = 250 } }
+	SIM.Advance(0.3, 1 / 30)
+	local green
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text == "+250" and under(o, CreedUIHurt) then green = o end
+	end
+	check(green and green.__color and green.__color[2] > 0.9 and green.__color[1] < 0.5, "a heal rises as a green +250")
+	local gl, gb, gr, gt = M.Rect(green)
+	local hl, hb, hr, ht = M.Rect(UIParent)
+	check(green and (gl + gr) / 2 > (hl + hr) / 2, "on the hero's other side")
+	AZS_HEALING = nil
 	M.Slash("") -- the options open and close without trouble
 	problems("damage taken")
 end
