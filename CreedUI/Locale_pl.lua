@@ -464,4 +464,9 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["Cleaves up to 10 enemies; every third swing deals double damage."] = "Rozpłatuje do 10 wrogów; co trzeci cios zadaje podwójne obrażenia.",
 	["Burns the enemies around it."] = "Pali wrogów wokół siebie.",
 	["Hurls Shadow Bolts at your enemies."] = "Ciska Pociskami cienia we wrogów.",
+	["Loot"] = "Łup",
+	["Nothing yet this run."] = "Na razie nic w tym biegu.",
+	["and {1} more"] = "i {1} więcej",
+	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "Łup biegu w małym oknie: złoto i skrzynie, potem każdy otrzymany przedmiot, najnowszy pierwszy, z ikoną i rzadkością. Wskaż jeden, by zobaczyć opis.",
+	["the loot window stopped after an error: "] = "okno łupu zatrzymało się po błędzie: ",
 })

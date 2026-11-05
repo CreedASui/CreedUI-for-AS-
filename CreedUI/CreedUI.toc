@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: Creed UI
 ## Notes: A clean, smooth HUD for Azeroth Survivors. Click the C on the minimap (or type /creed) for options.
-## Version: 1.16.3
+## Version: 1.17.0
 ## SavedVariables: CreedUIDB
 Core.lua
 Locale.lua
@@ -30,6 +30,7 @@ TinyPlatesOptions.lua
 Chests.lua
 Meter.lua
 Luck.lua
+Loot.lua
 Summary.lua
 Character.lua
 Talents.lua

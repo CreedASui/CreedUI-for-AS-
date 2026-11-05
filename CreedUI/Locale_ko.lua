@@ -464,4 +464,9 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["Cleaves up to 10 enemies; every third swing deals double damage."] = "적을 최대 10명까지 베며, 세 번째 공격마다 두 배 피해를 줍니다.",
 	["Burns the enemies around it."] = "주위의 적을 불태웁니다.",
 	["Hurls Shadow Bolts at your enemies."] = "적에게 어둠의 화살을 던집니다.",
+	["Loot"] = "전리품",
+	["Nothing yet this run."] = "이번 판에는 아직 없습니다.",
+	["and {1} more"] = "외 {1}개",
+	["The run's loot in a small window: its gold and caches, then every item you received, newest first, with its icon and rarity. Point at one for its tooltip."] = "이번 판의 전리품을 작은 창에: 골드와 보물 상자, 그리고 받은 아이템을 최신순으로 아이콘과 등급과 함께. 가리키면 툴팁이 나옵니다.",
+	["the loot window stopped after an error: "] = "오류로 전리품 창이 멈췄습니다: ",
 })
