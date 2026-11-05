@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.15.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.16.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -126,7 +126,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 563 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 574 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
@@ -211,10 +211,14 @@ before using an API. Known:
    matched), the summary's fields, the Level Up! button, Damage Taken. Ask for screenshots.
    Ideas not done yet: talent/summon timers (`AZS_GetTimers`), arrows to caches and lairs, the
    upcoming bosses (`AZS_GetUpcomingBosses`; ask first, the timer is the user's favorite).
-3. **The user's list, not done yet (2026-11-04):** active skill counts (totems, blizzards...); the pet
-   bar (done in 1.15.0; not seen live: whether the game fills the 1.12 pet buttons); more damage number styles to pick from; the meter counting
+3. **The user's list, not done yet (2026-11-04):** the pet
+   bar (done in 1.15.0; not seen live: whether the game fills the 1.12 pet buttons); the meter counting
    echo and procs right (since 0.141.0 the game files Windfury under Windfury Weapon and pet skills
    under the pet; 1.14.3 puts every pet's and summon's skills on one Pet line, asked for).
+   Done in 1.16.0: number motions (Numbers.lua `STACK.motion`: Lua 5.0's 200-local limit is reached,
+   so new constants go in an existing table), active counts on the skill bar (Bar.lua `LASTS` by icon,
+   guessed durations, counted from cooldown restarts; totems from AZS_GetTotems), each hero's best
+   skill on Party DPS (a second snapshot, scope party, groupBy source).
    Done in 1.14.3: Scholomance timer theme (zone key `scholomance`), damage taken by the hero
    (Hurt.lua), pins fading under the minimap's arrow (no facing in the API to redraw it on top).
 4. **Talents (1.13.0):** the tab opens the game's window again (`ToggleTalentFrame()`, 1.14.2, asked

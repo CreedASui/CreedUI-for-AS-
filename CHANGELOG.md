@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.16.0
+- **Damage numbers: four ways to move.** A new Motion row in the numbers' options (or `/creed numbers smooth|fountain|rise|impact`). **Smooth** is the gentle drift so far. **Fountain** arcs each number up and lets it fall away to the side. **Rise** scrolls them straight up, quickly. **Impact** punches them in big and keeps them in place, crits shaking.
+- **Active skill counts:** a gold number on a skill's slot says how many are out at once: totems standing (the game's own count) and spells still burning on the ground (Blizzard, Flamestrike, Rain of Fire, Consecration, Hurricane, Hellfire, Volley, Frost and Immolation Traps).
+- **Damage meter, Party DPS:** each hero's line shows their best skill in a tag, its damage per second on the tooltip.
+
 ## 1.15.0
 - **Pet bar** (new part): just over the skill bar on its left. When the game gives your pet its own buttons, they're here: click to use, right-click to switch autocast, point at one for the game's tooltip, with a dark veil while it cools down. Otherwise each kind of summon you have out (Spirit Wolves, Treants, an Infernal...) shows its face, how many there are, the seconds left, and the skills you've seen it use, each with its damage on its tooltip.
 - **Caches marked in the world:** every cache on the field wears a gold chest in a gold glow, so one that drops is easy to find. It fades once taken. (Part of Boss skulls, so the same toggle turns it off.)

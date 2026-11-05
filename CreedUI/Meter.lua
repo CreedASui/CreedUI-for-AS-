@@ -113,7 +113,7 @@ local function Line(i)
 		S.list[i] = e
 	end
 	e.icon, e.portrait, e.classKey, e.color, e.proc, e.top, e.topRate, e.school = nil, nil, nil, nil, false, nil, nil, nil
-	e.skill, e.pet, e.petLine = nil, nil, nil
+	e.skill, e.pet, e.petLine, e.ownerId = nil, nil, nil, nil
 	return e
 end
 
@@ -246,7 +246,7 @@ local function OwnerLines(snap)
 			n = n + 1
 			local e = Line(n)
 			local actor = actors[row.ownerId] or {}
-			e.key, e.amount = "o" .. tostring(row.ownerId), amount
+			e.key, e.amount, e.ownerId = "o" .. tostring(row.ownerId), amount, row.ownerId
 			e.rate = RateValue(S.checkpoint and row.checkpointAverage or row.periodAverage) or RateValue(row.displayRate)
 			e.recent, e.share = RateValue(row.recentRate), tonumber(row.share) or 0
 			e.name = type(actor.name) == "string" and actor.name or "?"
@@ -256,6 +256,30 @@ local function OwnerLines(snap)
 		end
 	end
 	return n
+end
+
+-- Party DPS: each hero's line wears the name of their best skill in a tag (its damage per second
+-- on the tooltip), from the party's damage counted by skill
+local function BestSkills(snap)
+	local rows = type(snap.rows) == "table" and snap.rows or {}
+	local sources = type(snap.sources) == "table" and snap.sources or {}
+	local best = {}
+	for i = 1, table.getn(rows) do
+		local row = rows[i]
+		local amount = type(row) == "table" and tonumber(row.displayAmount) or 0
+		if amount > 0 and row.ownerId ~= nil and (not best[row.ownerId] or amount > best[row.ownerId].amount) then
+			local src = sources[row.sourceKey] or {}
+			local name = (type(src.name) == "string" and src.name ~= "" and src.name)
+				or (string.gsub(tostring(row.sourceKey), ":r%d+.*$", ""))
+			best[row.ownerId] = { name = name, amount = amount,
+				rate = RateValue(S.checkpoint and row.checkpointAverage or row.periodAverage) or RateValue(row.displayRate) }
+		end
+	end
+	for i = 1, S.n do
+		local e = S.list[i]
+		local b = e and e.ownerId and best[e.ownerId]
+		if b then e.pet, e.top, e.topRate = b.name, b.name, b.rate end
+	end
 end
 
 local function FromSnapshot(snap, tab)
@@ -306,6 +330,12 @@ local function ReadSnapshot(tab)
 	S.emptyText = nil
 	FromSnapshot(snap, tab)
 	C.NoteSources(snap.sources) -- for the damage numbers: each line's own icon
+	if tab == "party" then
+		-- each hero's best skill: the same party's damage, by skill this time
+		query.groupBy = "source"
+		local bySkill = Call(AZS_GetMeterSnapshot, query)
+		if type(bySkill) == "table" then BestSkills(bySkill) end
+	end
 	return true
 end
 
@@ -916,7 +946,8 @@ local function FitWords(r, rank, e, room)
 			C.SetText(r.petTag, e.pet)
 			tagW = r.petTag:GetStringWidth() or 0
 			if tagW > left then
-				local last = string.gsub(e.pet, "^.*%s", "")
+				-- a pet's name shortens to its last word; a hero's best skill is cut, its start kept
+				local last = (db.tab == "party") and e.pet or string.gsub(e.pet, "^.*%s", "")
 				tagW = Fit(r.petTag, last, left)
 			end
 		end

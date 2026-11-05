@@ -731,6 +731,8 @@ local function InstallAPI()
 			if not cp then return nil, { code = "CHECKPOINT_EXPIRED" } end
 		end
 		local list = M.meter[which] or {}
+		local bySkill = which == "party" and q.groupBy == "source" -- each hero's skills: M.meter.partySkills { owner, key, name, icon, amount }
+		if bySkill then list = M.meter.partySkills or {} end
 		local snap = { apiVersion = 1, status = "ready", complete = true, context = AZS_GetMeterContext(), rows = {}, sources = {},
 			actors = {}, contributions = {}, totals = {} }
 		local total = 0
@@ -743,7 +745,10 @@ local function InstallAPI()
 				local row = { rowId = rowId, displayAmount = amount, periodAmount = l.amount, memberIds = { "c" .. i }, nativeProc = l.proc,
 					periodAverage = { status = "ready", value = amount / 100 }, displayRate = { status = "ready", value = amount / 100 } }
 				if cp then row.checkpointAverage = { status = "ready", value = amount / 50 } end
-				if which == "party" then
+				if bySkill then
+					row.ownerId, row.sourceKey = l.owner, l.key
+					snap.sources[l.key] = { sourceKey = l.key, name = l.name, icon = l.icon and { status = "ready", path = l.icon } or { status = "missing" } }
+				elseif which == "party" then
 					row.ownerId = l.key
 					snap.actors[l.key] = { actorId = l.key, kind = "hero", name = l.name, classKey = l.class,
 						portrait = { portraitKey = "pk" .. i, status = "ready" } }
