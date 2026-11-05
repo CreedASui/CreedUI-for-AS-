@@ -1011,6 +1011,7 @@ local function ReadEvents(now)
 					NoteHit(ev, now)
 					NoteSource(ev)
 					if ev.abilityName and ev.icon and CUI.LearnIcon then CUI.LearnIcon(ev.abilityName, ev.icon) end
+					if CUI.NoteHitValue then CUI.NoteHitValue(ev) end -- what each skill hits for (the pet bar)
 					nPending = nPending + 1
 					pending[nPending] = ev
 				end

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.16.1
+- **Pet bar faces:** each summon shows its own picture by its name: a wolf for the Wolf, a raptor for the Raptor, the Spirit Wolf, Imp, Voidwalker, Infernal, Doomguard, Water Elemental and Treant their own, and every hunter beast family (cat, bear, owl, gorilla, scorpid, turtle...) theirs.
+- **Pet skills show their value:** under each pet skill, what it hits for now (its last plain hit), and on its tooltip that and what it usually hits for, instead of the damage it has added up. Read from the hits the damage numbers see, so they need the damage numbers on.
+
 ## 1.16.0
 - **Damage numbers: four ways to move.** A new Motion row in the numbers' options (or `/creed numbers smooth|fountain|rise|impact`). **Smooth** is the gentle drift so far. **Fountain** arcs each number up and lets it fall away to the side. **Rise** scrolls them straight up, quickly. **Impact** punches them in big and keeps them in place, crits shaking.
 - **Active skill counts:** a gold number on a skill's slot says how many are out at once: totems standing (the game's own count) and spells still burning on the ground (Blizzard, Flamestrike, Rain of Fire, Consecration, Hurricane, Hellfire, Volley, Frost and Immolation Traps).

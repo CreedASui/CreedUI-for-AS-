@@ -434,4 +434,7 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["Numbers arc up and fall away to the side."] = "숫자가 호를 그리며 튀어 올라 옆으로 떨어집니다.",
 	["Numbers scroll straight up, quickly."] = "숫자가 빠르게 곧장 위로 올라갑니다.",
 	["Numbers punch in big and stay put; crits shake."] = "숫자가 크게 튀어나와 제자리에 머물고, 치명타는 흔들립니다.",
+	["Hits for"] = "타격당",
+	["Usually"] = "보통",
+	["Its value shows once it hits."] = "적중하면 수치가 표시됩니다.",
 })

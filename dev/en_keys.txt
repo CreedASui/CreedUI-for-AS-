@@ -431,3 +431,6 @@ Numbers drift up gently and melt away.
 Numbers arc up and fall away to the side.
 Numbers scroll straight up, quickly.
 Numbers punch in big and stay put; crits shake.
+Hits for
+Usually
+Its value shows once it hits.

@@ -434,4 +434,7 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Numbers arc up and fall away to the side."] = "Sayılar kavis çizerek yükselir ve yana düşer.",
 	["Numbers scroll straight up, quickly."] = "Sayılar hızla dümdüz yukarı kayar.",
 	["Numbers punch in big and stay put; crits shake."] = "Sayılar büyük çıkar ve yerinde kalır; kritikler titrer.",
+	["Hits for"] = "Vuruş",
+	["Usually"] = "Genelde",
+	["Its value shows once it hits."] = "Vurduğunda değeri görünür.",
 })

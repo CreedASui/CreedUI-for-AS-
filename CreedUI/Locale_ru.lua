@@ -434,4 +434,7 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Numbers arc up and fall away to the side."] = "Числа взлетают дугой и падают в сторону.",
 	["Numbers scroll straight up, quickly."] = "Числа быстро уходят прямо вверх.",
 	["Numbers punch in big and stay put; crits shake."] = "Числа появляются крупно и стоят на месте; криты дрожат.",
+	["Hits for"] = "Бьёт на",
+	["Usually"] = "Обычно",
+	["Its value shows once it hits."] = "Значение появится после первого удара.",
 })

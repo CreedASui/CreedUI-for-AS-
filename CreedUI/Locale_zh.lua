@@ -434,4 +434,7 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["Numbers arc up and fall away to the side."] = "数字呈弧线跃起，向一侧落下。",
 	["Numbers scroll straight up, quickly."] = "数字快速笔直向上滚动。",
 	["Numbers punch in big and stay put; crits shake."] = "数字大幅弹出并停在原处；暴击会震动。",
+	["Hits for"] = "每次命中",
+	["Usually"] = "通常",
+	["Its value shows once it hits."] = "命中后会显示其数值。",
 })

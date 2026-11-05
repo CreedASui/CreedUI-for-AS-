@@ -3017,6 +3017,17 @@ do
 	check(M.Visible(CreedUIPetBar) and visibleAlpha(CreedUIPetBar) > 0.9, "summons out: the pet bar shows")
 	check(countTex(CreedUIPetBar, "SpiritWolf$") == 1 and findText(CreedUIPetBar, "^2$") ~= nil, "the wolves' face and their count: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
 	check(countTex(CreedUIPetBar, "Cannibalize$") == 1, "and the skill the meter saw them use")
+	-- each kind its own face, by its name; a skill shows what it hits for, not its total
+	table.insert(M.summons, { id = 3, key = "raptor", kind = "pet", name = "Raptor", icon = I .. "INV_Misc_QuestionMark" })
+	local foe = M.Enemy("Ghoul", 2, 4)
+	M.Hit(foe, 350, "strike", false)
+	local ev = M.world.events[M.world.nEvents]
+	ev.meterSourceKey, ev.meterSource = "bite", "Bite"
+	frames(20)
+	check(countTex(CreedUIPetBar, "Pet_Raptor$") == 1 and countTex(CreedUIPetBar, "QuestionMark$") == 0, "the raptor wears a raptor")
+	check(findText(CreedUIPetBar, "^350$") ~= nil and findText(CreedUIPetBar, "700") == nil,
+		"Bite shows what it hits for (350), not its total (700): " .. table.concat(textsUnder(CreedUIPetBar), " | "))
+	table.remove(M.summons)
 	local pl, pb, pr = M.Rect(CreedUIPetBar)
 	local bl, bb, br, bt = M.Rect(CreedUIBar)
 	check(pb >= bt and pl < (bl + br) / 2, string.format("over the skill bar, on its left (%.0f over %.0f)", pb, bt))

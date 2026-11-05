@@ -4,12 +4,40 @@
 -- it, right-click to switch its autocast, point at it for the game's tooltip, a dark veil while it
 -- cools down. Otherwise each kind of summon you have out (Spirit Wolves, Treants, an Infernal...)
 -- shows its face, how many there are and the seconds the first one has left, followed by the
--- skills you've seen it use (from the damage meter), each with its damage on its tooltip.
+-- skills you've seen it use (from the damage meter), each with what it hits for under it.
 -- Nothing out, nothing shows; it hides behind the level-up cards.
 
 local C = CreedUI
 local DEFAULTS = { enabled = true, scale = 1 }
-local K = { slot = 30, skill = 22, gap = 4, pad = 7, actions = 10, skills = 4, groups = 4 }
+local K = { slot = 30, skill = 22, gap = 4, pad = 7, under = 9, actions = 10, skills = 4, groups = 4 }
+
+-- Each summon's own face, by a word in its name: the first that matches wins (the Spirit Wolf
+-- before the wolf). One the list doesn't know keeps the game's icon.
+local FACES = {
+	{ "spirit wolf", "Spell_Nature_SpiritWolf" }, { "wolf", "Ability_Hunter_Pet_Wolf" },
+	{ "raptor", "Ability_Hunter_Pet_Raptor" }, { "water elemental", "Spell_Frost_SummonWaterElemental" },
+	{ "imp", "Spell_Shadow_SummonImp" }, { "voidwalker", "Spell_Shadow_SummonVoidWalker" },
+	{ "succubus", "Spell_Shadow_SummonSuccubus" }, { "felhunter", "Spell_Shadow_SummonFelHunter" },
+	{ "infernal", "Spell_Shadow_SummonInfernal" }, { "doomguard", "Spell_Shadow_AntiMagicShell" },
+	{ "treant", "Spell_Nature_ProtectionformNature" },
+	{ "cat", "Ability_Hunter_Pet_Cat" }, { "lion", "Ability_Hunter_Pet_Cat" }, { "tiger", "Ability_Hunter_Pet_Cat" },
+	{ "panther", "Ability_Hunter_Pet_Cat" }, { "bear", "Ability_Hunter_Pet_Bear" }, { "boar", "Ability_Hunter_Pet_Boar" },
+	{ "gorilla", "Ability_Hunter_Pet_Gorilla" }, { "spider", "Ability_Hunter_Pet_Spider" },
+	{ "scorpid", "Ability_Hunter_Pet_Scorpid" }, { "crab", "Ability_Hunter_Pet_Crab" },
+	{ "crocolisk", "Ability_Hunter_Pet_Crocolisk" }, { "owl", "Ability_Hunter_Pet_Owl" }, { "bat", "Ability_Hunter_Pet_Bat" },
+	{ "hyena", "Ability_Hunter_Pet_Hyena" }, { "serpent", "Ability_Hunter_Pet_WindSerpent" },
+	{ "strider", "Ability_Hunter_Pet_TallStrider" }, { "turtle", "Ability_Hunter_Pet_Turtle" },
+	{ "vulture", "Ability_Hunter_Pet_Vulture" }, { "carrion", "Ability_Hunter_Pet_Vulture" },
+}
+
+local function Face(grp)
+	-- its words, each after a space (Lua 5.0 has no word edges in its patterns)
+	local words = " " .. string.gsub(string.lower(tostring(grp.key or "") .. " " .. tostring(grp.name or "")), "[^%a]+", " ")
+	for i = 1, table.getn(FACES) do
+		if string.find(words, " " .. FACES[i][1]) then return "Interface\\Icons\\" .. FACES[i][2] end
+	end
+	return grp.icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+end
 
 local db
 local root
@@ -96,8 +124,13 @@ local function NewSlot(i)
 			if (s.n or 1) > 1 then GameTooltip:AddLine(C.F("{1} out", s.n), 1, 1, 1) end
 			if s.left then GameTooltip:AddLine(C.F("{1} s left", math.ceil(s.left)), 1, 1, 1) end
 			if not s.hasSkills then GameTooltip:AddLine(C.L("Its skills show here once it uses them."), 0.7, 0.7, 0.7, 1) end
-		elseif s.kind == "skill" and s.amount then
-			GameTooltip:AddDoubleLine(C.L("Damage"), C.Commas(math.floor(s.amount + 0.5)), 0.8, 0.8, 0.8, 1, 1, 1)
+		elseif s.kind == "skill" then
+			if s.value then
+				GameTooltip:AddDoubleLine(C.L("Hits for"), C.Commas(math.floor(s.value + 0.5)), 0.8, 0.8, 0.8, 1, 1, 1)
+				GameTooltip:AddDoubleLine(C.L("Usually"), C.Commas(math.floor(s.avg + 0.5)), 0.8, 0.8, 0.8, 1, 1, 1)
+			else
+				GameTooltip:AddLine(C.L("Its value shows once it hits."), 0.7, 0.7, 0.7, 1)
+			end
 		end
 		C.ShowTip()
 	end)
@@ -110,7 +143,7 @@ local function Put(i, x, size, kind)
 	local s = S.slots[i] or NewSlot(i)
 	s.kind = kind
 	C.Size(s.button, size, size)
-	C.Place(s.button, "BOTTOMLEFT", root, "BOTTOMLEFT", x, K.pad)
+	C.Place(s.button, "BOTTOMLEFT", root, "BOTTOMLEFT", x, K.pad + K.under) -- room under it for its numbers
 	C.Size(s.glow, size * 1.9, size * 1.9)
 	C.Vis(s.button, true)
 	return s
@@ -153,7 +186,7 @@ local function Step(dt, now)
 			n = n + 1
 			local s = Put(n, x, K.slot, "summon")
 			s.name, s.n, s.left = grp.name, tonumber(grp.count) or 1, tonumber(grp.remaining)
-			s.icon:SetTexture(grp.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+			s.icon:SetTexture(Face(grp))
 			C.Vis(s.shade, false)
 			C.Vis(s.glow, false)
 			C.SetText(s.count, (s.n > 1) and tostring(s.n) or "")
@@ -164,12 +197,14 @@ local function Step(dt, now)
 			for k = 1, math.min(table.getn(list), K.skills) do
 				n = n + 1
 				local sk = Put(n, x, K.skill, "skill")
-				sk.name, sk.amount = list[k].name, list[k].amount
+				-- its value: what it hits for now (the last plain hit), as a skill's tooltip would say
+				local hv = C.hitValues and (C.hitValues[list[k].key or ""] or C.hitValues[list[k].name or ""])
+				sk.name, sk.amount, sk.value, sk.avg = list[k].name, list[k].amount, hv and hv.last, hv and hv.avg
 				sk.icon:SetTexture(list[k].icon or "Interface\\Icons\\INV_Misc_QuestionMark")
 				C.Vis(sk.shade, false)
 				C.Vis(sk.glow, false)
 				C.SetText(sk.count, "")
-				C.SetText(sk.time, "")
+				C.SetText(sk.time, sk.value and C.Short(sk.value) or "")
 				x = x + K.skill + K.gap
 			end
 			x = x + K.gap * 2
@@ -198,7 +233,7 @@ C.OnInit(function()
 	db = C.DB("pets", DEFAULTS)
 	root = CreateFrame("Frame", "CreedUIPetBar", UIParent)
 	root:SetWidth(K.slot + 2 * K.pad)
-	root:SetHeight(K.slot + 2 * K.pad + 8)
+	root:SetHeight(K.slot + 2 * K.pad + K.under)
 	root:SetFrameStrata("MEDIUM")
 	root:SetScale(db.scale)
 	root.deco = C.Panel(root, false)
