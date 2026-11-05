@@ -1008,6 +1008,11 @@ M.unit = {
 local function U(unit) return M.unit[unit] or {} end
 function UnitExists(u) return U(u).exists and 1 or nil end
 function UnitName(u) return U(u).name end
+-- a unit's buffs: M.unit[u].buffs = { texture, ... }
+function UnitBuff(u, i)
+	local b = U(u).buffs
+	return b and b[i] or nil
+end
 function UnitHealth(u) return U(u).hp or 0 end
 function UnitHealthMax(u) return U(u).hpm or 0 end
 function UnitMana(u) return U(u).mp or 0 end

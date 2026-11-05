@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.20.1
+- **Party frames: your friends' shields.** A friend wearing a shield (Power Word: Shield, Ice Barrier, Mana Shield, Frost or Fire Ward, Sacrifice, Divine Shield or Protection, Blessing of Protection) shows it on their health as your own frame does: an icy pane after their health, as big as the shield holds (read from the buff's own words), or a small one when the game doesn't say.
+
 ## 1.20.0
 - **Damage numbers: crit backdrops.** Pick one in the numbers' options (Crit backdrop) or with `/creed numbers backdrop <name>`, and every critical hit wears it behind its number: **Blood** (a splatter with flung droplets), **Fire** (a burst of flames), **Frost** (an ice star), **Arcane** (a ring of runes), **Holy** (a sunburst) or **Shadow** (a curl of smoke). Off by default.
 - **Damage numbers: six new fonts** to pick from, beside the game's four: **Cinzel** (regal capitals), **Bangers** (comic punch), **Creepster** (dripping horror), **Uncial Antiqua** (old runic hand), **Black Ops One** (stencil) and **Pirata One** (gothic). Pick one in the options or with `/creed numbers font <name>`. (In Chinese, Japanese, Korean and Russian the language's own letters stay.)
