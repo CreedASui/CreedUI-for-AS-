@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.18.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.18.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -71,7 +71,9 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Loot.lua          the run's loot window (1.17.0): marks (Argent Dawn token) and boss gear, read from
                     the game's chat lines ("You receive loot:", "marks.earned", all 14 languages, from
                     the client's JSON) by wrapping each ChatFrame's AddMessage (1.17.3); new run =
-                    AZS_GetRunTime going back
+                    AZS_GetRunTime going back. The line is "You receive loot: [Name] New in your
+                    collection!" (seen live, 1.18.1): no link, no icon, no rarity reach Lua (the game's
+                    own LOOT toast has them natively), so the icon is guessed from the name (LOOKS)
   Luck.lua          luck medallion (shown or hidden from the options hub since 1.14.3)
   TinyPlates.lua    nameplates (contributor JamieeLee, 1.14.3): based on Valorless's MIT-licensed
   TinyPlatesOptions.lua  ASTinyPlates (TinyPlates-LICENSE.txt); its own panel from the hub's button
@@ -145,7 +147,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 607 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 610 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)

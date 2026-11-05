@@ -18,6 +18,45 @@ local QUALITY = {
 local LOOT_LINES = { "Du erhältst Beute:", "Ganimet aldın:", "Otrzymujesz łup:", "Primești pradă:", "Recibes botín:", "Você recebe saque:", "Vous recevez du butin :", "You receive loot:", "Získáváš kořist:", "Ви отримуєте здобич:", "Вы получаете добычу:", "你获得了战利品：", "戦利品を入手：", "전리품을 받았습니다:" }
 local MARK_LINES = { "Câștigi {n} însemne ({total} în total).", "Du erhältst {n} Marken (insgesamt {total}).", "Ganas {n} marcas ({total} en total).", "Você ganha {n} marcas ({total} no total).", "Vous gagnez {n} marques ({total} au total).", "You earn {n} marks ({total} in all).", "Zdobywasz znaki: {n} (łącznie {total}).", "Získáváš známky: {n} (celkem {total}).", "{n} nişan kazandın (toplam {total}).", "{n}マークを獲得（合計{total}）。", "Ви отримуєте знаки: {n} (усього {total}).", "Вы получаете знаки: {n} (всего {total}).", "你获得了{n}枚印记（共{total}枚）。", "징표 {n}개를 얻었습니다 (총 {total}개)." }
 local MARK_ICON = "Interface\\Icons\\INV_Misc_Token_ArgentDawn"
+-- what the line may say after the item: new to your collection, or had already
+local NEW_LINES = { "Koleksiyonunda yeni!", "Neu in deiner Sammlung!", "New in your collection!", "Nou în colecția ta!", "Nouveau dans votre collection !", "Novinka ve tvé sbírce!", "Novo na sua coleção!", "Nowość w twojej kolekcji!", "¡Nuevo en tu colección!", "Нове у вашій колекції!", "Новое в вашей коллекции!", "コレクションに新しく追加！", "收藏新增！", "새로운 수집품!" }
+local HAD_LINES = { "Already collected", "Bereits gesammelt", "Deja colecționat", "Déjà obtenu", "Już w kolekcji", "Já na coleção", "Už ve sbírce", "Ya en tu colección", "Zaten toplandı", "Уже в коллекции", "Уже є в колекції", "入手済み", "已收藏", "이미 수집함" }
+-- The line names the item but not its look: an icon is picked by a word in its name (its slot or
+-- its weapon), the first that matches winning. A real link's own icon always comes first.
+local I = "Interface\\Icons\\"
+local LOOKS = {
+	{ { "crossbow" }, "INV_Weapon_Crossbow_01" }, { { "bow" }, "INV_Weapon_Bow_01" },
+	{ { "gun", "rifle", "blunderbuss" }, "INV_Weapon_Rifle_01" }, { { "wand" }, "INV_Wand_01" },
+	{ { "staff", "stave" }, "INV_Staff_01" }, { { "dagger", "dirk", "knife", "shiv", "kris" }, "INV_Weapon_ShortBlade_01" },
+	{ { "sword", "blade", "saber", "scimitar", "claymore" }, "INV_Sword_04" }, { { "axe", "cleaver" }, "INV_Axe_01" },
+	{ { "mace", "hammer", "maul", "club", "scepter" }, "INV_Mace_01" }, { { "polearm", "spear", "halberd", "glaive" }, "INV_Spear_01" },
+	{ { "shield", "buckler", "aegis", "bulwark" }, "INV_Shield_01" }, { { "tome", "book", "orb", "lamp" }, "INV_Misc_Book_01" },
+	{ { "boots", "sandals", "greaves", "treads", "footwraps", "slippers", "shoes", "sabatons" }, "INV_Boots_01" },
+	{ { "helm", "hood", "cap", "crown", "circlet", "mask", "headband", "cowl", "hat", "headpiece" }, "INV_Helmet_01" },
+	{ { "gloves", "gauntlets", "handwraps", "grips", "handguards", "mitts" }, "INV_Gauntlets_01" },
+	{ { "belt", "girdle", "sash", "cord", "waistband", "waistguard" }, "INV_Belt_01" },
+	{ { "leggings", "pants", "legguards", "legplates", "kilt", "trousers", "breeches", "legwraps" }, "INV_Pants_01" },
+	{ { "robe", "gown", "vestments" }, "INV_Chest_Cloth_01" },
+	{ { "vest", "tunic", "chestpiece", "breastplate", "jerkin", "harness", "hauberk", "chestguard", "shirt", "armor" }, "INV_Chest_Leather_01" },
+	{ { "shoulders", "pauldrons", "mantle", "spaulders", "shoulderpads", "amice", "epaulets" }, "INV_Shoulder_01" },
+	{ { "bracers", "wristguards", "bindings", "cuffs", "bracelets", "wristbands", "armguards" }, "INV_Bracer_01" },
+	{ { "cloak", "cape", "drape", "shroud" }, "INV_Misc_Cape_01" },
+	{ { "ring", "band", "signet", "loop", "seal" }, "INV_Jewelry_Ring_01" },
+	{ { "necklace", "amulet", "pendant", "choker", "collar", "medallion", "chain" }, "INV_Jewelry_Necklace_01" },
+	{ { "trinket", "idol", "charm", "talisman", "relic", "libram", "totem", "figurine", "insignia" }, "INV_Jewelry_Talisman_01" },
+}
+
+local function LookOf(name)
+	local words = " " .. string.gsub(string.lower(name or ""), "[^%a]+", " ") .. " "
+	for i = 1, table.getn(LOOKS) do
+		local list = LOOKS[i][1]
+		for k = 1, table.getn(list) do
+			-- the word whole, or with an s (Boots, Bracer and Bracers alike)
+			if string.find(words, " " .. list[k] .. "s? ") then return I .. LOOKS[i][2] end
+		end
+	end
+	return I .. "INV_Misc_Bag_10"
+end
 
 local db
 local root
@@ -28,7 +67,7 @@ local S = { items = {}, marks = 0, markTotal = nil, runTime = 0, broken = false,
 -- an item from a loot line: its link, id, name, count; nil for a line without one
 local function ParseLoot(msg)
 	if type(msg) ~= "string" then return nil end
-	local _, _, link, id, name = string.find(msg, "(|c%x+|Hitem:(%d+)[^|]*|h%[([^%]]+)%]|h|r)")
+	local _, _, link, id, name = string.find(msg, "(|Hitem:(%d+)[^|]*|h%[([^%]]+)%]|h)")
 	if not link then return nil end
 	local _, _, count = string.find(msg, "|rx(%d+)")
 	return { link = link, id = tonumber(id), name = name, count = tonumber(count) or 1 }
@@ -95,9 +134,22 @@ local function Hear(msg)
 			local item = ParseLoot(msg)
 			if not item then
 				-- a name with no link: the words after the line's start, its color its rarity
-				local rest = string.gsub(string.gsub(string.sub(plain, stop + 1), "^%s+", ""), "[%.。]%s*$", "")
+				local rest = string.gsub(string.gsub(string.sub(plain, stop + 1), "^%s+", ""), "%s+$", "")
+				-- "New in your collection!" or "Already collected" after it: a tag, not its name
+				local new
+				for k = 1, table.getn(NEW_LINES) do
+					local a = string.find(rest, NEW_LINES[k], 1, true)
+					if a then rest, new = string.sub(rest, 1, a - 1), true end
+				end
+				for k = 1, table.getn(HAD_LINES) do
+					local a = string.find(rest, HAD_LINES[k], 1, true)
+					if a then rest, new = string.sub(rest, 1, a - 1), false end
+				end
+				rest = string.gsub(string.gsub(rest, "%s+$", ""), "[%.。]$", "")
 				local _, _, name, count = string.find(rest, "^(.-)%s*x(%d+)$")
-				item = { name = name or rest, count = tonumber(count) or 1 }
+				name = name or rest
+				local _, _, inside = string.find(name, "^%[(.-)%]$")
+				item = { name = inside or name, count = tonumber(count) or 1, new = new }
 				local _, _, hex = string.find(msg, "|c%x%x(%x%x%x%x%x%x)")
 				item.quality = Rarity(hex)
 			end
@@ -107,6 +159,7 @@ local function Hear(msg)
 				local _, _, quality, _, _, _, _, _, icon = GetItemInfo(item.id)
 				item.quality, item.icon = quality or item.quality, icon
 			end
+			if not item.icon then item.icon = LookOf(item.name) end
 			if not item.quality then
 				local _, _, hex = string.find(item.link or "", "^|c%x%x(%x%x%x%x%x%x)")
 				item.quality = Rarity(hex)
@@ -159,8 +212,12 @@ local function Row(i)
 	r.time = C.Text(f, C.FONT, 9, nil, "RIGHT", 40)
 	r.time:SetPoint("RIGHT", f, "RIGHT", 0, 0)
 	r.time:SetTextColor(0.65, 0.62, 0.55)
-	r.name = C.Text(f, C.FONT, 11, "OUTLINE", "LEFT", K.w - 2 * K.pad - K.row - 44)
+	r.name = C.Text(f, C.FONT, 11, "OUTLINE", "LEFT", K.w - 2 * K.pad - K.row - 74)
 	r.name:SetPoint("LEFT", r.icon, "RIGHT", 5, 0)
+	-- new to your collection: a small green tag before its time
+	r.new = C.Text(f, C.FONT, 9, "OUTLINE", "RIGHT", 34)
+	r.new:SetPoint("RIGHT", r.time, "LEFT", -4, 0)
+	r.new:SetTextColor(0.35, 1, 0.42)
 	f:SetScript("OnEnter", function()
 		if not r.item or not GameTooltip or C.unlocked then return end
 		GameTooltip:SetOwner(f, "ANCHOR_LEFT")
@@ -172,6 +229,8 @@ local function Row(i)
 			end
 		end
 		GameTooltip:AddLine(r.item.name, 0.98, 0.85, 0.52)
+		if r.item.new then GameTooltip:AddLine(C.L("New in your collection!"), 0.35, 1, 0.42)
+		elseif r.item.new == false then GameTooltip:AddLine(C.L("Already in your collection."), 0.7, 0.7, 0.7) end
 		C.ShowTip()
 	end)
 	f:SetScript("OnLeave", function() if GameTooltip then GameTooltip:Hide() end end)
@@ -191,6 +250,7 @@ local function Redraw()
 		C.TextColor(r.name, c[1], c[2], c[3])
 		C.SetText(r.name, item.name .. ((item.count or 1) > 1 and (" x" .. item.count) or ""))
 		C.SetText(r.time, Clock(item.at))
+		C.SetText(r.new, item.new and C.L("New") or "")
 		C.Vis(r.frame, true)
 	end
 	for i = shown + 1, table.getn(S.rows) do C.Vis(S.rows[i].frame, false) end

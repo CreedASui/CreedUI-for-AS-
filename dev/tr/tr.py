@@ -281,4 +281,7 @@ T = {
 472: "Takip et",
 473: "Fısılda",
 474: "İncelemek için çok uzak.",
+475: "Yeni",
+476: "Koleksiyonunda yeni!",
+477: "Zaten koleksiyonunda.",
 }

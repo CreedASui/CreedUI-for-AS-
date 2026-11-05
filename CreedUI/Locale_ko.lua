@@ -475,4 +475,7 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["Follow"] = "따라가기",
 	["Whisper"] = "귓속말",
 	["Too far away to inspect."] = "너무 멀어서 살펴볼 수 없습니다.",
+	["New"] = "새것",
+	["New in your collection!"] = "새로운 수집품!",
+	["Already in your collection."] = "이미 수집함.",
 })

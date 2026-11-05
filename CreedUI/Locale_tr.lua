@@ -475,4 +475,7 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Follow"] = "Takip et",
 	["Whisper"] = "Fısılda",
 	["Too far away to inspect."] = "İncelemek için çok uzak.",
+	["New"] = "Yeni",
+	["New in your collection!"] = "Koleksiyonunda yeni!",
+	["Already in your collection."] = "Zaten koleksiyonunda.",
 })

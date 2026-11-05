@@ -1,4 +1,4 @@
--- 1.17.0 (1.17.3: marks at its head, read from the chat): the run's loot window, five items in. Writes out/loot.txt.
+-- 1.17.0 (1.17.3: marks at its head, read from the chat; 1.18.1: icons by name, New tags): the run's loot window, five items in. Writes out/loot.txt.
 MOCK_SCRATCH = arg[1]
 local DIR, OUT = arg[2], arg[3]
 dofile(MOCK_SCRATCH .. "/cui/mock_cui.lua")
@@ -24,6 +24,8 @@ for i = 1, 5 do
 	ChatFrame1:AddMessage("You receive loot: |c" .. colors[i] .. "|Hitem:" .. i .. ":0:0:0|h[" .. M.items[i].name .. "]|h|r" .. (i == 3 and "x3" or "") .. ".")
 	SIM.Advance(0.1, 1 / 30)
 end
+ChatFrame1:AddMessage("You receive loot: [Novice's Boots] New in your collection!")
+ChatFrame1:AddMessage("You receive loot: [Gravecaller's Signet] Already collected")
 ChatFrame1:AddMessage("You earn 12 marks (348 in all).")
 ChatFrame1:AddMessage("You earn 8 marks (356 in all).")
 SIM.Advance(0.5, 1 / 30)

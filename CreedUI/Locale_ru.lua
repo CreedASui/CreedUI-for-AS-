@@ -475,4 +475,7 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Follow"] = "Следовать",
 	["Whisper"] = "Шепнуть",
 	["Too far away to inspect."] = "Слишком далеко для осмотра.",
+	["New"] = "Новое",
+	["New in your collection!"] = "Новое в вашей коллекции!",
+	["Already in your collection."] = "Уже в вашей коллекции.",
 })

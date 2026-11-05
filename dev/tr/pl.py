@@ -281,4 +281,7 @@ T = {
 472: "Podążaj",
 473: "Szepnij",
 474: "Za daleko, by obejrzeć.",
+475: "Nowe",
+476: "Nowość w twojej kolekcji!",
+477: "Już w twojej kolekcji.",
 }
