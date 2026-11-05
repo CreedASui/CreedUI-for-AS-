@@ -1,6 +1,10 @@
 # Changelog
 
 ## 1.14.3
+- **Scholomance** (the game's 0.140.0 zone): the boss timer has its own look there, bone and ghostly green, and knows its five bosses (Kirtonos the Herald, Ras Frostwhisper, Doctor Theolen Krastinov, Lord Alexei Barov, Darkmaster Gandling) even right after a /reload.
+- **Damage meter:** every pet's and summon's skills (a hunter's Kill Command, a wolf's bite, an Infernal's Immolation...) are counted together on one **Pet** line. Point at it to see its best skill. Totems keep their own lines.
+- **Damage taken** (new part): what hits you rises beside your hero as red numbers, blows a split second apart gathered into one, heavier ones bigger. It hides behind the level-up cards and can be turned off in the options.
+- **Minimap:** a cache or lair pin right where you stand fades to a ghost, so the game's arrow (you) shows through it.
 - **Tiny Plates:** regular enemy plates use compact half-size Arcane-derived layered health bars and Creed UI typography; bosses and guardians keep full-size plates with the same styling and their debuffs below. Health numbers have an independent toggle, and disabling Tiny Plates restores the game's native plates and V-key visibility behavior.
 - **One minimap button:** the separate Luck clover and Damage Meter swords are removed. The Creed C and the central options hub remain; Luck and the damage meter are shown or hidden from the hub, without extra minimap buttons.
 

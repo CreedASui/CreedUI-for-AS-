@@ -13,6 +13,7 @@ Locale_pl.lua
 Locale_tr.lua
 Timer.lua
 Numbers.lua
+Hurt.lua
 Bosses.lua
 Skulls.lua
 Units.lua
