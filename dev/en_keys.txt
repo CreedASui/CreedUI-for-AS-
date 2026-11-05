@@ -382,3 +382,34 @@ What hits you rises beside your hero as red numbers, heavier blows bigger.
 the damage you take stopped showing after an error: 
 Scholomance
 Pet
+Language
+Tiny Plates
+Tiny Plates settings
+Half-size regular nameplates, with full-size boss and guardian plates.
+Creed UI nameplates stopped after an error: 
+Creed UI nameplate debuff update stopped after an error: 
+Boss & guardian plates
+Show debuffs
+Show boss and guardian debuffs, stack counts and remaining time.
+Hide boss / guardian names
+Hide the name label above special plates.
+Regular plates
+Hide regular plates
+Hide ordinary mob plates entirely. Requires overlapping nameplates.
+Show names on nameplates
+Show each regular mob name above its shrunken plate.
+Health display
+Show health numbers
+Show current / maximum health numbers inside each plate. The colored health bars remain visible either way.
+Custom bar color
+Use your own color instead of the game's health-bar color.
+Boss / guardian health color
+Regular health color
+Blue
+Orange
+Sky blue
+Vermillion
+Yellow
+Pink
+Damage Done, Healing Done, Boss Damage and Party DPS with icons, per second and shares; Reset counts again in this window only. Drag the title to move it, the corner to resize. Use the Damage meter toggle in Creed UI Options to show or hide it; while enabled, it replaces the game's meter window.
+Your luck on a bronze medallion, and the chance of a Rare, Epic or Legendary card as three gems (1 in N); luck you gain shows on the medallion. Drag its sides to widen it, its corners to size it; use the Luck toggle in Creed UI Options to show or hide the window.

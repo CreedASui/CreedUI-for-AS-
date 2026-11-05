@@ -784,16 +784,15 @@ do
 	AZS_GetMeterSnapshot = snapFn
 	AZS_GetMeter = nil
 	frames(30)
-	-- close it; the gem by the minimap brings it back
+	-- close it; its toggle in the options brings it back
 	local close = buttonLabeled(CreedUIMeter, "x")
 	this = close
 	close.__scripts.OnClick()
 	frames(40)
 	check(not CreedUIMeter.__shown, "x hides the meter")
-	this = CreedUIMeterToggle
-	CreedUIMeterToggle.__scripts.OnClick()
+	M.Slash("meter on")
 	frames(40)
-	check(CreedUIMeter.__shown, "the gem by the minimap brings it back")
+	check(CreedUIMeter.__shown, "its toggle in the options brings it back")
 	-- fold it to the title
 	local fold = buttonLabeled(CreedUIMeter, "^")
 	this = fold
@@ -1349,16 +1348,14 @@ do
 	local l3, b3, r3, t3 = M.Rect(CreedUILuck)
 	check(CreedUILuck:GetScale() > 1.05 and math.abs(l3 - l2) < 0.6 and math.abs(t3 - t2) < 0.6,
 		string.format("a corner makes it bigger, the corner across from it in place (scale %.2f)", CreedUILuck:GetScale()))
-	-- its x hides it; the gem by the minimap brings it back
+	-- its x hides it; its toggle in the options brings it back
 	this = CreedUILuck.close
 	CreedUILuck.close.__scripts.OnClick()
 	frames(30)
 	check(not CreedUILuck.__shown, "its x hides it")
-	check(CreedUILuckToggle and CreedUILuckToggle.__shown, "a gem by the minimap stays")
-	this = CreedUILuckToggle
-	CreedUILuckToggle.__scripts.OnClick()
+	M.Slash("luck on")
 	frames(30)
-	check(CreedUILuck.__shown, "and clicking the gem brings it back")
+	check(CreedUILuck.__shown, "and its toggle brings it back")
 	CreedUIDB.luck.width, CreedUIDB.luck.scale = 236, 1
 	CreedUILuck:SetScale(1)
 	M.Slash("reset")
@@ -1750,7 +1747,7 @@ do
 		check(math.abs(math.sqrt(x * x + y * y) - 80) < 1 and x > 0 and y < 0, string.format("on the rim, lower right (%.1f, %.1f)", x, y))
 		local l, bt, r, t = M.Rect(b)
 		check(l >= 0 and bt >= 0 and r <= SW and t <= SH, "on the screen")
-		for _, g in ipairs({ CreedUIMeterToggle, CreedUILuckToggle, CreedUIMinimapClock }) do
+		for _, g in ipairs({ CreedUIMinimapClock }) do
 			local gl, gb, gr, gt = M.Rect(g)
 			check(gr <= l or gl >= r or gt <= bt or gb >= t, "clear of " .. g:GetName())
 		end
@@ -1860,65 +1857,20 @@ do
 			if o.__kind == "Texture" and o.__parent == b and o.__tex and string.find(o.__tex, "Map[SC][wl]o?[ro]") then return o end
 		end
 	end
-	local swords, clover = CreedUIMeterToggle, CreedUILuckToggle
-	check(swords and clover and M.Visible(swords) and M.Visible(clover), "the swords and the clover sit on the minimap")
-	check(swords and swords.crest.__tex and string.find(swords.crest.__tex, "MapSwords$") and string.find(clover.crest.__tex, "MapClover$"),
-		"with their crests")
-	local boxes = { swords, clover, CreedUIMinimapButton, CreedUIMinimapClock }
-	for i = 1, 2 do
-		local x, y = centre(boxes[i])
-		check(math.abs(math.sqrt(x * x + y * y) - 80) < 1 and x < 0, string.format("%s on the rim, on the left (%.1f, %.1f)", boxes[i]:GetName(), x, y))
-		local l, b, r, t = M.Rect(boxes[i])
-		check(l >= 0 and b >= 0 and r <= SW and t <= SH, boxes[i]:GetName() .. " on the screen")
-		for j = 1, table.getn(boxes) do
-			if j ~= i then
-				local gl, gb, gr, gt = M.Rect(boxes[j])
-				check(gr <= l or gl >= r or gt <= b or gb >= t, boxes[i]:GetName() .. " clear of " .. boxes[j]:GetName())
-			end
-		end
-	end
-	-- a click hides the meter, the swords dim; another brings it back
-	CreedUIDB.meter.shown = true
-	frames(30)
-	local bright = swords.crest.__vc[1]
-	this = swords
-	arg1 = "LeftButton"
-	swords.__scripts.OnClick()
-	frames(30)
-	check(not CreedUIDB.meter.shown and not M.Visible(CreedUIMeter) or visibleAlpha(CreedUIMeter) < 0.05, "a click on the swords hides the meter")
-	check(swords.crest.__vc[1] < bright * 0.5, string.format("and they dim (%.2f from %.2f)", swords.crest.__vc[1], bright))
-	arg1 = "LeftButton"
-	swords.__scripts.OnClick()
-	frames(30)
-	check(CreedUIDB.meter.shown and swords.crest.__vc[1] > bright * 0.95, "another brings it back, lit")
-	swords.__scripts.OnEnter()
-	local tip = table.concat(M.tip.lines, " / ")
-	check(string.find(tip, "Damage meter", 1, true) and string.find(tip, "Click to show or hide it.", 1, true) and string.find(tip, "Drag:", 1, true), "their tooltip: " .. tip)
-	swords.__scripts.OnLeave()
-	-- the clover dragged up to the top left; kept over a reload
-	clover.__scripts.OnDragStart()
-	local mx, my = Minimap:GetCenter()
-	local k = Minimap:GetEffectiveScale()
-	M.cursorX, M.cursorY = (mx - 40) * k, (my + 40) * k
-	frames(3)
-	clover.__scripts.OnDragStop()
-	local shown = CreedUIDB.luck.shown
-	clover.__scripts.OnClick()
-	check(CreedUIDB.luck.edgeAngle == 135 and CreedUIDB.luck.shown == shown, "the clover slides round where it's dragged, and the drag's end is no click: " .. tostring(CreedUIDB.luck.edgeAngle))
-	frames(15)
-	M.Reload(DIR, true)
-	frames(5)
-	local x, y = centre(CreedUILuckToggle)
-	check(math.abs(x + 56.6) < 0.6 and math.abs(y - 56.6) < 0.6, string.format("and stays there after a reload (%.1f, %.1f)", x, y))
-	-- each goes with its window's part
-	M.Slash("luck off")
-	check(not M.Visible(CreedUILuckToggle) and M.Visible(CreedUIMeterToggle), "/creed luck off: the clover goes, the swords stay")
-	M.Slash("luck on")
+	-- 1.14.3: one button on the edge; the meter and the luck window are shown or hidden in the options
+	check(CreedUIMeterToggle == nil and CreedUILuckToggle == nil, "no swords or clover on the minimap")
 	M.Slash("meter off")
-	check(not M.Visible(CreedUIMeterToggle) and M.Visible(CreedUILuckToggle), "/creed meter off: the swords go")
+	frames(30)
+	check(not M.Visible(CreedUIMeter) or visibleAlpha(CreedUIMeter) < 0.05, "the meter's toggle hides it")
 	M.Slash("meter on")
-	check(M.Visible(CreedUIMeterToggle), "and back")
-	CreedUIDB.luck.edgeAngle = nil
+	frames(30)
+	check(M.Visible(CreedUIMeter), "and brings it back")
+	M.Slash("luck off")
+	frames(30)
+	check(not M.Visible(CreedUILuck), "the luck window's toggle hides it")
+	M.Slash("luck on")
+	frames(30)
+	check(M.Visible(CreedUILuck), "and brings it back")
 	problems("edge buttons")
 end
 

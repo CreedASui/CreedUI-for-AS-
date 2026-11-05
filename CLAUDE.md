@@ -47,10 +47,12 @@ CreedUI/            the addon (this folder name is the install folder; never ren
                     end for its painted dragons, Core's C.Panel)
   Tally.lua         kills / gold / cache, docked inside the bar's panel
   Minimap.lua       metal ring, local clock, zone name
-  MinimapButton.lua C.EdgeButton (draggable round buttons on the minimap's edge) and the C button
+  MinimapButton.lua C.EdgeButton (a draggable round button on the minimap's edge): the C button only
   Chests.lua        caches and guardians' lairs as pins on the minimap
-  Meter.lua         damage meter (+ its crossed-swords edge button)
-  Luck.lua          luck medallion (+ its clover edge button)
+  Meter.lua         damage meter (shown or hidden from the options hub since 1.14.3)
+  Luck.lua          luck medallion (shown or hidden from the options hub since 1.14.3)
+  TinyPlates.lua    nameplates (contributor JamieeLee, 1.14.3): based on Valorless's MIT-licensed
+  TinyPlatesOptions.lua  ASTinyPlates (TinyPlates-LICENSE.txt); its own panel from the hub's button
   Character.lua     the game's character window dressed: gear slots lit by rarity, the run's stats
                     read off the game's own labels and regrouped beside it; the Skills tab is called
                     Talents and opens Talents.lua's window (the game's own if that's missing); Honor hidden.
@@ -120,7 +122,8 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 570 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 551 passed, 0 failed
+lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
 lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
