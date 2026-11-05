@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.20.0
+- **Damage numbers: crit backdrops.** Pick one in the numbers' options (Crit backdrop) or with `/creed numbers backdrop <name>`, and every critical hit wears it behind its number: **Blood** (a splatter with flung droplets), **Fire** (a burst of flames), **Frost** (an ice star), **Arcane** (a ring of runes), **Holy** (a sunburst) or **Shadow** (a curl of smoke). Off by default.
+- **Damage numbers: six new fonts** to pick from, beside the game's four: **Cinzel** (regal capitals), **Bangers** (comic punch), **Creepster** (dripping horror), **Uncial Antiqua** (old runic hand), **Black Ops One** (stencil) and **Pirata One** (gothic). Pick one in the options or with `/creed numbers font <name>`. (In Chinese, Japanese, Korean and Russian the language's own letters stay.)
+
 ## 1.19.2
 - **Pet bar: big numbers no longer pile up.** The value under each pet skill is kept short (487, 5.9K, 49K, 1.2M) and each skill gets the room its number needs, so neighbours never run into each other.
 

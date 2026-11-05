@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.19.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.20.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -40,7 +40,9 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Locale.lua        en/fr/de/es/pt rows; Locale_<zh|ru|ja|ko|pl|tr>.lua are generated (dev/tr)
   Timer.lua         the boss timer (DON'T TOUCH unless asked: the user loves it; 1.14.2 made its rims and
                     sockets C.BRONZE and its gems red, asked for)
-  Numbers.lua       floating damage numbers (combat text API)
+  Numbers.lua       floating damage numbers (combat text API); 1.20.0: crit backdrops (STACK.backs, art
+                    by dev/art/make_art20.py) and six bundled OFL fonts (Fonts/Num*.ttf, licences in
+                    Fonts/NumberFonts-LICENSE.txt; only Cinzel modified: instanced at Bold)
   Hurt.lua          damage taken as red numbers by the hero (new hits on AZS_TAKEN; the combat text
                     API carries outgoing hits only), heals got as green ones (AZS_HEALING; 1.16.1)
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames
@@ -148,7 +150,7 @@ Build Lua 5.0.3 (lua.org) and install Python 3 with numpy, Pillow, scipy, fontTo
 From `dev/`:
 
 ```
-lua50 cui/tests.lua . ../CreedUI                # 610 passed, 0 failed
+lua50 cui/tests.lua . ../CreedUI                # 617 passed, 0 failed
 lua50 cui/tiny_plates_tests.lua . ../CreedUI    # 35 passed
 lua50 cui/timer_tests.lua . ../CreedUI          # 82 passed
 lua50 cui/numbers_harness.lua . ../CreedUI/Numbers.lua   # ALL CHECKS PASSED (also with CROWD=1)
