@@ -3352,6 +3352,50 @@ do
 	problems("chat moved")
 end
 
+------------------------------------------------------------------ 11h. damage numbers: crit backdrops and Creed UI's own fonts
+do
+	frames(200)
+	local function backs(name)
+		local n = 0
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, name .. "$") and under(o, CreedUINumbersLayer) and M.Visible(o) and visibleAlpha(o) > 0.05 then n = n + 1 end
+		end
+		return n
+	end
+	M.Slash("numbers backdrop blood")
+	check(CreedUIDB.numbers.backdrop == "blood", "/creed numbers backdrop blood picks it")
+	local e = M.Enemy("Crit dummy", 3, 3)
+	M.Hit(e, 4321, "strike", false, true)
+	local e2 = M.Enemy("Plain dummy", -3, -3)
+	M.Hit(e2, 1234, "strike", false, false)
+	frames(6)
+	check(backs("Art\\NumBlood") == 1, "a crit wears the blood splatter, a plain hit doesn't: " .. backs("Art\\NumBlood"))
+	CreedUIDB.numbers.backdrop = "frost"
+	local e3 = M.Enemy("Crit dummy 2", 5, -2)
+	M.Hit(e3, 999, "strike", false, true)
+	frames(6)
+	check(backs("Art\\NumFrost") >= 1, "another backdrop: the ice star")
+	CreedUIDB.numbers.backdrop = "none"
+	frames(6)
+	check(backs("Art\\NumFrost") == 0 and backs("Art\\NumBlood") == 0, "None: no backdrop")
+	-- a font of Creed UI's own, from the addon's folder
+	local was = CreedUIDB.numbers.font
+	M.Slash("numbers font cinzel")
+	check(CreedUIDB.numbers.font == 5, "/creed numbers font cinzel picks it")
+	local e4 = M.Enemy("Font dummy", 1, 6)
+	M.Hit(e4, 777, "strike", false, false)
+	frames(20)
+	local face
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text and string.find(M.Plain(o.__text), "%d") and under(o, CreedUINumbersLayer)
+			and M.Visible(o) and visibleAlpha(o) > 0.05 then face = o.__font end
+	end
+	check(face and string.find(face, "NumCinzel%.ttf$"), "a number in Creed UI's own font (Cinzel): " .. tostring(face))
+	CreedUIDB.numbers.font = was
+	frames(100)
+	problems("crit backdrops and fonts")
+end
+
 ------------------------------------------------------------------ 12. no API at all
 M.RemoveAPI()
 AZS_TARGET = nil
