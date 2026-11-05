@@ -597,7 +597,8 @@ do
 		end
 	end
 	press("Inspect")
-	check(M.asked[table.getn(M.asked)] == "inspect party1" and not M.Visible(CreedUIPartyMenu), "Inspect opens their gear, and the menu closes")
+	check(M.targeted == "party1" and M.asked[table.getn(M.asked)] == "inspect target" and not M.Visible(CreedUIPartyMenu),
+		"Inspect targets them and inspects the target, as the game's own menu does; the menu closes")
 	this, arg1 = CreedUIParty1, "RightButton"
 	CreedUIParty1.__scripts.OnClick()
 	press("Follow")
@@ -608,13 +609,6 @@ do
 	check(ChatFrameEditBox:GetText() == "/w Melkor ", "Whisper opens the chat box to them: " .. tostring(ChatFrameEditBox:GetText()))
 	ChatFrameEditBox:SetText("")
 	ChatFrameEditBox:Hide()
-	M.farAway.party1 = true
-	local asked = table.getn(M.asked)
-	this, arg1 = CreedUIParty1, "RightButton"
-	CreedUIParty1.__scripts.OnClick()
-	press("Inspect")
-	check(table.getn(M.asked) == asked and chatHas("Too far away to inspect"), "too far away to inspect: it says so")
-	M.farAway.party1 = nil
 	arg1 = "LeftButton"
 	M.unit.party4 = { exists = false }
 	M.Fire("PARTY_MEMBERS_CHANGED")

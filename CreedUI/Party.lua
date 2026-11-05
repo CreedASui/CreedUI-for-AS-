@@ -88,15 +88,20 @@ local function Whisper(name)
 	end
 end
 
+-- As the game's own menu does it: the friend becomes your target, then the target is inspected (the
+-- client's inspect window works from the target); the game itself says when they're too far.
 local function Inspect(unit)
-	if type(CheckInteractDistance) == "function" and not Call(CheckInteractDistance, unit, 1) then
-		C.Print(C.L("Too far away to inspect."))
+	if type(TargetUnit) == "function" then Call(TargetUnit, unit) end
+	if type(InspectUnit) == "function" then
+		Call(InspectUnit, "target")
 		return
 	end
-	if type(InspectUnit) == "function" then
-		Call(InspectUnit, unit)
+	-- no InspectUnit: the 1.12 inspect window, loaded when first wanted
+	if type(LoadAddOn) == "function" and type(InspectFrame_Show) ~= "function" then pcall(LoadAddOn, "Blizzard_InspectUI") end
+	if type(InspectFrame_Show) == "function" then
+		Call(InspectFrame_Show, "target")
 	elseif type(NotifyInspect) == "function" then
-		Call(NotifyInspect, unit)
+		Call(NotifyInspect, "target")
 	end
 end
 
