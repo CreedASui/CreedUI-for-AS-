@@ -83,7 +83,8 @@ CreedUI/            the addon (this folder name is the install folder; never ren
 dev/                tools: stand-in game client + tests, translations, art, fonts, renderer
                     (dev/README.md explains each)
 dev/attic/          code kept for later (the 1.8.0 talents strip, the 1.11.0 talent-tree page)
-README.md, CHANGELOG.md
+README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two folders; 1.17.3 removed an old
+                    1.14.0 copy of the addon that had been uploaded there by hand)
 ```
 
 ## 4. Rules the code depends on
