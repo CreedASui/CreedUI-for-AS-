@@ -284,4 +284,8 @@ T = {
 475: "Yeni",
 476: "Koleksiyonunda yeni!",
 477: "Zaten koleksiyonunda.",
+478: "Nişanlar",
+479: "+{1} nişan",
+480: "Creed UI görünümünde kendi ganimet bildirimin: her düşen eşya simgesi, adı ve koleksiyonunda yeni olup olmadığıyla, bir de kazandığın nişanlar. Oyunun bildiriminin yerini alır.",
+481: "ganimet bildirimi bir hatadan sonra durdu, oyununki geri geldi: ",
 }

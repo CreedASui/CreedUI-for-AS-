@@ -1,14 +1,16 @@
--- Creed UI: the run's loot.
--- A small gold-railed window of what the run has given you: the marks you earned at its head (on
--- an Argent Dawn token), then every piece of gear that dropped for you, the newest first, each with
--- its icon and its name in its rarity's color, and the moment of the run it came (point at one for
--- the item's own tooltip). It starts empty with each run and keeps the last one's after it ends.
--- Both are read from the game's own lines in the chat ("You receive loot: ...", "You earn 5 marks
--- (120 in all)."), in whichever of its languages it speaks.
+-- Creed UI: the loot pop-up.
+-- When the game gives you loot, a gold-railed pop-up rises in over the skill bar in place of the
+-- game's own: the item's icon in a metal slot, its name in its rarity's color, and
+-- under it whether it's new to your collection (in green) or one you already had. Marks you earn
+-- come the same way, on an Argent Dawn token. Up to three stack, the newest lowest; each stays a
+-- few seconds and melts away. They hide behind the level-up cards. Turned off, the game's comes back.
+-- Both are read from the game's own lines in the chat ("You receive loot: [Name] New in your
+-- collection!", "You earn 5 marks (120 in all)."), in whichever of its languages it speaks; the line
+-- doesn't say what the item looks like, so its icon is picked by a word in its name.
 
 local C = CreedUI
-local DEFAULTS = { enabled = true, scale = 1, shown = true }
-local K = { w = 210, head = 24, sum = 18, row = 20, rows = 5, pad = 8 }
+local DEFAULTS = { enabled = true, scale = 1 }
+local K = { w = 270, h = 52, gap = 6, max = 3, show = 4.5, fadeIn = 0.22, fadeOut = 0.6, icon = 36 }
 local QUALITY = {
 	[0] = { 0.62, 0.62, 0.62 }, [1] = { 0.92, 0.92, 0.92 }, [2] = { 0.12, 1.00, 0.00 },
 	[3] = { 0.00, 0.44, 0.87 }, [4] = { 0.64, 0.21, 0.93 }, [5] = { 1.00, 0.50, 0.00 },
@@ -60,8 +62,8 @@ end
 
 local db
 local root
-local S = { items = {}, marks = 0, markTotal = nil, runTime = 0, broken = false, rows = {}, dirty = true,
-	patterns = nil, heard = {} }
+local S = { live = {}, pool = {}, broken = false, patterns = nil, heard = {}, takeClock = 0 }
+local Toast -- below: a new pop-up for a drop or for marks
 
 ------------------------------------------------------------------------ what came
 -- an item from a loot line: its link, id, name, count; nil for a line without one
@@ -71,17 +73,6 @@ local function ParseLoot(msg)
 	if not link then return nil end
 	local _, _, count = string.find(msg, "|rx(%d+)")
 	return { link = link, id = tonumber(id), name = name, count = tonumber(count) or 1 }
-end
-
-local function RunTime()
-	if type(AZS_GetRunTime) ~= "function" then return 0 end
-	local ok, t = pcall(AZS_GetRunTime)
-	return ok and tonumber(t) or 0
-end
-
-local function Clock(t)
-	t = math.floor(t or 0)
-	return string.format("%d:%02d", math.floor(t / 60), math.mod(t, 60))
 end
 
 -- each marks line as a pattern: its two numbers caught, which comes first remembered
@@ -122,9 +113,7 @@ local function Hear(msg)
 		if a then
 			local n, total = Number(a), Number(b)
 			if not p.nFirst then n, total = total, n end
-			S.marks = S.marks + (n or 0)
-			S.markTotal = total
-			S.dirty = true
+			Toast({ marks = n or 0, total = total })
 			return
 		end
 	end
@@ -154,7 +143,6 @@ local function Hear(msg)
 				item.quality = Rarity(hex)
 			end
 			if item.name == "" then return end
-			item.at = RunTime()
 			if type(GetItemInfo) == "function" and item.id then
 				local _, _, quality, _, _, _, _, _, icon = GetItemInfo(item.id)
 				item.quality, item.icon = quality or item.quality, icon
@@ -164,8 +152,7 @@ local function Hear(msg)
 				local _, _, hex = string.find(item.link or "", "^|c%x%x(%x%x%x%x%x%x)")
 				item.quality = Rarity(hex)
 			end
-			table.insert(S.items, 1, item)
-			S.dirty = true
+			Toast(item)
 			return
 		end
 	end
@@ -193,162 +180,155 @@ local function Listen()
 	end
 end
 
------------------------------------------------------------------------- the window
-local function Row(i)
-	local r = S.rows[i]
-	if r then return r end
-	r = {}
-	local f = CreateFrame("Button", nil, root)
-	r.frame = f
-	f:SetHeight(K.row)
-	f:SetPoint("TOPLEFT", root, "TOPLEFT", K.pad, -(K.head + K.sum + 4 + (i - 1) * K.row))
-	f:SetPoint("RIGHT", root, "RIGHT", -K.pad, 0)
-	f:EnableMouse(true)
-	r.icon = f:CreateTexture(nil, "ARTWORK")
-	r.icon:SetWidth(K.row - 4)
-	r.icon:SetHeight(K.row - 4)
-	r.icon:SetPoint("LEFT", f, "LEFT", 0, 0)
-	r.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-	r.time = C.Text(f, C.FONT, 9, nil, "RIGHT", 40)
-	r.time:SetPoint("RIGHT", f, "RIGHT", 0, 0)
-	r.time:SetTextColor(0.65, 0.62, 0.55)
-	r.name = C.Text(f, C.FONT, 11, "OUTLINE", "LEFT", K.w - 2 * K.pad - K.row - 74)
-	r.name:SetPoint("LEFT", r.icon, "RIGHT", 5, 0)
-	-- new to your collection: a small green tag before its time
-	r.new = C.Text(f, C.FONT, 9, "OUTLINE", "RIGHT", 34)
-	r.new:SetPoint("RIGHT", r.time, "LEFT", -4, 0)
-	r.new:SetTextColor(0.35, 1, 0.42)
-	f:SetScript("OnEnter", function()
-		if not r.item or not GameTooltip or C.unlocked then return end
-		GameTooltip:SetOwner(f, "ANCHOR_LEFT")
-		if GameTooltip.SetHyperlink and r.item.id then
-			local ok = pcall(GameTooltip.SetHyperlink, GameTooltip, "item:" .. r.item.id .. ":0:0:0")
-			if ok then
-				GameTooltip:Show()
-				return
-			end
-		end
-		GameTooltip:AddLine(r.item.name, 0.98, 0.85, 0.52)
-		if r.item.new then GameTooltip:AddLine(C.L("New in your collection!"), 0.35, 1, 0.42)
-		elseif r.item.new == false then GameTooltip:AddLine(C.L("Already in your collection."), 0.7, 0.7, 0.7) end
-		C.ShowTip()
-	end)
-	f:SetScript("OnLeave", function() if GameTooltip then GameTooltip:Hide() end end)
-	S.rows[i] = r
-	return r
+------------------------------------------------------------------------ the pop-ups
+local function NewToast()
+	local t = {}
+	local f = CreateFrame("Frame", nil, root)
+	t.frame = f
+	f:SetWidth(K.w)
+	f:SetHeight(K.h)
+	t.deco = C.Panel(f, false)
+	C.PanelTheme(t.deco, C.Pal())
+	t.slot = C.Tex(f, "OVERLAY", C.ART .. "Slot")
+	t.slot:SetWidth(K.icon + 6)
+	t.slot:SetHeight(K.icon + 6)
+	t.slot:SetPoint("LEFT", f, "LEFT", 7, 0)
+	t.icon = f:CreateTexture(nil, "ARTWORK")
+	t.icon:SetWidth(K.icon)
+	t.icon:SetHeight(K.icon)
+	t.icon:SetPoint("CENTER", t.slot, "CENTER", 0, 0)
+	t.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+	t.head = C.Text(f, C.FONT, 9, "OUTLINE", "LEFT", K.w - K.icon - 30)
+	t.head:SetPoint("TOPLEFT", f, "TOPLEFT", K.icon + 20, -6)
+	t.head:SetTextColor(0.98, 0.85, 0.52)
+	t.name = C.Text(f, C.FONT, 13, "OUTLINE", "LEFT", K.w - K.icon - 30)
+	t.name:SetPoint("LEFT", f, "LEFT", K.icon + 20, -1)
+	t.sub = C.Text(f, C.FONT, 10, nil, "LEFT", K.w - K.icon - 30)
+	t.sub:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", K.icon + 20, 6)
+	return t
 end
 
-local function Redraw()
-	S.dirty = false
-	local n = table.getn(S.items)
-	local shown = math.min(n, K.rows)
-	for i = 1, shown do
-		local r, item = Row(i), S.items[i]
-		r.item = item
-		r.icon:SetTexture(item.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
-		local c = QUALITY[item.quality or 1] or QUALITY[1]
-		C.TextColor(r.name, c[1], c[2], c[3])
-		C.SetText(r.name, item.name .. ((item.count or 1) > 1 and (" x" .. item.count) or ""))
-		C.SetText(r.time, Clock(item.at))
-		C.SetText(r.new, item.new and C.L("New") or "")
-		C.Vis(r.frame, true)
-	end
-	for i = shown + 1, table.getn(S.rows) do C.Vis(S.rows[i].frame, false) end
-	if n > K.rows then
-		C.SetText(root.more, C.F("and {1} more", n - K.rows))
-	elseif n == 0 then
-		C.SetText(root.more, C.L("Nothing yet this run."))
+Toast = function(item)
+	local t = table.remove(S.pool) or NewToast()
+	t.born, t.y = GetTime(), nil
+	if item.marks then
+		t.icon:SetTexture(MARK_ICON)
+		C.SetText(t.head, C.L("Marks"))
+		C.SetText(t.name, C.F("+{1} marks", C.Commas(item.marks)))
+		C.TextColor(t.name, 1, 0.86, 0.45)
+		C.SetText(t.sub, item.total and C.F("{1} in all", C.Commas(item.total)) or "")
+		C.TextColor(t.sub, 0.72, 0.70, 0.64)
 	else
-		C.SetText(root.more, "")
+		t.icon:SetTexture(item.icon or LookOf(item.name))
+		C.SetText(t.head, C.L("Loot"))
+		local c = QUALITY[item.quality or 1] or QUALITY[1]
+		C.SetText(t.name, item.name .. ((item.count or 1) > 1 and (" x" .. item.count) or ""))
+		C.TextColor(t.name, c[1], c[2], c[3])
+		if item.new then
+			C.SetText(t.sub, C.L("New in your collection!"))
+			C.TextColor(t.sub, 0.35, 1, 0.42)
+		elseif item.new == false then
+			C.SetText(t.sub, C.L("Already in your collection."))
+			C.TextColor(t.sub, 0.65, 0.63, 0.58)
+		else
+			C.SetText(t.sub, "")
+		end
 	end
-	local rowsH = math.max(shown, 1) * K.row
-	C.Size(root, K.w, K.head + K.sum + 4 + rowsH + ((n > K.rows or n == 0) and 14 or 0) + K.pad)
-	C.Place(root.more, "TOPLEFT", root, "TOPLEFT", K.pad + 2, -(K.head + K.sum + 4 + (n == 0 and 0 or rowsH)))
+	table.insert(S.live, 1, t)
+	-- more than three: the oldest goes at once
+	while table.getn(S.live) > K.max do
+		local old = table.remove(S.live)
+		C.Vis(old.frame, false)
+		table.insert(S.pool, old)
+	end
 end
 
-local function Step(dt)
-	-- a new run: the clock went back to the start
-	local t = RunTime()
-	if t + 2 < S.runTime then
-		S.items, S.marks, S.markTotal, S.dirty = {}, 0, nil, true
-		S.heard = {}
+local function Step(dt, now)
+	local fade = 1 - C.cardsFade
+	for i = table.getn(S.live), 1, -1 do
+		local t = S.live[i]
+		local age = now - t.born
+		local a = C.Smooth(age / K.fadeIn) * (1 - C.Smooth((age - K.show) / K.fadeOut))
+		if age > K.show + K.fadeOut then
+			table.remove(S.live, i)
+			C.Vis(t.frame, false)
+			table.insert(S.pool, t)
+		else
+			-- each glides to its place in the stack, the newest lowest; a new one rises in from below
+			local want = (i - 1) * (K.h + K.gap)
+			t.y = t.y and (t.y + (want - t.y) * math.min(1, dt * 12)) or (want - 14)
+			C.Place(t.frame, "BOTTOM", root, "BOTTOM", 0, math.floor(t.y + 0.5))
+			C.Alpha(t.frame, a * fade)
+			C.Vis(t.frame, a * fade > 0.01)
+		end
 	end
-	S.runTime = t
-	C.SetText(root.marks, "+" .. C.Commas(S.marks))
-	C.SetText(root.markTotal, S.markTotal and C.F("{1} in all", C.Commas(S.markTotal)) or "")
-	if S.dirty then Redraw() end
-	local want = (db.shown and 1 or 0) * (1 - C.cardsFade)
-	C.Alpha(root, want)
-	C.Vis(root, want > 0.01)
+	S.takeClock = S.takeClock - dt
+	if S.takeClock <= 0 then
+		S.takeClock = 2
+		C.TakeHud("loot") -- the game's own pop-up stays away while ours is on
+	end
 end
 
 local function Apply()
-	if not db.enabled then C.Vis(root, false) end
+	if db.enabled then
+		C.TakeHud("loot")
+	else
+		C.ReleaseHud("loot")
+		for i = table.getn(S.live), 1, -1 do
+			local t = table.remove(S.live, i)
+			C.Vis(t.frame, false)
+			table.insert(S.pool, t)
+		end
+	end
 end
 
 C.OnInit(function()
 	db = C.DB("loot", DEFAULTS)
 	root = CreateFrame("Frame", "CreedUILoot", UIParent)
 	root:SetWidth(K.w)
-	root:SetHeight(100)
-	root:SetFrameStrata("MEDIUM")
+	root:SetHeight(K.max * (K.h + K.gap))
+	root:SetFrameStrata("HIGH")
 	root:SetScale(db.scale)
-	root:EnableMouse(true)
-	root.deco = C.Panel(root, false)
-	C.PanelTheme(root.deco, C.Pal())
-	root.title = C.Text(root, C.FONT, 12, "OUTLINE", "LEFT", K.w - 40)
-	root.title:SetPoint("TOPLEFT", root, "TOPLEFT", K.pad + 2, -7)
-	root.title:SetTextColor(0.98, 0.85, 0.52)
-	C.LText(root.title, "Loot")
-	root.close = C.Button and C.Button(root, 18, 16, "x", function() db.shown = false end)
-	if root.close then root.close:SetPoint("TOPRIGHT", root, "TOPRIGHT", -6, -5) end
-	-- the marks earned this run, on an Argent Dawn token, and how many in all
-	root.token = C.Tex(root, "ARTWORK", MARK_ICON)
-	root.token:SetWidth(15)
-	root.token:SetHeight(15)
-	root.token:SetPoint("TOPLEFT", root, "TOPLEFT", K.pad + 2, -(K.head + 1))
-	root.token:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-	root.marks = C.Text(root, C.FONT, 11, "OUTLINE", "LEFT", 44)
-	root.marks:SetPoint("LEFT", root.token, "RIGHT", 5, 0)
-	root.marks:SetTextColor(1, 0.86, 0.45)
-	root.markTotal = C.Text(root, C.FONT, 10, nil, "LEFT", 110)
-	root.markTotal:SetPoint("LEFT", root.marks, "RIGHT", 4, 0)
-	root.markTotal:SetTextColor(0.7, 0.68, 0.62)
-	root.more = C.Text(root, C.FONT, 10, nil, "LEFT", K.w - 2 * K.pad)
-	root.more:SetTextColor(0.7, 0.68, 0.62)
-	C.Vis(root, false)
 	C.Movable(root, "loot", "Loot", function(f)
 		f:ClearAllPoints()
-		if CreedUIMeter then
-			f:SetPoint("BOTTOMRIGHT", CreedUIMeter, "BOTTOMLEFT", -10, 0) -- beside the damage meter
-		else
-			f:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -20, 16)
-		end
+		f:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 160) -- over the skill bar and its Level Up! button
 	end)
 	Listen()
 	local driver = CreateFrame("Frame", "CreedUILootDriver")
 	driver:SetScript("OnUpdate", function()
 		if S.broken or not db.enabled then return end
-		local ok, err = pcall(Step, arg1 or 0)
+		local dt = arg1 or 0
+		if dt > 0.1 then dt = 0.1 end
+		local ok, err = pcall(Step, dt, GetTime())
 		if not ok then
 			S.broken = true
 			db.enabled = false
 			Apply()
 			db.enabled = true
-			C.Print(C.L("the loot window stopped after an error: ") .. tostring(err))
+			C.Print(C.L("the loot pop-up stopped after an error, so the game's own is back: ") .. tostring(err))
 		end
 	end)
 	Apply()
 end)
 
+C.OnWorld(function()
+	if db then
+		Listen() -- a chat window made since
+		if db.enabled then C.TakeHud("loot") end
+	end
+end)
+
+C.OnLogout(function()
+	if db then C.ReleaseHud("loot") end
+end)
+
 C.RegisterPart({
 	key = "loot", name = "Loot",
-	note = "The run's loot in a small window: the marks you earned, then the gear that dropped for you, newest first, with its icon and rarity. Point at one for its tooltip.",
-	get = function() return db and db.enabled and db.shown end,
+	note = "Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up.",
+	get = function() return db and db.enabled end,
 	set = function(on)
 		if db then
 			db.enabled = on and true or false
-			db.shown = db.enabled
 			S.broken = false
 			Apply()
 		end
@@ -361,7 +341,3 @@ C.RegisterPart({
 		end
 	end,
 })
-
-C.OnWorld(function()
-	if db then Listen() end -- a chat window made since
-end)

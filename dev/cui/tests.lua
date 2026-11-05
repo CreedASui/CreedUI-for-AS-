@@ -3235,55 +3235,59 @@ do
 	problems("number motions")
 end
 
------------------------------------------------------------------- 11f. the run's loot
+------------------------------------------------------------------ 11f. the loot pop-up
 do
 	SIM.StartRun("naxx", { killAfter = 60 })
-	M.runTime = 30
 	frames(10)
-	check(findText(CreedUILoot, "^Nothing yet this run%.$") ~= nil, "an empty run says so")
+	check(M.hud.loot == false, "the game's own loot pop-up is put away")
+	local function toasts()
+		local out = {}
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Frame" and o.__parent == CreedUILoot and M.Visible(o) and visibleAlpha(o) > 0.3 then table.insert(out, o) end
+		end
+		return out
+	end
+	check(table.getn(toasts()) == 0, "no pop-up before any loot")
+	-- the game's line as it comes: a plain name in brackets, then whether it's new to the collection
+	ChatFrame1:AddMessage("You receive loot: [Novice's Boots] New in your collection!")
+	frames(10)
+	check(table.getn(toasts()) == 1 and findText(CreedUILoot, "^Novice's Boots$") ~= nil and findText(CreedUILoot, "^New in your collection!$") ~= nil,
+		"a drop pops up: its name and that it's new: " .. table.concat(textsUnder(CreedUILoot), " | "))
+	check(countTex(CreedUILoot, "INV_Boots_01$") == 1 and countTex(CreedUILoot, "Art\\Slot$") == 1, "with an icon by what it is, in a metal slot")
+	ChatFrame1:AddMessage("Du erhältst Beute: [Signet of the Fallen] Bereits gesammelt")
 	M.items = { [16801] = { name = "Arcanist Belt", quality = 4, icon = "Interface\\Icons\\INV_Belt_30" } }
-	M.runTime = 95
 	ChatFrame1:AddMessage("You receive loot: |cffa335ee|Hitem:16801:0:0:0|h[Arcanist Belt]|h|r.")
-	ChatFrame1:AddMessage("Vous recevez du butin : |cff1eff00Green Ring|rx2.", 1, 1, 0)
+	ChatFrame1:AddMessage("You earn 5 marks (120 in all).")
 	frames(10)
-	check(findText(CreedUILoot, "^Green Ring x2$") ~= nil and findText(CreedUILoot, "^Arcanist Belt$") ~= nil,
-		"each item received, with its count: " .. table.concat(textsUnder(CreedUILoot), " | "))
-	check(countTex(CreedUILoot, "INV_Belt_30$") == 1 and findText(CreedUILoot, "^1:35$") ~= nil, "its icon and the moment of the run it came")
+	check(table.getn(toasts()) == 3, "three at most, the oldest gone: " .. table.getn(toasts()))
+	check(findText(CreedUILoot, "^%+5 marks$") ~= nil and findText(CreedUILoot, "^120 in all$") ~= nil and countTex(CreedUILoot, "Token_ArgentDawn$") == 1,
+		"marks earned pop up on an Argent Dawn token")
+	check(findText(CreedUILoot, "^Already in your collection%.$") ~= nil and countTex(CreedUILoot, "INV_Belt_30$") == 1, "a ring you had, and a belt with its own icon")
 	local belt
 	for _, o in ipairs(M.All()) do
 		if o.__kind == "FontString" and o.__text == "Arcanist Belt" and under(o, CreedUILoot) then belt = o end
 	end
-	check(belt and belt.__color and belt.__color[1] > 0.6 and belt.__color[3] > 0.9, "in its rarity's color (epic purple)")
-	this = belt.__parent
-	belt.__parent.__scripts.OnEnter()
-	check(M.tip.shown and M.tip.link == "item:16801:0:0:0", "pointing at it shows the item's own tooltip")
-	belt.__parent.__scripts.OnLeave()
-	-- marks earned, on their token; other lines add nothing
-	ChatFrame1:AddMessage("You earn 5 marks (120 in all).")
-	ChatFrame1:AddMessage("Du erhältst 3 Marken (insgesamt 123).")
+	check(belt and belt.__color and belt.__color[1] > 0.6 and belt.__color[3] > 0.9, "a name in its rarity's color (epic purple)")
+	-- the newest lowest
+	local marksY, beltY
+	for _, f in ipairs(toasts()) do
+		local _, _, _, top = M.Rect(f)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "FontString" and o.__parent == f and o.__text == "+5 marks" then marksY = top end
+			if o.__kind == "FontString" and o.__parent == f and o.__text == "Arcanist Belt" then beltY = top end
+		end
+	end
+	check(marksY and beltY and marksY < beltY, "the newest lowest, nearest the skill bar")
 	ChatFrame1:AddMessage("Melkor says: You receive loot: nothing, haha")
 	frames(5)
-	check(findText(CreedUILoot, "^%+8$") ~= nil and findText(CreedUILoot, "123") ~= nil and countTex(CreedUILoot, "Token_ArgentDawn$") == 1,
-		"marks earned this run, on an Argent Dawn token: " .. table.concat(textsUnder(CreedUILoot), " | "))
 	check(findText(CreedUILoot, "nothing") == nil, "someone saying the words in chat isn't loot")
-	-- the game's line as it comes: a plain name in brackets, then whether it's new to the collection
-	ChatFrame1:AddMessage("You receive loot: [Novice's Boots] New in your collection!")
-	ChatFrame1:AddMessage("Du erhältst Beute: [Signet of the Fallen] Bereits gesammelt")
+	SIM.Advance(6, 1 / 30)
+	check(table.getn(toasts()) == 0, "a few seconds on, they melt away")
+	M.Slash("loot off")
 	frames(5)
-	check(findText(CreedUILoot, "^Novice's Boots$") ~= nil and findText(CreedUILoot, "^Signet of the Fallen$") ~= nil,
-		"the name alone, no brackets or collection words: " .. table.concat(textsUnder(CreedUILoot), " | "))
-	check(countTex(CreedUILoot, "INV_Boots_01$") == 1 and countTex(CreedUILoot, "INV_Jewelry_Ring_01$") == 2 and countTex(CreedUILoot, "QuestionMark$") == 0,
-		"an icon by what it is: boots, a ring (the signet, and the Green Ring before)")
-	local news = 0
-	for _, o in ipairs(M.All()) do
-		if o.__kind == "FontString" and o.__text == "New" and under(o, CreedUILoot) and visibleAlpha(o) > 0.05 then news = news + 1 end
-	end
-	check(news == 1, "a New tag on the one new to the collection only: " .. news)
-	check(findText(CreedUILoot, "368") == nil and countTex(CreedUILoot, "Art\\\\Coin$") == 0, "no gold or caches in it")
-	-- a new run starts it over
-	M.runTime = 0
-	frames(10)
-	check(findText(CreedUILoot, "Arcanist") == nil and findText(CreedUILoot, "^Nothing yet this run%.$") ~= nil, "a new run starts empty")
+	check(M.hud.loot ~= false, "turned off, the game's own pop-up comes back")
+	M.Slash("loot on")
+	frames(5)
 	problems("loot")
 end
 

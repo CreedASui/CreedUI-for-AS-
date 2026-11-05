@@ -284,4 +284,8 @@ T = {
 475: "Nowe",
 476: "Nowość w twojej kolekcji!",
 477: "Już w twojej kolekcji.",
+478: "Znaki",
+479: "Znaki: +{1}",
+480: "Własne okienko łupu w stylu Creed UI: każdy przedmiot z ikoną, nazwą i informacją, czy jest nowy w kolekcji, oraz zdobyte znaki. Zastępuje okienko gry.",
+481: "okienko łupu zatrzymało się po błędzie, wraca to z gry: ",
 }

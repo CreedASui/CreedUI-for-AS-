@@ -478,4 +478,8 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["New"] = "新",
 	["New in your collection!"] = "收藏新增！",
 	["Already in your collection."] = "已收藏。",
+	["Marks"] = "印记",
+	["+{1} marks"] = "+{1} 枚印记",
+	["Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up."] = "Creed UI 风格的战利品弹窗：每件掉落的图标、名称以及是否为收藏新增，还有获得的印记。取代游戏自带的弹窗。",
+	["the loot pop-up stopped after an error, so the game's own is back: "] = "战利品弹窗因错误停止，已恢复游戏自带的：",
 })
