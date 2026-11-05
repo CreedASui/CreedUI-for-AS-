@@ -478,4 +478,8 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["New"] = "새것",
 	["New in your collection!"] = "새로운 수집품!",
 	["Already in your collection."] = "이미 수집함.",
+	["Marks"] = "징표",
+	["+{1} marks"] = "징표 +{1}",
+	["Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up."] = "Creed UI 모양의 전리품 알림: 아이템마다 아이콘, 이름, 새 수집품인지, 그리고 얻은 징표. 게임의 알림을 대신합니다.",
+	["the loot pop-up stopped after an error, so the game's own is back: "] = "오류로 전리품 알림이 멈춰 게임의 알림으로 돌아갑니다: ",
 })

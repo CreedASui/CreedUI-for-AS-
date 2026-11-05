@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.19.0
+- **Loot pop-up instead of the loot window.** When the game gives you loot, a Creed UI pop-up rises in over the skill bar in place of the game's own: the item's icon in a metal slot, its name, and whether it's new to your collection (in green) or one you already had. Marks you earn pop up too, on an Argent Dawn token, with how many you have in all. Up to three stack, and each melts away after a few seconds. The loot window is gone; turning the Loot part off brings back the game's own pop-up.
+
 ## 1.18.1
 - **Loot window: an icon for every drop.** The game's loot line names the item but doesn't say what it looks like, so each one gets an icon by what it is (boots, a helm, a ring, a sword...), or its own when the game gives it. Its name shows without brackets, and gear new to your collection gets a green **New** tag (its tooltip says which are new and which you already had).
 

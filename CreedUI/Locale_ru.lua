@@ -478,4 +478,8 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["New"] = "Новое",
 	["New in your collection!"] = "Новое в вашей коллекции!",
 	["Already in your collection."] = "Уже в вашей коллекции.",
+	["Marks"] = "Знаки",
+	["+{1} marks"] = "+{1} знаков",
+	["Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up."] = "Своё окно добычи в стиле Creed UI: каждый предмет со значком, названием и пометкой, новый ли он в коллекции, и заработанные знаки. Заменяет окно игры.",
+	["the loot pop-up stopped after an error, so the game's own is back: "] = "окно добычи остановлено после ошибки, вернулось окно игры: ",
 })

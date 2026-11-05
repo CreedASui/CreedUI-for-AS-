@@ -478,4 +478,8 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["New"] = "Nowe",
 	["New in your collection!"] = "Nowość w twojej kolekcji!",
 	["Already in your collection."] = "Już w twojej kolekcji.",
+	["Marks"] = "Znaki",
+	["+{1} marks"] = "Znaki: +{1}",
+	["Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up."] = "Własne okienko łupu w stylu Creed UI: każdy przedmiot z ikoną, nazwą i informacją, czy jest nowy w kolekcji, oraz zdobyte znaki. Zastępuje okienko gry.",
+	["the loot pop-up stopped after an error, so the game's own is back: "] = "okienko łupu zatrzymało się po błędzie, wraca to z gry: ",
 })

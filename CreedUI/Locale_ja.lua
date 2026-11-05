@@ -478,4 +478,8 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["New"] = "新規",
 	["New in your collection!"] = "コレクションに新しく追加！",
 	["Already in your collection."] = "入手済みです。",
+	["Marks"] = "マーク",
+	["+{1} marks"] = "+{1} マーク",
+	["Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up."] = "Creed UI の見た目の戦利品ポップアップ：ドロップのアイコン、名前、コレクションに新しいかどうか、獲得したマーク。ゲームのポップアップの代わりになります。",
+	["the loot pop-up stopped after an error, so the game's own is back: "] = "エラーのため戦利品ポップアップを止め、ゲームのものに戻しました: ",
 })

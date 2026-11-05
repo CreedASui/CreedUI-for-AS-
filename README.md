@@ -18,7 +18,7 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 - **Boss timer:** a countdown to each boss in each zone's own colors, with the run's time.
 - **Boss and mini-boss bars:** real health numbers and the debuffs on them.
 - **Skulls and cache marks:** a horned, red-eyed skull over each boss, a bone one over each guardian, and a gold chest over each cache, wherever they are on screen.
-- **Loot window:** the marks you earned this run and the boss gear that dropped for you.
+- **Loot pop-up:** each drop and the marks you earn, in Creed UI's look, with whether the gear is new to your collection.
 - **Run summary:** your time, level, kills, bosses, damage and gold when a run ends.
 
 **You and your party**

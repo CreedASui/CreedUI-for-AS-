@@ -478,4 +478,8 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["New"] = "Yeni",
 	["New in your collection!"] = "Koleksiyonunda yeni!",
 	["Already in your collection."] = "Zaten koleksiyonunda.",
+	["Marks"] = "Nişanlar",
+	["+{1} marks"] = "+{1} nişan",
+	["Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up."] = "Creed UI görünümünde kendi ganimet bildirimin: her düşen eşya simgesi, adı ve koleksiyonunda yeni olup olmadığıyla, bir de kazandığın nişanlar. Oyunun bildiriminin yerini alır.",
+	["the loot pop-up stopped after an error, so the game's own is back: "] = "ganimet bildirimi bir hatadan sonra durdu, oyununki geri geldi: ",
 })

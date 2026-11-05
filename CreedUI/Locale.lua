@@ -1436,6 +1436,28 @@ local ROWS = {
 		"Ya en tu colección.",
 		"Já na sua coleção." },
 
+	-- the loot pop-up (1.19.0)
+	{ "Marks",
+		"Marques",
+		"Marken",
+		"Marcas",
+		"Marcas" },
+	{ "+{1} marks",
+		"+{1} marques",
+		"+{1} Marken",
+		"+{1} marcas",
+		"+{1} marcas" },
+	{ "Your own loot pop-up in Creed UI's look: each drop with its icon, its name and whether it's new to your collection, and the marks you earn. Replaces the game's pop-up.",
+		"Votre fenêtre de butin au style de Creed UI : chaque objet avec son icône, son nom et s'il est nouveau dans votre collection, et les marques gagnées. Remplace celle du jeu.",
+		"Ein eigenes Beute-Popup im Stil von Creed UI: jeder Fund mit Symbol, Name und ob er neu in deiner Sammlung ist, und die verdienten Marken. Ersetzt das Popup des Spiels.",
+		"Tu propio aviso de botín con el estilo de Creed UI: cada objeto con su icono, su nombre y si es nuevo en tu colección, y las marcas que ganas. Sustituye al del juego.",
+		"Seu próprio aviso de saque no estilo do Creed UI: cada item com ícone, nome e se é novo na sua coleção, e as marcas que você ganha. Substitui o do jogo." },
+	{ "the loot pop-up stopped after an error, so the game's own is back: ",
+		"la fenêtre de butin s'est arrêtée après une erreur, celle du jeu revient : ",
+		"das Beute-Popup wurde nach einem Fehler gestoppt, das des Spiels ist zurück: ",
+		"el aviso de botín se detuvo tras un error, vuelve el del juego: ",
+		"o aviso de saque parou após um erro, o do jogo voltou: " },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },
