@@ -3106,7 +3106,32 @@ do
 	ev = M.world.events[M.world.nEvents]
 	ev.meterSourceKey, ev.meterSource, ev.abilityName = "ability:kill_command:r2", nil, nil
 	frames(10)
-	check(findText(CreedUIPetBar, "^1,234$") ~= nil, "Kill Command's hits register by its key: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
+	check(findText(CreedUIPetBar, "^1%.2K$") ~= nil, "Kill Command's hits register by its key: " .. table.concat(textsUnder(CreedUIPetBar), " | "))
+	-- big values side by side: short, and never over each other
+	for _, hit in ipairs({ { 48712, "bite" }, { 5868, "ability:kill_command:r2" } }) do
+		M.Hit(foe, hit[1], "strike", false)
+		ev = M.world.events[M.world.nEvents]
+		ev.meterSourceKey, ev.meterSource, ev.abilityName = hit[2], nil, nil
+	end
+	frames(10)
+	local vals = {}
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text and under(o, CreedUIPetBar) and visibleAlpha(o) > 0.05 and string.find(o.__text, "^[%d%.]+[KM]?$") then
+			local l, b, r, t = M.Rect(o)
+			local w = M.TextWidth and M.TextWidth(o) or (r - l)
+			local cx = (l + r) / 2
+			table.insert(vals, { text = o.__text, l = cx - w / 2, r = cx + w / 2, y = (b + t) / 2 })
+		end
+	end
+	local clash = 0
+	for i = 1, table.getn(vals) do
+		for j = i + 1, table.getn(vals) do
+			local a, b = vals[i], vals[j]
+			if math.abs(a.y - b.y) < 6 and a.l < b.r and b.l < a.r then clash = clash + 1 end
+		end
+	end
+	check(findText(CreedUIPetBar, "^49K$") ~= nil and findText(CreedUIPetBar, "^5%.9K$") ~= nil and clash == 0,
+		"big values read 49K, 5.9K and don't overlap: " .. clash .. " | " .. table.concat(textsUnder(CreedUIPetBar), " | "))
 	table.remove(M.summons)
 	local pl, pb, pr = M.Rect(CreedUIPetBar)
 	local bl, bb, br, bt = M.Rect(CreedUIBar)

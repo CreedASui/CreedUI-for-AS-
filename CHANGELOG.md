@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.19.2
+- **Pet bar: big numbers no longer pile up.** The value under each pet skill is kept short (487, 5.9K, 49K, 1.2M) and each skill gets the room its number needs, so neighbours never run into each other.
+
 ## 1.19.1
 - **Inspect from the party menu opens their gear.** It now works as the game's own menu does: your friend becomes your target and the target is inspected (the game's inspect window works from the target). The game itself says when they're too far away.
 
