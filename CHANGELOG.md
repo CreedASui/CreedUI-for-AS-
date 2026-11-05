@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.17.1
+- **Move and size the chat:** with the frames unlocked (right-click the C on the minimap), a Chat box lies over the chat: drag it to move the chat, drag its corner grip to make it wider, narrower, taller or shorter. Its place and size are kept; resetting the frames puts the game's back.
+- **Move the hero's numbers:** the spot the damage-taken and heal numbers rise from is now a box you can drag too, like every other part.
+
 ## 1.17.0
 - **Loot window** (new part): the run's loot beside the damage meter. The gold you picked up and the caches you opened at its head, then every item you received, newest first, with its icon, its name in its rarity's color, how many, and the moment of the run it came. Point at one for the item's own tooltip. It starts empty each run and keeps the last run's after it ends. Its x closes it; the Loot toggle in the options brings it back.
 

@@ -3227,6 +3227,48 @@ do
 	problems("loot")
 end
 
+------------------------------------------------------------------ 11g. the chat and the hero's numbers, moved and sized
+do
+	frames(5)
+	local chat = ChatFrame1
+	local l0, b0 = chat:GetLeft(), chat:GetBottom()
+	local w0 = chat:GetWidth()
+	check(not M.Visible(CreedUIChatMover), "no chat box while the frames are locked")
+	CreedUI.SetUnlocked(true)
+	frames(3)
+	check(M.Visible(CreedUIChatMover), "unlocked: a Chat box over the chat")
+	M.dragBy = { 60, 40 }
+	this = CreedUIChatMover
+	CreedUIChatMover.__scripts.OnDragStart()
+	CreedUIChatMover.__scripts.OnDragStop()
+	M.dragBy = nil
+	check(math.abs(chat:GetLeft() - (l0 + 60)) < 1 and math.abs(chat:GetBottom() - (b0 + 40)) < 1,
+		string.format("dragging moves the chat (%.0f,%.0f -> %.0f,%.0f)", l0, b0, chat:GetLeft(), chat:GetBottom()))
+	this = CreedUIChatGrip
+	CreedUIChatGrip.__scripts.OnMouseDown()
+	chat:SetWidth(w0 + 90)
+	CreedUIChatGrip.__scripts.OnMouseUp()
+	check(CreedUIDB.chat.place and math.abs(CreedUIDB.chat.place.w - (w0 + 90)) < 1, "its corner sizes it, and the size is kept")
+	M.Reload(DIR, true)
+	frames(5)
+	check(math.abs(ChatFrame1:GetLeft() - (l0 + 60)) < 1 and math.abs(ChatFrame1:GetWidth() - (w0 + 90)) < 1, "both kept over a reload")
+	-- the hero's numbers have a spot to drag too
+	check(CreedUIHurtSpot ~= nil, "the damage taken numbers have a spot")
+	CreedUI.SetUnlocked(true)
+	frames(2)
+	local boxes = 0
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Frame" and o.__parent == CreedUIHurtSpot and o.__backdrop and M.Visible(o) then boxes = boxes + 1 end
+	end
+	check(boxes == 1, "shown as a box to drag while unlocked")
+	CreedUI.ResetPositions()
+	frames(3)
+	check(CreedUIDB.chat.place == nil and math.abs(ChatFrame1:GetLeft() - l0) < 1, "resetting the frames puts the chat back")
+	CreedUI.SetUnlocked(false)
+	frames(2)
+	problems("chat moved")
+end
+
 ------------------------------------------------------------------ 12. no API at all
 M.RemoveAPI()
 AZS_TARGET = nil

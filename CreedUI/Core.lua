@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.17.0"
+C.VERSION = "1.17.1"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -1096,11 +1096,13 @@ function C.SetUnlocked(on)
 	if C.timerLock then C.timerLock(not C.unlocked) end
 end
 
+C.resetStamp = 0 -- counts the resets (the chat watches it)
 function C.ResetPositions()
 	local root = C.Root()
 	root.pos = {}
 	for i = 1, table.getn(C.movers) do C.ApplyPos(C.movers[i]) end
 	if C.timerReset then C.timerReset() end
+	C.resetStamp = C.resetStamp + 1
 end
 
 ------------------------------------------------------------------------ parts, for the hub
