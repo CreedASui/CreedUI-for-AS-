@@ -74,7 +74,7 @@ def cut(name, mid, top_lim, bot_lim, cx, anchor, keep_x, keep_solid, s, disc=Non
     # solid only within the emblem itself (keep_solid): the picture's own dark bar beside it goes clear
     w = ramp(yy, top_lim, top_lim + 4) * ramp(yy, bot_lim, bot_lim - 4) * keep_x
     a = np.maximum(glow_a, solid_a * keep_solid) * w
-    if disc is not None:  # the crest's round face is whole, whatever its paint (the rail runs behind it)
+    if disc is not None:  # the round face is whole, whatever its paint (the bar runs behind it)
         a = np.maximum(a, ramp(np.hypot(xx - cx, yy - disc[1]), disc[0] + 2, disc[0] - 2) * w)
     with np.errstate(invalid="ignore", divide="ignore"):
         color_all = np.clip(np.where(a[..., None] > 1e-3, lift / np.maximum(a, 1e-3)[..., None], 0), 0, 1)
@@ -107,7 +107,8 @@ for i, (cls, top, bot) in enumerate(ROWS):
     # emblem's round, fading softly out round it (no straight cut), the picture's own rails with it
     keep_l = np.maximum(ramp(xx, LEFT_X + 12 * s, LEFT_X - 4 * s), ramp(np.hypot(xx - LEFT_X, yy - mid), 96 * s, 70 * s))
     solid_l = np.maximum(ramp(xx, LEFT_X + 30 * s, LEFT_X + 20 * s), ramp(np.hypot(xx - LEFT_X, yy - mid), 82 * s, 72 * s))
-    cut("PanelEmblem" + cls + "L", mid, top_lim, bot_lim, LEFT_X, ANCHOR_L, keep_l, solid_l, s)
+    # its round face whole too, so the bar's rails and glass never show through it (asked for: the bow)
+    cut("PanelEmblem" + cls + "L", mid, top_lim, bot_lim, LEFT_X, ANCHOR_L, keep_l, solid_l, s, (66 * s, mid - 4 * s))
     # right: the crest and its ribbon; the bar's end bracket and its words cut away before it
     keep_r = np.maximum(ramp(xx, RIGHT_X - 6 * s, RIGHT_X + 10 * s), ramp(np.hypot(xx - RIGHT_X, yy - mid - 8 * s), 50 * s, 38 * s))
     solid_r = np.maximum(ramp(xx, RIGHT_X, RIGHT_X + 10 * s), ramp(np.hypot(xx - RIGHT_X, yy - mid - 8 * s), 44 * s, 36 * s))
