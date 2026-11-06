@@ -337,9 +337,9 @@ check(near(rim[1], 0.48) and near(rim[3], 0.95), "a mage enters the world: the p
 check(onBar("PanelEmblemMageL") == 1 and onBar("PanelEmblemMageR") == 1 and onBar("PanelDragon") == 0, "the mage's emblem on the left end and crest on the right")
 local fill
 for _, o in ipairs(M.All()) do
-	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelFill$") and under(o, CreedUIBar) then fill = o end
+	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelGlass$") and under(o, CreedUIBar) then fill = o end
 end
-check(fill and fill.__vc and near(fill.__vc[3], 0.18) and fill.__vc[3] > fill.__vc[1], "the bar's glass tinted the mage's dark blue, as in the picture")
+check(fill and fill.__vc and near(fill.__vc[3], 0.95) and fill.__vc[3] > fill.__vc[1], "the bar's glass in the mage's blue")
 M.unit.player.class = nil
 M.Fire("PLAYER_ENTERING_WORLD")
 frames(5)

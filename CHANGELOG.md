@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.8
+- **The skill bar's inside in your class's color,** no longer near black: a glass in the class's tint with a soft light along its middle, a faint woven filigree and a brushed sheen (red for warriors, gold for paladins, green for hunters and druids, purple for rogues and warlocks, blue for mages and shamans, silver for priests).
+- **Emblems whole:** what reaches over the bar (the rogue's daggers, the druid's antlers, the hunter's bow) is no longer cut away.
+- **No loose bits:** the crests' flags (rogue, hunter, druid) and the rogue's smoke no longer leave little pieces floating beside them.
+
 ## 1.21.7
 - **The look is the class you start the run with.** Creed UI reads the run's hero class as the run begins (the game's character class isn't always the run's hero), and changes look with each new run. Until a run starts it wears the last run's class.
 - **The skill bar fits the screen:** its emblem and crest are smaller (their rings as tall as the bar) and sit on the bar's ends instead of reaching far past them.
