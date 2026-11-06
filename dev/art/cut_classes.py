@@ -319,6 +319,13 @@ if os.path.exists(FIRST):
     own = ndimage.binary_opening(lift.max(axis=2) > 0.09, iterations=1)    # no gaps filled between them
     own = np.clip(ndimage.gaussian_filter(own.astype(np.float64), 0.7 * K) * 1.2, 0, 1)
     alpha_all = np.maximum(glow_a, np.maximum(own, solid_a * ramp(np.hypot(xx - cx, yy - cy), r + 8 * K, r + 2 * K)))
-    cut("PanelEmblemShamanR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R, 0.06, r - 3 * K, -1)
+    # only the ring and its lower feathers (asked for: its top wing reached far over the bar, the star
+    # and sparks flew about): outside the ring, only what's under the line from 1000, 1004 to 1087,
+    # 1052, the star's and spark's rounds left out, the feathers' tips faded before the picture's edge
+    under = ramp(yy - (1006 * K + (xx - 1000 * K) * 48.0 / 87.0), -2 * K, 2 * K) * ramp(xx, cx + 26 * K, cx + 32 * K)
+    star = np.maximum(ramp(np.hypot(xx - 1047 * K, yy - 1029 * K), 17 * K, 20 * K),
+        ramp(np.hypot(xx - 1018 * K, yy - 1012 * K), 7 * K, 9 * K))
+    keep = keep * np.maximum(rk, under * star) * ramp(xx, cx + 126 * K, cx + 114 * K)
+    cut("PanelEmblemShamanR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R, 0.06, r - 3 * K, 0)
     alpha_all = whole
 print("wrote", OUT_BLP)
