@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.21.6"
+C.VERSION = "1.21.7"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -416,15 +416,15 @@ C.BRONZE = {
 -- the class's emblem, crest and rails (from the user's own picture) on the skill bar; the boss timer
 -- keeps its bronze (C.BRONZE) whatever the class.
 C.UI_THEMES = {
-	{ key = "warrior", name = "Warrior", emblem = "Warrior", fill = { 0.31, 0.15, 0.07 },
+	{ key = "warrior", name = "Warrior", emblem = "Warrior", fill = { 0.31, 0.13, 0.07 },
 		metal = { 0.80, 0.64, 0.46 },
 		title = { 0.92, 0.80, 0.64 }, rim = { 0.80, 0.64, 0.46 }, gem = { 0.92, 0.26, 0.18 },
 		glow = { 1.00, 0.55, 0.35 }, trough = { 0.08, 0.04, 0.03 }, mc = { 0.96, 0.82, 0.64 } },
-	{ key = "paladin", name = "Paladin", emblem = "Paladin", fill = { 0.30, 0.17, 0.04 },
+	{ key = "paladin", name = "Paladin", emblem = "Paladin", fill = { 0.31, 0.17, 0.04 },
 		metal = { 0.96, 0.62, 0.78 },
 		title = { 1.00, 0.82, 0.90 }, rim = { 0.96, 0.62, 0.78 }, gem = { 1.00, 0.85, 0.40 },
 		glow = { 1.00, 0.75, 0.88 }, trough = { 0.07, 0.03, 0.05 }, mc = { 1.00, 0.86, 0.93 } },
-	{ key = "hunter", name = "Hunter", emblem = "Hunter", fill = { 0.18, 0.26, 0.00 },
+	{ key = "hunter", name = "Hunter", emblem = "Hunter", fill = { 0.18, 0.26, 0.02 },
 		metal = { 0.64, 0.82, 0.42 },
 		title = { 0.82, 0.94, 0.62 }, rim = { 0.64, 0.82, 0.42 }, gem = { 0.56, 0.88, 0.30 },
 		glow = { 0.76, 0.96, 0.56 }, trough = { 0.03, 0.06, 0.02 }, mc = { 0.86, 0.97, 0.72 } },
@@ -432,7 +432,7 @@ C.UI_THEMES = {
 		metal = { 0.94, 0.88, 0.40 },
 		title = { 1.00, 0.97, 0.62 }, rim = { 0.94, 0.88, 0.40 }, gem = { 1.00, 0.94, 0.34 },
 		glow = { 1.00, 0.97, 0.56 }, trough = { 0.06, 0.06, 0.02 }, mc = { 1.00, 0.98, 0.72 } },
-	{ key = "priest", name = "Priest", emblem = "Priest", fill = { 0.11, 0.06, 0.06 },
+	{ key = "priest", name = "Priest", emblem = "Priest", fill = { 0.13, 0.06, 0.06 },
 		metal = { 0.84, 0.86, 0.92 },
 		title = { 0.97, 0.97, 1.00 }, rim = { 0.84, 0.86, 0.92 }, gem = { 0.90, 0.93, 1.00 },
 		glow = { 0.95, 0.96, 1.00 }, trough = { 0.05, 0.05, 0.07 }, mc = { 1.00, 1.00, 1.00 } },
@@ -462,16 +462,36 @@ local function FindTheme(key)
 	end
 end
 
--- the hero's class as a theme key; until the game says, the last class played (kept in the settings),
--- a warrior the very first time
+-- the hero's class as a theme key: the class of the hero this run was started with (read from the
+-- run's own loadout: its hero's classKey; asked for, as the game's character class needn't be the
+-- run's hero's), else the last run's (kept in the settings), else the game's class, else a warrior
+local function ClassKey(v)
+	if type(v) ~= "string" then return nil end
+	local _, _, word = string.find(string.lower(v), "(%a+)$")
+	return word and FindTheme(word) and word or nil
+end
 function C.HeroClass()
+	if C.runClass then return C.runClass end
+	local saved = CreedUIDB and ClassKey(CreedUIDB.heroClass)
+	if saved then return saved end
 	local _, class = UnitClass("player")
-	if class and class ~= "" and FindTheme(string.lower(class)) then
-		class = string.lower(class)
-		if CreedUIDB then CreedUIDB.heroClass = class end
-		return class
-	end
-	return CreedUIDB and FindTheme(CreedUIDB.heroClass or "") and CreedUIDB.heroClass or "warrior"
+	return ClassKey(class) or "warrior"
+end
+
+-- each run's hero class, read once its loadout is in (looked at every second until then)
+local classRun, classAsked = nil, 0
+function C.WatchRunClass(now)
+	if now - classAsked < 1 or type(AZS_GetMeterContext) ~= "function" or type(AZS_GetMeterLoadout) ~= "function" then return end
+	classAsked = now
+	local context = C.Call(AZS_GetMeterContext)
+	if type(context) ~= "table" or not context.runId or context.runId == classRun then return end
+	local l = C.Call(AZS_GetMeterLoadout, { apiVersion = 1, runId = context.runId })
+	local me = type(l) == "table" and type(l.actors) == "table" and l.actors[context.localOwnerId or l.ownerId or ""]
+	local class = type(me) == "table" and ClassKey(me.classKey)
+	if not class then return end
+	classRun, C.runClass = context.runId, class
+	if CreedUIDB then CreedUIDB.heroClass = class end
+	C.SetTheme("class")
 end
 
 -- puts on a class's theme ("class": the hero's) and recolors every part
@@ -929,12 +949,12 @@ C.PANEL_ROOM = 79
 -- Creed UI's gold, taken from the user's bar picture (dev/art/source/bar_reference.webp): borders and
 -- rims (0.91, 0.70, 0.30), titles and tooltip heads (0.98, 0.85, 0.52), panel metal (0.95, 0.79, 0.44)
 -- a class's emblem and crest (dev/art/cut_classes.py): 512x256 textures whose rails lie 110 of their
--- pixels apart, scaled so they lie on the panel's (76 apart); the emblem's middle is at 220 across its
--- picture and the crest's at 292, both on the line between the rails, put on the panel's two ends. Each
--- carries the picture's bar a little way in, fading out over the panel's own (painted to match)
-local EMBLEM_U = 76 / 110
+-- pixels apart; the emblem's middle is at 220 across its picture and the crest's at 292, on the line
+-- between the rails. Drawn at 0.85 of the panel's scale (asked for: the bar fit the screen), their rings
+-- as tall as the panel, their middles EMBLEM_IN in from its two ends
+local EMBLEM_U = 76 / 110 * 0.85
 local EMBLEM_W, EMBLEM_H = 512 * EMBLEM_U, 256 * EMBLEM_U
-local EMBLEM_L, EMBLEM_R = 220, 292
+local EMBLEM_L, EMBLEM_R, EMBLEM_IN = 220, 292, 24
 -- the class's rails (PanelRail<Class>T / B, 16 pixels tall round their line) at the same scale
 local RAIL_TH = 16 * 76 / 110
 
@@ -1001,7 +1021,8 @@ function C.Panel(frame, emblems)
 				t:SetTexture(C.ART .. "PanelEmblem" .. emblem .. ((i == 1) and "L" or "R"))
 				t:SetWidth(EMBLEM_W)
 				t:SetHeight(EMBLEM_H)
-				t:SetPoint("TOPLEFT", frame, side, -((i == 1) and EMBLEM_L or EMBLEM_R) * EMBLEM_U, EMBLEM_H / 2)
+				local x = (i == 1) and (EMBLEM_IN - EMBLEM_L * EMBLEM_U) or (-EMBLEM_IN - EMBLEM_R * EMBLEM_U)
+				t:SetPoint("TOPLEFT", frame, side, x, EMBLEM_H / 2)
 			end
 		end
 		-- where the left end's art begins (the chat keeps clear of it): the emblem's round (about 70 of
@@ -1734,10 +1755,14 @@ local function GuardGameMenu()
 	end)
 end
 C.OnInit(function() pcall(GuardGameMenu) end)
--- the theme is the hero's class (1.21.4, asked for, in place of a choice in the options): read as the
--- addon starts and again each time the hero enters the world (the bronze until the class is known)
+-- the theme is the hero's class (1.21.4, asked for, in place of a choice in the options): put on as the
+-- addon starts and each time the hero enters the world, and as each run's hero class comes in (1.21.7)
 C.OnInit(function() C.SetTheme("class") end)
 C.OnWorld(function() C.SetTheme("class") end)
+do
+	local watch = CreateFrame("Frame", "CreedUIClassWatch", UIParent)
+	watch:SetScript("OnUpdate", function() pcall(C.WatchRunClass, GetTime()) end)
+end
 
 -- is the addon this part grew out of still running? then that part stays off
 function C.OldAddon(name)

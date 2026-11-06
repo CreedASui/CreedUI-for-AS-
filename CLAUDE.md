@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.21.6**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.21.7**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -142,19 +142,20 @@ README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two
 - **The gold** comes from that bar picture: panel metal (0.95, 0.79, 0.44), titles and tooltip heads
   (0.98, 0.85, 0.52), borders and rims (0.91, 0.70, 0.30). Still used for gold text and the timer.
 - **The UI is the hero's class (1.21.4, asked for: no choice, no bronze look).** `C.UI_THEMES` (the nine
-  classes: metal, title, rim, gem, glow, trough, mc, optional `xp`), `C.SetTheme("class")` on init and
-  on each world entry; `C.HeroClass()` is `UnitClass("player")`, else the last one seen
-  (`CreedUIDB.heroClass`), else warrior. `C.Pal()` is the timer's zone palette with the class's metal
-  over it; `C.PanelMetal` is the class's `metal`. The skill bar (`C.Panel(frame, true)`, `p.emblems`,
-  `p.PlaceEnds`): the class's emblem (`Art/PanelEmblem<Class>L`, 512x256, its middle on the panel's left
-  end) and crest (`...R`, its middle on the right end), both at the picture's own scale (rails 110 px apart
-  in the texture, 76 on the panel); each carries the picture's bar a little way in, fading out over the
-  panel, whose rails (`Art/PanelRail<Class>T/B`) and glass tint (the theme's `fill`) are the picture's, so
-  no seam shows (1.21.5, asked for: new designs, `dev/art/source/class_bars.webp`, 1740x606; on short bars
-  the picture's bar is cut round the ring; nothing above or below the bar is cut; 1.21.6: the shaman's left
-  emblem is the totem of the first picture, `source/class_bars_first.webp`, asked for). The XP bar is gold.
-  The boss timer reads `C.BRONZE` and stays bronze. `C.THEMES` and
-  `C.themeKey` are the timer's own (zones).
+  classes: metal, title, rim, gem, glow, trough, mc, `fill`). `C.SetTheme("class")` runs on init, on each
+  world entry, and as each run's hero class comes in (`C.WatchRunClass`, 1.21.7: the run's loadout's
+  `actors[context.localOwnerId].classKey`; the character's class needn't be the run's hero's).
+  `C.HeroClass()`: that, else the last run's (`CreedUIDB.heroClass`), else `UnitClass("player")`, else
+  warrior. `C.Pal()` is the timer's zone palette with the class's metal over it; `C.PanelMetal` is the
+  class's `metal`. The skill bar (`C.Panel(frame, true)`, `p.emblems`, `p.PlaceEnds`): the class's emblem
+  (`Art/PanelEmblem<Class>L`, 512x256) and crest (`...R`), drawn at 0.85 of the panel's scale with their
+  middles 24 in from its ends, their rings as tall as the panel, cut at their rings inside the bar's band
+  (nothing above or below it is cut); the panel's rails (`Art/PanelRail<Class>T/B`) and glass tint (the
+  theme's `fill`) are the picture's, so no seam shows. Source: `dev/art/source/class_bars.webp` (1.21.5,
+  asked for); the shaman's left emblem from `source/class_bars_first.webp` (1.21.6, asked for). Cut by
+  `dev/art/cut_classes.py`, from 4x EDSR upscales of the pictures when present (`<name>_x4.png`, made
+  by `dev/art/upscale.py`, not kept in the repository; 1.21.7, asked for: sharper). The XP bar is gold.
+  The boss timer reads `C.BRONZE` and stays bronze. `C.THEMES` and `C.themeKey` are the timer's own.
 - The look: dark glass, a gold rail, the timer's metal, diamonds on corners (`C.Panel`). Smooth,
   "eye candy", but calm.
 - **Parts:** every part registers with `C.RegisterPart` (key, name, note, get, set; optional scale),
