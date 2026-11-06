@@ -113,4 +113,21 @@ for i, (cls, top, bot) in enumerate(ROWS):
     keep_r = np.maximum(ramp(xx, RIGHT_X - 6 * s, RIGHT_X + 10 * s), ramp(np.hypot(xx - RIGHT_X, yy - mid - 8 * s), 50 * s, 38 * s))
     solid_r = np.maximum(ramp(xx, RIGHT_X, RIGHT_X + 10 * s), ramp(np.hypot(xx - RIGHT_X, yy - mid - 8 * s), 44 * s, 36 * s))
     cut("PanelEmblem" + cls + "R", mid, top_lim, bot_lim, RIGHT_X, ANCHOR_R, keep_r, solid_r, s, (34 * s, mid + 8 * s))
+
+# the rails (1.21.4, asked for: the bar redrawn to fit the emblems): each row's top and bottom rail as
+# the picture paints it (a bright line with its glow, in the class's colors), taken across the bar's
+# clear middle and averaged into one smooth line, RAIL_H texture pixels tall round it; tiled along the
+# panel (PanelRail<Class>T / B, 64 x 16)
+RAIL_H, RAIL_W = 16, 64
+for cls, top, bot in ROWS:
+    s = (bot - top) / RAIL
+    for side, line in (("T", top), ("B", bot)):
+        ys = line + (np.arange(RAIL_H) + 0.5 - RAIL_H / 2) * s
+        band_l = np.array([ndimage.map_coordinates(lift[..., i], [np.repeat(ys, 251), np.tile(np.arange(600, 851), RAIL_H)], order=1).reshape(RAIL_H, 251) for i in range(3)])
+        prof = np.median(band_l, axis=2).T          # RAIL_H x 3, the line's profile across it
+        a = np.clip(prof.max(axis=1) / 0.32, 0, 1)
+        with np.errstate(invalid="ignore", divide="ignore"):
+            c = np.where(a[:, None] > 1e-3, prof / np.maximum(a, 1e-3)[:, None], 0)
+        rgba = np.dstack([np.repeat(np.clip(c, 0, 1)[:, None, :], RAIL_W, axis=1), np.repeat(a[:, None], RAIL_W, axis=1)])
+        write_blp("PanelRail" + cls + side, rgba)
 print("wrote", OUT_BLP)
