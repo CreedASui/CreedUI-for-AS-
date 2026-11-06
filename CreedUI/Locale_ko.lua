@@ -505,4 +505,12 @@ CreedUI.AddLanguage("ko", "한국어", CreedUI.FACE_CJK, {
 	["Mage"] = "마법사",
 	["Warlock"] = "흑마법사",
 	["Druid"] = "드루이드",
+	["Stats"] = "능력치",
+	["Vs Elites"] = "정예 대상",
+	["Vs Controlled"] = "제어 대상",
+	["Shielded"] = "보호막 중",
+	["Pick the stats to show"] = "표시할 능력치 선택",
+	["Hide the stats window (Creed UI Options brings it back)"] = "능력치 창 숨기기 (Creed UI 설정에서 되돌림)",
+	["the stats window stopped after an error: "] = "능력치 창이 오류로 멈췄습니다: ",
+	["Your run's stats at a glance, grouped (Offense, Survival, Area and DoTs, Run); a change flashes green going up, red going down. The + in its head picks the stats it shows."] = "이번 판의 능력치를 한눈에, 묶어서 (공격, 생존, 범위와 지속 피해, 판); 오르면 초록, 내리면 빨강으로 빛납니다. 머리의 + 로 표시할 능력치를 고릅니다.",
 })

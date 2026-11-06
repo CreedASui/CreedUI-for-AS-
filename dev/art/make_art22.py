@@ -2,8 +2,8 @@
 """Creed UI's class glass (original, 1.21.8, asked for: "a design with the colour of the class instead
 of pitch black"): the skill bar's inside, in grey to be tinted in each class's color, as the panel's
 fill. Darker toward its rails, a soft light along its middle, a faint flowing filigree of two
-interlaced ribbons with little diamonds where they cross, and a brushed sheen. BLP2 + PNG, 1024x128
-(the bar's own shape, about 9 to 1).
+interlaced ribbons with little diamonds where they cross, and a brushed sheen. BLP2 + PNG, 512x64
+(the bar's own shape, about 9 to 1; 512 wide at most: the game shows nothing for a 1024-wide texture).
 
     python3 make_art22.py <blp dir> <png dir>
 """
@@ -18,7 +18,7 @@ from scipy import ndimage
 OUT_BLP, OUT_PNG = sys.argv[1], sys.argv[2]
 os.makedirs(OUT_BLP, exist_ok=True)
 os.makedirs(OUT_PNG, exist_ok=True)
-W, H, SS = 1024, 128, 2
+W, H, SS = 512, 64, 4
 
 
 def write_blp(name, rgba):

@@ -36,6 +36,7 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 - **Damage numbers:** calm and readable, in four motions (Smooth, Fountain, Rise, Impact) and ten fonts, with a backdrop behind crits if you like (Fire, Frost, Arcane, Holy, Shadow, Storm); a spell hitting a crowd adds up into one number.
 - **Damage meter:** Damage Done, Healing Done, Boss Damage, Party DPS (with each player's best skill) and Damage Taken; every pet's skills on one Pet line.
 - **Luck medallion:** your luck and the odds of a Rare, Epic or Legendary card.
+- **Stats window:** your run's stats grouped (Offense, Survival, Area and DoTs, Run), the ones you pick, glowing green or red as they change.
 
 **Everything else**
 - **Minimap:** a metal ring, your local time, the caches and the guardians' lairs.

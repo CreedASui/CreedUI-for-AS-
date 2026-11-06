@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.22.0
+- **Fix: the skill bar's class glass showed as a flat bright color in game** (its texture was too big for the game); now it shows its design.
+- **New: the Stats window.** Your run's stats at a glance, in Creed UI's glass: grouped as Offense, Survival, Area and DoTs, and Run, each under a fine header in its own color. A stat that changes glows green as it rises and red as it falls. The **+** in its head opens the list of every stat (all 29 the game keeps: damage, crit, crit damage, haste, echo, armor, lifesteal, execute, pet damage, speed, luck...) to tick the ones it shows; the **x** hides it, and Creed UI Options brings it back. Drag it to move it, and size it in the options.
+
 ## 1.21.8
 - **The skill bar's inside in your class's color,** no longer near black: a glass in the class's tint with a soft light along its middle, a faint woven filigree and a brushed sheen (red for warriors, gold for paladins, green for hunters and druids, purple for rogues and warlocks, blue for mages and shamans, silver for priests).
 - **Emblems whole:** what reaches over the bar (the rogue's daggers, the druid's antlers, the hunter's bow) is no longer cut away.
