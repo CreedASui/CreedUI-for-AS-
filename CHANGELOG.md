@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.21.5
+- **New class designs on the skill bar, blended in as in the designs:** every class has a new emblem on the bar's left end and crest on its right, and the bar runs naturally into them: the emblem carries the design's own bar a little way in, fading softly into Creed UI's bar, which is now painted as the design's (its gold rail lines and its inside in the class's tint: red-brown for warriors, olive for hunters, gold-brown for paladins, plum for rogues, deep blue for mages, green for druids, night blue for shamans, dark for priests, violet for warlocks). Nothing is cropped any more: everything above and below the bar (the rogue's daggers, wings, capes, horns) stays whole.
+- **The XP bar is gold again for every class,** as in the designs.
+
 ## 1.21.4
 - **The UI is your class's, always.** No more theme to pick and no more bronze look (the skill bar's dragons are gone): Creed UI wears the class of the hero you play, its metal on every part and its emblem and crest on the skill bar. (The boss timer keeps its bronze.)
 - **The skill bar redrawn to fit the class designs:** its rails are each class's own (a bright line with its glow, as in the designs), its glass near black, and its XP bar in the class's color (green for hunters and druids, blue for mages and shamans, violet for warlocks, gold for the rest).
