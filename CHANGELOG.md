@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.24.2
+- **Fix: the Level Up! button, the loot pop-up, the pet bar, the run summary and the talent window now follow your class's colors.** They kept the colors of the class they were first drawn in (a warrior's run could show a mage's blue Level Up! button).
+
 ## 1.24.1
 - **Shaman: a tidier crest:** just the lightning in its gold ring with its feathers sweeping down; the top wing that reached far over the bar, the flying crystal and the sparks are gone.
 

@@ -2656,6 +2656,23 @@ do
 	M.storedLevels = 2
 	frames(20)
 	check(M.Visible(CreedUILevelUps) and findText(CreedUILevelUps, "^Level Up!$") and findText(CreedUILevelUps, "^2$"), "two waiting: Level Up! with a 2")
+	-- its frame in the class's metal, and a new class recolors it (it stayed in the class it was made in)
+	local function railOf(f)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelRailT$") and o.__parent == f then return o end
+		end
+	end
+	local rail = railOf(CreedUILevelUps)
+	local mr = CreedUI.PanelMetal(CreedUI.Pal())
+	check(rail and rail.__vc and math.abs(rail.__vc[1] - mr) < 0.01, "the Level Up! button's frame in the class's metal")
+	CreedUI.SetTheme("mage")
+	frames(3)
+	check(rail and math.abs(rail.__vc[1] - 0.48) < 0.01 and math.abs(rail.__vc[3] - 0.95) < 0.01, "a mage's run: the frame turns the mage's blue")
+	CreedUI.SetTheme("warrior")
+	frames(3)
+	check(rail and math.abs(rail.__vc[1] - 0.80) < 0.01 and math.abs(rail.__vc[3] - 0.46) < 0.01, "a warrior's: the warrior's bronze, no longer blue")
+	CreedUI.SetTheme("class")
+	frames(3)
 	local glow = CreedUILevelUps.glow
 	frames(20)
 	local calm = glow.__alpha

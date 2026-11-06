@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.24.1"
+C.VERSION = "1.24.2"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -958,8 +958,13 @@ local EMBLEM_L, EMBLEM_R, EMBLEM_IN = 220, 292, 24
 -- the class's rails (PanelRail<Class>T / B, 16 pixels tall round their line) at the same scale
 local RAIL_TH = 16 * 76 / 110
 
+-- every panel, so a new class recolors them all (1.24.2: the Level Up! button, the loot pop-up, the
+-- pet bar, the summary and the talent window kept the class they were made in)
+C.panels = {}
+
 function C.Panel(frame, emblems)
 	local p = { frame = frame, metal = {} }
+	table.insert(C.panels, p)
 	p.fill = C.Tex(frame, "BACKGROUND", C.ART .. "PanelFill")
 	p.fill:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
 	p.fill:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
@@ -1042,6 +1047,7 @@ function C.PanelMetal(pal)
 end
 
 function C.PanelTheme(p, pal)
+	p.themed = true
 	local tr = pal.trough
 	local mr, mg, mb = C.PanelMetal(pal)
 	for i = 1, table.getn(p.metal) do p.metal[i]:SetVertexColor(mr, mg, mb) end
@@ -1771,7 +1777,17 @@ C.OnInit(function() if CreedUIDB then CreedUIDB.music = nil end end)
 C.OnWorld(function() C.SetTheme("class") end)
 do
 	local watch = CreateFrame("Frame", "CreedUIClassWatch", UIParent)
-	watch:SetScript("OnUpdate", function() pcall(C.WatchRunClass, GetTime()) end)
+	local stamp = C.palStamp
+	watch:SetScript("OnUpdate", function()
+		pcall(C.WatchRunClass, GetTime())
+		-- a new class (or zone palette): every panel already dressed takes its colors
+		if stamp ~= C.palStamp then
+			stamp = C.palStamp
+			for i = 1, table.getn(C.panels) do
+				if C.panels[i].themed then pcall(C.PanelTheme, C.panels[i], C.Pal()) end
+			end
+		end
+	end)
 end
 
 -- is the addon this part grew out of still running? then that part stays off
