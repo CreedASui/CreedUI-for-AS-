@@ -416,15 +416,15 @@ C.BRONZE = {
 -- the class's emblem, crest and rails (from the user's own picture) on the skill bar; the boss timer
 -- keeps its bronze (C.BRONZE) whatever the class.
 C.UI_THEMES = {
-	{ key = "warrior", name = "Warrior", emblem = "Warrior", fill = { 0.31, 0.15, 0.07 },
+	{ key = "warrior", name = "Warrior", emblem = "Warrior", fill = { 0.31, 0.13, 0.07 },
 		metal = { 0.80, 0.64, 0.46 },
 		title = { 0.92, 0.80, 0.64 }, rim = { 0.80, 0.64, 0.46 }, gem = { 0.92, 0.26, 0.18 },
 		glow = { 1.00, 0.55, 0.35 }, trough = { 0.08, 0.04, 0.03 }, mc = { 0.96, 0.82, 0.64 } },
-	{ key = "paladin", name = "Paladin", emblem = "Paladin", fill = { 0.30, 0.17, 0.04 },
+	{ key = "paladin", name = "Paladin", emblem = "Paladin", fill = { 0.31, 0.17, 0.04 },
 		metal = { 0.96, 0.62, 0.78 },
 		title = { 1.00, 0.82, 0.90 }, rim = { 0.96, 0.62, 0.78 }, gem = { 1.00, 0.85, 0.40 },
 		glow = { 1.00, 0.75, 0.88 }, trough = { 0.07, 0.03, 0.05 }, mc = { 1.00, 0.86, 0.93 } },
-	{ key = "hunter", name = "Hunter", emblem = "Hunter", fill = { 0.18, 0.26, 0.00 },
+	{ key = "hunter", name = "Hunter", emblem = "Hunter", fill = { 0.18, 0.26, 0.02 },
 		metal = { 0.64, 0.82, 0.42 },
 		title = { 0.82, 0.94, 0.62 }, rim = { 0.64, 0.82, 0.42 }, gem = { 0.56, 0.88, 0.30 },
 		glow = { 0.76, 0.96, 0.56 }, trough = { 0.03, 0.06, 0.02 }, mc = { 0.86, 0.97, 0.72 } },
@@ -432,7 +432,7 @@ C.UI_THEMES = {
 		metal = { 0.94, 0.88, 0.40 },
 		title = { 1.00, 0.97, 0.62 }, rim = { 0.94, 0.88, 0.40 }, gem = { 1.00, 0.94, 0.34 },
 		glow = { 1.00, 0.97, 0.56 }, trough = { 0.06, 0.06, 0.02 }, mc = { 1.00, 0.98, 0.72 } },
-	{ key = "priest", name = "Priest", emblem = "Priest", fill = { 0.11, 0.06, 0.06 },
+	{ key = "priest", name = "Priest", emblem = "Priest", fill = { 0.13, 0.06, 0.06 },
 		metal = { 0.84, 0.86, 0.92 },
 		title = { 0.97, 0.97, 1.00 }, rim = { 0.84, 0.86, 0.92 }, gem = { 0.90, 0.93, 1.00 },
 		glow = { 0.95, 0.96, 1.00 }, trough = { 0.05, 0.05, 0.07 }, mc = { 1.00, 1.00, 1.00 } },

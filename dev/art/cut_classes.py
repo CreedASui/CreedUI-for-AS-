@@ -108,7 +108,15 @@ def cut(name, cx, mid, s, keep, anchor_x):
     pa = ndimage.map_coordinates(pre(a), coords, order=1, mode="constant", cval=0)
     pc = np.dstack([ndimage.map_coordinates(pre(col[..., i] * a), coords, order=1, mode="constant", cval=0) for i in range(3)])
     with np.errstate(invalid="ignore", divide="ignore"):
-        c = np.where(pa[..., None] > 1e-4, pc / pa[..., None], 0)
+        c = np.where(pa[..., None] > 1e-4, pc / np.maximum(pa, 1e-4)[..., None], 0)
+    # no stray bits: little pieces left on their own by the cut (an antler's tip, a dagger's) go
+    lab, n = ndimage.label(pa > 0.12)
+    if n > 1:
+        sizes = ndimage.sum(np.ones_like(pa), lab, index=np.arange(1, n + 1))
+        big = np.zeros(n + 1, dtype=bool)
+        big[1:] = sizes >= max(120, 0.02 * sizes.max())
+        keepm = ndimage.binary_dilation(big[lab], iterations=2) | (pa <= 0.12) & ndimage.binary_dilation(big[lab], iterations=4)
+        pa = pa * ndimage.gaussian_filter(keepm.astype(np.float64), 0.6)
     write_blp(name, np.dstack([np.clip(c, 0, 1), np.clip(pa, 0, 1)]))
 
 
@@ -134,14 +142,18 @@ for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
     # (faded out by the picture's first slot, and within Creed UI's room at the bar's end: 118 texture px)
     end_l, start_l = Fade(gap_l, s)
     ring = ramp(np.hypot(xx - lx, yy - mid), rg + 3 * K, rg)
-    inner_l = ramp(xx, lx + end_l, lx + start_l) if end_l else np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ring)
+    # (the picture's own rail lines left out there: they'd double Creed UI's)
+    norail = ramp(np.abs(yy - top), 2 * K, 5 * K) * ramp(np.abs(yy - bot), 2 * K, 5 * K)
+    near_ring = ramp(np.hypot(xx - lx, yy - mid), rg + 20 * K, rg + 4 * K) * norail
+    inner_l = ramp(xx, lx + end_l, lx + start_l) if end_l else np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), np.maximum(ring, near_ring))
     keep_l = keep_l * np.maximum(1 - band, inner_l)
     cut("PanelEmblem" + cls + "L", lx, mid, s, keep_l, ANCHOR_L)
     out_r = OUTER.get(cls + "R", 140) * s
     keep_r = near * ramp(xx, rx + out_r, rx + out_r - 8 * K) * ramp(xx, rx - 150 * s, rx - 140 * s)
     end_r, start_r = Fade(gap_r, s)
     ring = ramp(np.hypot(xx - rx, yy - mid), rg + 3 * K, rg)
-    inner_r = ramp(xx, rx - end_r, rx - start_r) if end_r else np.maximum(ramp(xx, rx - 2 * K, rx + 2 * K), ring)
+    near_ring = ramp(np.hypot(xx - rx, yy - mid), rg + 20 * K, rg + 4 * K) * norail
+    inner_r = ramp(xx, rx - end_r, rx - start_r) if end_r else np.maximum(ramp(xx, rx - 2 * K, rx + 2 * K), np.maximum(ring, near_ring))
     keep_r = keep_r * np.maximum(1 - band, inner_r)
     cut("PanelEmblem" + cls + "R", rx, mid, s, keep_r, ANCHOR_R)
     # the rails: each one's line and glow, taken across the bar's clear middle, averaged into one
@@ -197,5 +209,7 @@ if os.path.exists(FIRST):
     # (left of the ring only the ring itself: the first picture's bracket and its diamonds stay behind)
     keep = keep * np.maximum(ramp(xx, cx - 14 * K, cx - 10 * K), ramp(np.hypot(xx - cx, yy - cy), r + 3 * K, r))
     keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, cx - 2 * K, cx + 2 * K), ramp(np.hypot(xx - cx, yy - cy), r + 3 * K, r)))
+    # (and the stub of that bar's top rail and spike over the ring, 1104 to 1122: asked for)
+    keep = keep * np.maximum(ramp(np.abs(yy - 1113 * K), 6 * K, 9 * K), ramp(xx, cx + 16 * K, cx + 22 * K))
     cut("PanelEmblemPriestR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R)
 print("wrote", OUT_BLP)
