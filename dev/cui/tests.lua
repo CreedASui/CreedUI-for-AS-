@@ -194,6 +194,23 @@ frames(20)
 check(visibleAlpha(CreedUITarget) > 0.9, "the target frame shows")
 check(findText(CreedUITarget, "^640 / 1,600$") ~= nil, "the target's real health (from the game's run data): " .. table.concat(textsUnder(CreedUITarget), " | "))
 check(findText(CreedUITarget, "^Elite$") ~= nil, "its kind")
+-- a boss targeted wears the game's gold elite dragon round its portrait; a guardian the silver one
+local function dragon(file)
+	local n = 0
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, file .. "$") and under(o, CreedUITarget) and M.Visible(o) then n = n + 1 end
+	end
+	return n
+end
+check(dragon("UI%-TargetingFrame%-Elite") == 0 and dragon("UI%-TargetingFrame%-Rare") == 0, "an elite pack mob: no dragon")
+AZS_TARGET = { kind = "boss", id = 9, name = "Kirtonos the Herald", hp = 9000, hpm = 10000, state = 0 }
+M.unit.target = { exists = true, name = "Kirtonos the Herald", hp = 9000, hpm = 10000, level = 63, hostile = true }
+frames(10)
+check(dragon("UI%-TargetingFrame%-Elite") == 3, "a boss: the gold elite dragon round its portrait (three pieces)")
+AZS_TARGET = { kind = "guardian", id = 10, name = "Risen Construct", hp = 5000, hpm = 6000, state = 0 }
+M.unit.target = { exists = true, name = "Risen Construct", hp = 5000, hpm = 6000, level = 62, hostile = true }
+frames(10)
+check(dragon("UI%-TargetingFrame%-Rare") == 3 and dragon("UI%-TargetingFrame%-Elite") == 0, "a guardian: the silver dragon")
 M.unit.target = { exists = false }
 AZS_TARGET = { kind = "none" }
 M.Fire("PLAYER_TARGET_CHANGED")
@@ -284,7 +301,7 @@ for _, o in ipairs(M.All()) do
 		for _, k in ipairs(M.All()) do
 			if k.__parent == o and k.__kind == "FontString" then label = k.__text end
 		end
-		if label ~= "x" and not under(o, CreedUILanguageMenu) then -- the languages have a test of their own
+		if label ~= "x" and not under(o, CreedUILanguageMenu) and not under(o, CreedUIThemeMenu) then -- the languages and themes have tests of their own
 			this = o
 			o:Click()
 			clicked = clicked + 1
@@ -296,6 +313,42 @@ for _, o in ipairs(M.All()) do
 end
 check(clicked >= 14, "every hub control works (" .. clicked .. ")")
 problems("hub")
+-- the themes: a class's metal on every part, the dragons cast in it, the timer still bronze
+local function near(a, b) return math.abs(a - b) < 0.01 end
+check(near(CreedUI.Pal().rim[1], 0.95) and CreedUI.uiTheme == "bronze", "the bronze theme to begin with")
+local function themeButton(key)
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Button" and under(o, CreedUIThemeMenu) and o.key == key then return o end
+	end
+end
+check(themeButton("mage") ~= nil and themeButton("bronze") ~= nil and themeButton("class") ~= nil, "the theme list has the classes, bronze and your class")
+this = themeButton("mage")
+themeButton("mage"):Click()
+frames(5)
+local rim = CreedUI.Pal().rim
+check(near(rim[1], 0.48) and near(rim[3], 0.95), "Mage: the parts' rims turn frost blue")
+check(CreedUIDB.theme == "mage", "the theme is kept in the settings")
+check(near(CreedUI.BRONZE.rim[1], 0.95), "the boss timer keeps its bronze")
+local desat = 0
+for _, o in ipairs(M.All()) do
+	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelDragon$") and o.__desat then desat = desat + 1 end
+end
+check(desat >= 2, "the bar's dragons are cast in the mage's metal (" .. desat .. ")")
+check(findText(CreedUIOptions, "^Theme: Mage$") ~= nil, "the hub names the theme")
+M.Slash("theme class")
+frames(5)
+check(CreedUI.uiTheme == "class" and near(CreedUI.Pal().rim[1], 0.94), "your class (a rogue): the rogue's yellow metal")
+M.Slash("theme nonsense")
+check(CreedUI.uiTheme == "class", "an unknown theme changes nothing")
+M.Slash("theme bronze")
+frames(5)
+check(near(CreedUI.Pal().rim[1], 0.95), "back to bronze")
+desat = 0
+for _, o in ipairs(M.All()) do
+	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelDragon$") and o.__desat then desat = desat + 1 end
+end
+check(desat == 0, "the dragons in their own gold again")
+problems("themes")
 
 ------------------------------------------------------------------ 8. moving frames
 M.Slash("move")

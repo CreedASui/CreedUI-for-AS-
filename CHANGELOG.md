@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.21.0
+- **UI themes for every class.** Pick one in the options (**Theme**, beside Language) or with `/creed theme <name>`: **Bronze** (as before), **Your class** (follows the hero you play), or **Warrior**, **Paladin**, **Hunter**, **Rogue**, **Priest**, **Shaman**, **Mage**, **Warlock** or **Druid**. Each recolors every part's metal (rims, rails, titles, gems, glows and the panels' glass) in its class's color, and casts the skill bar's dragons in it. The boss timer keeps its bronze.
+- **Target frame: the game's own dragons.** A boss you target wears the gold elite dragon round its portrait, a guardian the silver rare one.
+
 ## 1.20.5
 - **Loot pop-up: Ahn'Qiraj and Naxxramas gear in purple,** as in game; only their weapons are legendary orange.
 
