@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.21.3"
+C.VERSION = "1.21.4"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -411,20 +411,19 @@ C.BRONZE = {
 	title = { 0.98, 0.85, 0.52 }, rim = { 0.95, 0.79, 0.44 }, gem = { 1.00, 0.78, 0.32 },
 	glow = { 1.00, 0.80, 0.45 }, trough = { 0.07, 0.05, 0.03 }, mc = { 1.00, 0.88, 0.60 },
 }
--- The UI's theme (1.21.0, asked for): the bronze gold, or a class's own metal in its class color,
--- picked in the options. It recolors every part's rims, titles, gems, glows and glass, and puts the
--- class's emblem and crest (from the user's own picture) on the skill bar's ends;
--- the boss timer keeps the bronze (C.BRONZE) whatever the theme. "class" follows the hero's class.
+-- The UI's theme: the hero's class, always (1.21.4, asked for: no choice, and no bronze look any
+-- more). It recolors every part's rims, titles, gems, glows and glass in the class's metal, and puts
+-- the class's emblem, crest and rails (from the user's own picture) on the skill bar; the boss timer
+-- keeps its bronze (C.BRONZE) whatever the class.
 C.UI_THEMES = {
-	{ key = "bronze", name = "Bronze" },
-	{ key = "class", name = "Your class" },
 	{ key = "warrior", name = "Warrior", emblem = "Warrior", metal = { 0.80, 0.64, 0.46 },
 		title = { 0.92, 0.80, 0.64 }, rim = { 0.80, 0.64, 0.46 }, gem = { 0.92, 0.26, 0.18 },
 		glow = { 1.00, 0.55, 0.35 }, trough = { 0.08, 0.04, 0.03 }, mc = { 0.96, 0.82, 0.64 } },
 	{ key = "paladin", name = "Paladin", emblem = "Paladin", metal = { 0.96, 0.62, 0.78 },
 		title = { 1.00, 0.82, 0.90 }, rim = { 0.96, 0.62, 0.78 }, gem = { 1.00, 0.85, 0.40 },
 		glow = { 1.00, 0.75, 0.88 }, trough = { 0.07, 0.03, 0.05 }, mc = { 1.00, 0.86, 0.93 } },
-	{ key = "hunter", name = "Hunter", emblem = "Hunter", metal = { 0.64, 0.82, 0.42 },
+	{ key = "hunter", name = "Hunter", emblem = "Hunter", xp = { { 0.08, 0.28, 0.04 }, { 0.30, 0.78, 0.18 }, { 0.70, 1.00, 0.50 } },
+		metal = { 0.64, 0.82, 0.42 },
 		title = { 0.82, 0.94, 0.62 }, rim = { 0.64, 0.82, 0.42 }, gem = { 0.56, 0.88, 0.30 },
 		glow = { 0.76, 0.96, 0.56 }, trough = { 0.03, 0.06, 0.02 }, mc = { 0.86, 0.97, 0.72 } },
 	{ key = "rogue", name = "Rogue", emblem = "Rogue", metal = { 0.94, 0.88, 0.40 },
@@ -433,21 +432,25 @@ C.UI_THEMES = {
 	{ key = "priest", name = "Priest", emblem = "Priest", metal = { 0.84, 0.86, 0.92 },
 		title = { 0.97, 0.97, 1.00 }, rim = { 0.84, 0.86, 0.92 }, gem = { 0.90, 0.93, 1.00 },
 		glow = { 0.95, 0.96, 1.00 }, trough = { 0.05, 0.05, 0.07 }, mc = { 1.00, 1.00, 1.00 } },
-	{ key = "shaman", name = "Shaman", emblem = "Shaman", metal = { 0.30, 0.58, 0.95 },
+	{ key = "shaman", name = "Shaman", emblem = "Shaman", xp = { { 0.02, 0.18, 0.35 }, { 0.15, 0.62, 0.95 }, { 0.60, 0.92, 1.00 } },
+		metal = { 0.30, 0.58, 0.95 },
 		title = { 0.58, 0.82, 1.00 }, rim = { 0.30, 0.58, 0.95 }, gem = { 0.32, 0.66, 1.00 },
 		glow = { 0.46, 0.76, 1.00 }, trough = { 0.02, 0.04, 0.08 }, mc = { 0.66, 0.86, 1.00 } },
-	{ key = "mage", name = "Mage", emblem = "Mage", metal = { 0.48, 0.82, 0.95 },
+	{ key = "mage", name = "Mage", emblem = "Mage", xp = { { 0.02, 0.18, 0.35 }, { 0.15, 0.62, 0.95 }, { 0.60, 0.92, 1.00 } },
+		metal = { 0.48, 0.82, 0.95 },
 		title = { 0.72, 0.93, 1.00 }, rim = { 0.48, 0.82, 0.95 }, gem = { 0.56, 0.88, 1.00 },
 		glow = { 0.66, 0.92, 1.00 }, trough = { 0.02, 0.05, 0.07 }, mc = { 0.80, 0.95, 1.00 } },
-	{ key = "warlock", name = "Warlock", emblem = "Warlock", metal = { 0.64, 0.55, 0.86 },
+	{ key = "warlock", name = "Warlock", emblem = "Warlock", xp = { { 0.18, 0.05, 0.30 }, { 0.60, 0.30, 0.92 }, { 0.88, 0.70, 1.00 } },
+		metal = { 0.64, 0.55, 0.86 },
 		title = { 0.84, 0.76, 1.00 }, rim = { 0.64, 0.55, 0.86 }, gem = { 0.64, 0.42, 0.96 },
 		glow = { 0.76, 0.64, 1.00 }, trough = { 0.04, 0.03, 0.07 }, mc = { 0.86, 0.80, 1.00 } },
-	{ key = "druid", name = "Druid", emblem = "Druid", metal = { 1.00, 0.58, 0.16 },
+	{ key = "druid", name = "Druid", emblem = "Druid", xp = { { 0.08, 0.28, 0.04 }, { 0.30, 0.78, 0.18 }, { 0.70, 1.00, 0.50 } },
+		metal = { 1.00, 0.58, 0.16 },
 		title = { 1.00, 0.76, 0.44 }, rim = { 1.00, 0.58, 0.16 }, gem = { 1.00, 0.56, 0.10 },
 		glow = { 1.00, 0.68, 0.30 }, trough = { 0.07, 0.04, 0.01 }, mc = { 1.00, 0.82, 0.52 } },
 }
-C.UI_THEME = C.BRONZE
-C.uiTheme = "bronze"
+C.UI_THEME = C.UI_THEMES[1]
+C.uiTheme = "warrior"
 
 local function FindTheme(key)
 	for i = 1, table.getn(C.UI_THEMES) do
@@ -455,33 +458,29 @@ local function FindTheme(key)
 	end
 end
 
--- the theme a key shows: "class" is the hero's class (bronze for a class without one)
-function C.ResolveTheme(key)
-	if key == "class" then
-		local _, class = UnitClass("player")
-		key = class and string.lower(class) or "bronze"
+-- the hero's class as a theme key; until the game says, the last class played (kept in the settings),
+-- a warrior the very first time
+function C.HeroClass()
+	local _, class = UnitClass("player")
+	if class and class ~= "" and FindTheme(string.lower(class)) then
+		class = string.lower(class)
+		if CreedUIDB then CreedUIDB.heroClass = class end
+		return class
 	end
-	local t = FindTheme(key)
-	if not t or not t.rim then return "bronze", C.BRONZE end
-	return key, t
+	return CreedUIDB and FindTheme(CreedUIDB.heroClass or "") and CreedUIDB.heroClass or "warrior"
 end
 
--- picks a theme (a key of C.UI_THEMES), keeps it in the settings and recolors every part
-function C.SetTheme(key, save)
-	if not FindTheme(key) then return false end
-	if save and CreedUIDB then CreedUIDB.theme = key end
+-- puts on a class's theme ("class": the hero's) and recolors every part
+function C.SetTheme(key)
+	if key == "class" then key = C.HeroClass() end
+	local t = FindTheme(key)
+	if not t then return false end
 	C.uiTheme = key
-	local _, t = C.ResolveTheme(key)
 	if t ~= C.UI_THEME then
 		C.UI_THEME = t
 		C.palStamp = C.palStamp + 1
 	end
 	return true
-end
-
-function C.ThemeName(key)
-	local t = FindTheme(key)
-	return C.L(t and t.name or "Bronze")
 end
 
 local bronzed, bronzedFrom, bronzedAt = {}, nil, nil
@@ -917,32 +916,26 @@ end
 
 ------------------------------------------------------------------------ an MMO panel
 -- A panel in the timer's metal: brushed dark glass inside a thin round rail lit as the timer's
--- (darkish bronze, one fine bright line on its lit side), the timer's diamonds on its corners,
--- and (asked for) a golden dragon perched on each end, facing out, wings raised, its eye glowing:
--- painted, from the user's own bar picture (dev/art/cut_dragon.py), in its own colors. It straddles
--- the panel's end, the end rail running behind its body, head and chest out past it, its wing back
--- over the bar; the panel leaves C.PANEL_ROOM at each end for the wing, so it never covers a slot.
-local P_RAIL, P_CORNER, P_DRAGON = 8, 16, 122
--- how far it reaches past the panel's end (its front 40% of the picture), and below its foot (25 of 370)
-local P_OUT, P_FOOT = P_DRAGON * 0.40, P_DRAGON * 25 / 370
-C.PANEL_ROOM = math.floor(P_DRAGON - P_OUT + 6)
--- Creed UI's gold, taken from the user's bar picture (dev/art/source/bar_reference.webp): the panel's
--- metal is its bright rail; its light rail highlight (0.98, 0.85, 0.52) is the gold of titles and
--- tooltip heads everywhere, its rail gold (0.91, 0.70, 0.30) the gold of borders and rims
-local GOLD = { 0.95, 0.79, 0.44 }
--- the dragon's eye in its picture, as shares of it (the picture faces right; the left dragon is it
--- mirrored, so both face out)
-local EYE_X, EYE_Y = 0.872, 0.236
+-- (one fine bright line on its lit side), the timer's diamonds on its corners. The skill bar's (asked
+-- for) wears the hero's class: its emblem on the left end, its crest on the right, its rails, all from
+-- the user's own picture (dev/art/cut_classes.py); the panel leaves C.PANEL_ROOM at each end for them,
+-- so they never cover a slot. (Until 1.21.4 a painted dragon stood on each end, in a bronze look.)
+local P_RAIL, P_CORNER = 8, 16
+C.PANEL_ROOM = 79
+-- Creed UI's gold, taken from the user's bar picture (dev/art/source/bar_reference.webp): borders and
+-- rims (0.91, 0.70, 0.30), titles and tooltip heads (0.98, 0.85, 0.52), panel metal (0.95, 0.79, 0.44)
 -- a class's emblem and crest (dev/art/cut_classes.py): square textures whose rails lie 110 of their 256
 -- pixels apart, scaled so they lie on the panel's (76 apart); the emblem's middle is at 160/256 across
--- its picture, on the line between the rails. The crest (asked for) is 1.8 times its picture's size,
--- as big as the emblem's round, its face (70, 136 of 256) on the panel's right end, a little in and a
--- little up, so it covers that end whole and stays off the screen's edge
+-- its picture, on the line between the rails. The crest (asked for) is sized so its ring (38.5 of 256
+-- across its radius, its middle at 69, 142, fitted) is exactly as tall as the panel, its top on the panel's
+-- top edge, a little in from the panel's right end, so it closes that end
 local EMBLEM_SIZE = 256 * 76 / 110
 local EMBLEM_L = 160 / 256
-local CREST_SIZE, CREST_X, CREST_Y, CREST_IN, CREST_UP = EMBLEM_SIZE * 1.8, 70 / 256, 136 / 256, 10, 5
+local CREST_RING, CREST_X, CREST_Y, CREST_IN = 38.5 / 256, 69 / 256, 142 / 256, 10
+-- the class's rails (PanelRail<Class>T / B, 16 pixels tall round their line) at the same scale
+local RAIL_TH = 16 * 76 / 110
 
-function C.Panel(frame, dragons)
+function C.Panel(frame, emblems)
 	local p = { frame = frame, metal = {} }
 	p.fill = C.Tex(frame, "BACKGROUND", C.ART .. "PanelFill")
 	p.fill:SetPoint("TOPLEFT", frame, "TOPLEFT", 2, -2)
@@ -954,10 +947,12 @@ function C.Panel(frame, dragons)
 		table.insert(p.metal, t)
 		return t
 	end
-	Rail("PanelRailT", "TOPLEFT", P_CORNER, 0, "TOPRIGHT", -P_CORNER, 0):SetHeight(P_RAIL)
-	Rail("PanelRailB", "BOTTOMLEFT", P_CORNER, 0, "BOTTOMRIGHT", -P_CORNER, 0):SetHeight(P_RAIL)
-	-- the end pieces (the end rails, corners and their diamonds), which a class's emblem and crest
-	-- stand over
+	p.railT = Rail("PanelRailT", "TOPLEFT", P_CORNER, 0, "TOPRIGHT", -P_CORNER, 0)
+	p.railT:SetHeight(P_RAIL)
+	p.railB = Rail("PanelRailB", "BOTTOMLEFT", P_CORNER, 0, "BOTTOMRIGHT", -P_CORNER, 0)
+	p.railB:SetHeight(P_RAIL)
+	-- the end pieces (the end rails, corners and their diamonds), which the skill bar's emblem and
+	-- crest stand over
 	p.ends = {}
 	local railL = Rail("PanelRailL", "TOPLEFT", 0, -P_CORNER, "BOTTOMLEFT", 0, P_CORNER)
 	railL:SetWidth(P_RAIL)
@@ -980,57 +975,55 @@ function C.Panel(frame, dragons)
 		table.insert(p.metal, d)
 		table.insert(p.ends, d)
 	end
-	if dragons then
-		-- a dragon on each end, facing out, perched on the panel's end
-		p.dragons, p.eyes = {}, {}
-		p.eyeLayer = CreateFrame("Frame", nil, frame)
-		p.eyeLayer:SetAllPoints(frame)
-		for i, side in ipairs({ "LEFT", "RIGHT" }) do
-			p.dragons[i] = C.Tex(frame, "OVERLAY", C.ART .. "PanelDragon")
-			p.eyes[i] = C.Tex(p.eyeLayer, "OVERLAY", C.ART .. "Glow", "ADD")
-		end
-		-- the ends: the dragons, or (emblem) a class's emblem on the left end and its crest on the right
+	if emblems then
+		p.emblems = {}
+		for i = 1, 2 do p.emblems[i] = C.Tex(frame, "OVERLAY", C.ART .. "Glow") end
+		-- the end pieces step aside: the emblem and the crest stand over the ends
+		for i = 1, table.getn(p.ends) do p.ends[i]:Hide() end
+		-- a class's emblem on the left end, its crest on the right, its rails running whole from under
+		-- the one to under the other (its line and glow as the picture paints them)
 		p.PlaceEnds = function(emblem)
-			for i = 1, table.getn(p.ends) do C.Vis(p.ends[i], not emblem) end
-			for i, side in ipairs({ "LEFT", "RIGHT" }) do
-				local k = (side == "LEFT") and -1 or 1
-				local t, e = p.dragons[i], p.eyes[i]
+			for _, r in ipairs({ { p.railT, "T", "TOPLEFT", "TOPRIGHT", 1 }, { p.railB, "B", "BOTTOMLEFT", "BOTTOMRIGHT", -1 } }) do
+				local t = r[1]
 				t:ClearAllPoints()
-				if emblem then
-					t:SetTexture(C.ART .. "PanelEmblem" .. emblem .. ((k < 0) and "L" or "R"))
-					t:SetTexCoord(0, 1, 0, 1)
-					if k < 0 then
-						t:SetWidth(EMBLEM_SIZE)
-						t:SetHeight(EMBLEM_SIZE)
-						t:SetPoint("TOPLEFT", frame, side, -EMBLEM_L * EMBLEM_SIZE, EMBLEM_SIZE / 2)
-					else
-						t:SetWidth(CREST_SIZE)
-						t:SetHeight(CREST_SIZE)
-						t:SetPoint("TOPLEFT", frame, side, -CREST_IN - CREST_X * CREST_SIZE, CREST_Y * CREST_SIZE + CREST_UP)
-					end
-					e:Hide() -- they shine in their own paint
+				t:SetTexture(C.ART .. "PanelRail" .. emblem .. r[2])
+				t:SetHeight(RAIL_TH)
+				local y = r[5] * (RAIL_TH / 2 - P_RAIL / 2)
+				t:SetPoint(r[3], frame, r[3], 0, y)
+				t:SetPoint(r[4], frame, r[4], 0, y)
+			end
+			for i, side in ipairs({ "LEFT", "RIGHT" }) do
+				local t = p.emblems[i]
+				t:ClearAllPoints()
+				t:SetTexture(C.ART .. "PanelEmblem" .. emblem .. ((i == 1) and "L" or "R"))
+				if i == 1 then
+					t:SetWidth(EMBLEM_SIZE)
+					t:SetHeight(EMBLEM_SIZE)
+					t:SetPoint("TOPLEFT", frame, side, -EMBLEM_L * EMBLEM_SIZE, EMBLEM_SIZE / 2)
 				else
-					t:SetTexture(C.ART .. "PanelDragon")
-					t:SetWidth(P_DRAGON)
-					t:SetHeight(P_DRAGON)
-					if k < 0 then t:SetTexCoord(1, 0, 0, 1) else t:SetTexCoord(0, 1, 0, 1) end
-					t:SetPoint("BOTTOM" .. side, frame, "BOTTOM" .. side, k * P_OUT, -P_FOOT)
-					local x = (k < 0) and (-P_OUT + (1 - EYE_X) * P_DRAGON) or (P_OUT - (1 - EYE_X) * P_DRAGON)
-					e:ClearAllPoints()
-					e:SetWidth(8)
-					e:SetHeight(8)
-					e:SetPoint("CENTER", frame, "BOTTOM" .. side, x, -P_FOOT + P_DRAGON * (1 - EYE_Y))
-					e:Show()
+					local h = frame:GetHeight()
+					p.endsH = h
+					if not h or h <= 0 then h = 84 end
+					local size = h / (2 * CREST_RING)
+					t:SetWidth(size)
+					t:SetHeight(size)
+					t:SetPoint("TOPLEFT", frame, side, -CREST_IN - CREST_X * size, CREST_Y * size)
 				end
 			end
 		end
-		p.PlaceEnds(nil)
+		-- where the left end's art begins (the chat keeps clear of it): the emblem's round (about 70 of
+		-- its 256 pixels round its middle, at 160, 128), its wings and smoke free to reach past
+		p.LeftEnd = function()
+			local t = p.emblems[1]
+			if not (t:GetLeft() and t:GetTop()) then return nil end
+			return t:GetLeft() + EMBLEM_SIZE * 90 / 256, t:GetTop() - EMBLEM_SIZE * 53 / 256
+		end
 	end
 	return p
 end
 
 function C.PanelMetal(pal)
-	local m = C.UI_THEME and C.UI_THEME.metal or GOLD
+	local m = C.UI_THEME.metal
 	return m[1], m[2], m[3]
 end
 
@@ -1039,26 +1032,23 @@ function C.PanelTheme(p, pal)
 	local mr, mg, mb = C.PanelMetal(pal)
 	for i = 1, table.getn(p.metal) do p.metal[i]:SetVertexColor(mr, mg, mb) end
 	p.fill:SetVertexColor(0.5 + tr[1] * 0.3, 0.47 + tr[2] * 0.3, 0.44 + tr[3] * 0.3, 0.95)
-	if p.dragons then
-		-- painted in its own gold; in a class's theme, the class's own emblem and crest in their place
-		-- (cut from the user's picture by dev/art/cut_classes.py, in their own paint)
-		local emblem = C.UI_THEME and C.UI_THEME.emblem
+	if p.emblems then
+		-- the hero's class's emblem, crest and rails, in their own paint; the glass near black, as in
+		-- its picture
+		local emblem = C.UI_THEME.emblem
 		if p.emblem ~= emblem then
 			p.emblem = emblem
 			p.PlaceEnds(emblem)
 		end
-		for i = 1, 2 do
-			p.dragons[i]:SetVertexColor(1, 1, 1)
-			p.eyes[i]:SetVertexColor(1, 0.62, 0.14, 0.95) -- the eyes glow amber, as painted
-		end
+		p.railT:SetVertexColor(1, 1, 1)
+		p.railB:SetVertexColor(1, 1, 1)
+		p.fill:SetVertexColor(0.30, 0.28, 0.27, 0.97)
 	end
 end
 
--- the dragons' eyes smoulder
+-- the crest follows the panel's height (it may be laid out after the class is known)
 function C.PanelStep(p, now)
-	if not p.eyes then return end
-	local a = 0.75 + 0.2 * math.sin(now * 2.2)
-	for i = 1, 2 do C.Alpha(p.eyes[i], a) end
+	if p.emblem and p.endsH ~= p.frame:GetHeight() then p.PlaceEnds(p.emblem) end
 end
 
 ------------------------------------------------------------------------ calling the game safely
@@ -1389,14 +1379,6 @@ RefreshHub = function()
 		b.selected = b.code == C.lang
 		PaintButton(b)
 	end
-	C.SetText(hub.theme.text, C.F("Theme: {1}", C.ThemeName(C.uiTheme)))
-	hub.theme.selected = hub.themeMenu:IsShown()
-	PaintButton(hub.theme)
-	for i = 1, table.getn(hub.themeMenu.items) do
-		local b = hub.themeMenu.items[i]
-		b.selected = b.key == C.uiTheme
-		PaintButton(b)
-	end
 end
 C.RefreshHub = function() RefreshHub() end
 
@@ -1502,7 +1484,7 @@ local function BuildHub()
 	C.LText(platesButton.text, "Tiny Plates settings")
 	platesButton:SetPoint("TOPLEFT", o, "TOPLEFT", 14, y)
 	local langButton = C.Button(o, 148, 24, "", function()
-		if o.langMenu:IsShown() then o.langMenu:Hide() else o.themeMenu:Hide(); o.langMenu:Show() end
+		if o.langMenu:IsShown() then o.langMenu:Hide() else o.langMenu:Show() end
 		RefreshHub()
 	end)
 	C.LText(langButton.text, "Language")
@@ -1536,41 +1518,6 @@ local function BuildHub()
 		b:SetPoint("TOPLEFT", menu, "TOPLEFT", 4 + col * 148, -4 - row * 22)
 		menu.items[i] = b
 	end
-	-- the theme: a button beside it that opens the list of themes, each name in its class's color
-	local themeButton = C.Button(o, 148, 24, "", function()
-		if o.themeMenu:IsShown() then o.themeMenu:Hide() else o.langMenu:Hide(); o.themeMenu:Show() end
-		RefreshHub()
-	end)
-	themeButton:SetPoint("TOPLEFT", o, "TOPLEFT", 14 + COL_W, y)
-	o.theme = themeButton
-	local tmenu = CreateFrame("Frame", "CreedUIThemeMenu", o)
-	o.themeMenu = tmenu
-	local tn = table.getn(C.UI_THEMES)
-	tmenu:SetWidth(298)
-	tmenu:SetHeight(math.ceil(tn / 2) * 22 + 8)
-	tmenu:SetPoint("BOTTOM", themeButton, "TOP", 0, 2)
-	tmenu:SetFrameStrata("FULLSCREEN_DIALOG")
-	tmenu:SetBackdrop({ bgFile = C.FLAT, edgeFile = C.FLAT, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
-	tmenu:SetBackdropColor(0.05, 0.05, 0.07, 0.98)
-	tmenu:SetBackdropBorderColor(0.91, 0.70, 0.30, 0.8)
-	tmenu:EnableMouse(true)
-	tmenu:Hide()
-	tmenu.items = {}
-	for i = 1, tn do
-		local info = C.UI_THEMES[i]
-		local b = C.Button(tmenu, 142, 20, "", function()
-			C.SetTheme(this.key, true)
-			tmenu:Hide()
-			RefreshHub()
-		end)
-		b.key = info.key
-		C.LText(b.text, info.name)
-		local tc = info.title or C.BRONZE.title
-		b.text:SetTextColor(tc[1], tc[2], tc[3])
-		local col, row = math.mod(i - 1, 2), math.floor((i - 1) / 2)
-		b:SetPoint("TOPLEFT", tmenu, "TOPLEFT", 4 + col * 148, -4 - row * 22)
-		tmenu.items[i] = b
-	end
 end
 
 function C.ToggleHub()
@@ -1594,16 +1541,6 @@ local function Slash(msg)
 		if C.timerSlash then C.timerSlash(rest) end
 	elseif cmd == "numbers" or cmd == "sn" or cmd == "dmg" then
 		if C.numberSlash then C.numberSlash(rest) end
-	elseif cmd == "theme" then
-		local want = string.lower(rest or "")
-		local keys = {}
-		for i = 1, table.getn(C.UI_THEMES) do table.insert(keys, C.UI_THEMES[i].key) end
-		if want ~= "" and C.SetTheme(want, true) then
-			C.RefreshHub()
-			C.Print(C.F("theme: {1}", C.ThemeName(C.uiTheme)))
-		else
-			C.Print(C.F("/creed theme followed by one of: {1}", table.concat(keys, ", ")))
-		end
 	elseif cmd == "talents" then
 		if C.ToggleTalents then C.ToggleTalents() end
 	elseif cmd == "probe" then
@@ -1805,9 +1742,10 @@ local function GuardGameMenu()
 	end)
 end
 C.OnInit(function() pcall(GuardGameMenu) end)
--- the theme kept in the settings, and again once the hero is in the world ("class" needs its class)
-C.OnInit(function() C.SetTheme(CreedUIDB and CreedUIDB.theme or "bronze") end)
-C.OnWorld(function() C.SetTheme(C.uiTheme) end)
+-- the theme is the hero's class (1.21.4, asked for, in place of a choice in the options): read as the
+-- addon starts and again each time the hero enters the world (the bronze until the class is known)
+C.OnInit(function() C.SetTheme("class") end)
+C.OnWorld(function() C.SetTheme("class") end)
 
 -- is the addon this part grew out of still running? then that part stays off
 function C.OldAddon(name)

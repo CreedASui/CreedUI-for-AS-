@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.21.3**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.21.4**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -135,22 +135,22 @@ README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two
 
 **Design and code style**
 - **Art must be original.** The user doesn't want anything looking lifted from other addons. All
-  art is drawn by the scripts in `dev/art` (numpy/PIL), except the skill bar's dragon (1.14.0): cut
-  from the user's own bar picture (`dev/art/source/bar_reference.webp`, made for them with an image
-  generator) by `dev/art/cut_dragon.py`. `make_dragon.py` is the earlier drawn dragon, kept.
-  The class themes' emblems (1.21.2) are cut the same way from the user's class bars picture.
-- **The gold** comes from that picture: panel metal (0.95, 0.79, 0.44), titles and tooltip heads
-  (0.98, 0.85, 0.52), borders and rims (0.91, 0.70, 0.30). Use these for anything gold.
-  `C.Pal()` is the timer's zone palette with its metal (rim, title, gem, glow, trough, mc) swapped
-  for `C.BRONZE` in every zone (1.14.1, asked for): every part is bronze gold; the timer keeps its own.
-  1.21.0 (asked for): UI themes. `C.UI_THEMES` (bronze, class, the nine classes) and `C.SetTheme(key,
-  save)` (`CreedUIDB.theme`, `/creed theme`, the hub's Theme button): `C.Pal()` takes the theme's
-  colors (`C.UI_THEME`), `C.PanelMetal` its `metal`, the panel dragons give way to the class's emblem
-  (1.21.2: `Art/PanelEmblem<Class>L` on the left end, `...R` on the right, cut from the user's picture
-  `dev/art/source/class_bars.webp` by `dev/art/cut_classes.py`; each fades round its own shape (no straight
-  cut) with a baked shadow; the panel's end rails, corners and diamonds hide under them (1.21.3: the
-  crest drawn 1.8x, covering the right end), `p.PlaceEnds`; 1.21.1's drawn emblems were replaced, asked for); the
-  timer reads `C.BRONZE` and stays bronze. `C.THEMES` and `C.themeKey` are the timer's own (zones).
+  art is drawn by the scripts in `dev/art` (numpy/PIL), except the skill bar's class emblems, crests
+  and rails: cut from the user's own picture (`dev/art/source/class_bars.webp`, made for them with an
+  image generator) by `dev/art/cut_classes.py`. (1.14.0 to 1.21.3 had dragons cut from the user's bar
+  picture, `source/bar_reference.webp`, in a bronze look; removed in 1.21.4, asked for.)
+- **The gold** comes from that bar picture: panel metal (0.95, 0.79, 0.44), titles and tooltip heads
+  (0.98, 0.85, 0.52), borders and rims (0.91, 0.70, 0.30). Still used for gold text and the timer.
+- **The UI is the hero's class (1.21.4, asked for: no choice, no bronze look).** `C.UI_THEMES` (the nine
+  classes: metal, title, rim, gem, glow, trough, mc, optional `xp`), `C.SetTheme("class")` on init and
+  on each world entry; `C.HeroClass()` is `UnitClass("player")`, else the last one seen
+  (`CreedUIDB.heroClass`), else warrior. `C.Pal()` is the timer's zone palette with the class's metal
+  over it; `C.PanelMetal` is the class's `metal`. The skill bar (`C.Panel(frame, true)`, `p.emblems`,
+  `p.PlaceEnds`): the class's emblem (`Art/PanelEmblem<Class>L`) on the left end, its crest (`...R`,
+  sized so its ring is the panel's height, top on its top) on the right, its rails
+  (`Art/PanelRail<Class>T/B`) along it, the end pieces hidden, the glass near black, the XP bar in the
+  class's `xp` colors (else gold). The boss timer reads `C.BRONZE` and stays bronze. `C.THEMES` and
+  `C.themeKey` are the timer's own (zones).
 - The look: dark glass, a gold rail, the timer's metal, diamonds on corners (`C.Panel`). Smooth,
   "eye candy", but calm.
 - **Parts:** every part registers with `C.RegisterPart` (key, name, note, get, set; optional scale),

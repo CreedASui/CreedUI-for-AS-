@@ -2,7 +2,7 @@
 
 # Creed UI
 
-A clean, smooth HUD for **Azeroth Survivors** ([wow.aethus.pl](https://wow.aethus.pl)), the World of Warcraft 1.12 roguelike. Everything is drawn in one look (dark glass, a bronze-gold rail, the boss timer's metal) and steps aside while you pick your cards.
+A clean, smooth HUD for **Azeroth Survivors** ([wow.aethus.pl](https://wow.aethus.pl)), the World of Warcraft 1.12 roguelike. Everything is drawn in your class's look (dark glass, your class's metal, its emblem and crest on the skill bar) and steps aside while you pick your cards.
 
 ## Install
 
@@ -27,7 +27,7 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 - **Downed friends (co-op):** a warning, a glowing mark where you can revive them, and an arrow to them when they're off screen.
 
 **Your skills**
-- **Skill bar:** your abilities with their ranks, how many of each are out (totems, Blizzards...), your jewelry and XP a second, on a gold panel with a painted dragon on each end.
+- **Skill bar:** your abilities with their ranks, how many of each are out (totems, Blizzards...), your jewelry and XP a second, on a panel in your class's look: its emblem on the left end, its crest on the right.
 - **Pet bar:** your pets and summons, how many and how long they last, and what each of their skills hits for.
 - **Stored level-ups:** a glowing Level Up! button with how many wait.
 - **Talent window:** your trees, points and learned talents (`/creed talents`).
@@ -41,11 +41,11 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 - **Minimap:** a metal ring, your local time, the caches and the guardians' lairs.
 - **Character window:** gear slots lit in their rarity color and your run's stats grouped beside it.
 - **Tiny Plates:** compact nameplates for regular enemies, full-size ones for bosses and guardians.
-- **Chat:** dressed to match, and kept clear of the skill bar's dragon.
+- **Chat:** dressed to match, and kept clear of the skill bar's emblem.
 
 Every part can be turned on or off, sized and moved (the chat too).
 
-**Themes:** Bronze, your class's, or any class's (Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid), picked from the options or with `/creed theme`. Each class's theme puts its own emblem on the skill bar's left end and its crest on the right (crossed swords and a helm, a winged shield, a bow and a paw...).
+**Your class's look:** the whole UI wears the class you play (Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid): its metal on every part, and on the skill bar its emblem, crest and rails (crossed swords and a helm, a winged shield, a bow and a paw...).
 
 **Languages:** English, French, German, Spanish, Portuguese, Chinese, Russian, Japanese, Korean, Polish and Turkish, picked from the options or with `/creed language`.
 
@@ -57,7 +57,6 @@ Every part can be turned on or off, sized and moved (the chat too).
 | `/creed move`, `/creed lock` | Frees the frames to drag them (the chat too), then locks them |
 | `/creed reset` | Puts every frame back in its place |
 | `/creed language <code>` | Picks the language (`auto` follows the game) |
-| `/creed theme <name>` | Picks the UI theme: `bronze`, `class` (yours) or a class (`mage`, `druid`...) |
 | `/creed timer ...`, `/creed numbers ...` | The boss timer's and damage numbers' own settings |
 | `/creed <part> on/off` | Turns a part on or off |
 | `/creed talents` | Opens the talent window |
@@ -75,4 +74,4 @@ Every part can be turned on or off, sized and moved (the chat too).
 
 ## Credits
 
-Original art made for Creed UI; the skill bar's dragons and class emblems are cut from pictures made for the author. The bundled fonts in `CreedUI/Fonts` are made from Lora and Noto Sans CJK, both under the SIL Open Font License (see `CreedUI/Fonts/LICENSE.txt`); the damage numbers' fonts (Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One) are under the same license (see `CreedUI/Fonts/NumberFonts-LICENSE.txt`). Tiny Plates is based on Valorless's MIT-licensed ASTinyPlates (see `CreedUI/TinyPlates-LICENSE.txt`), brought in by JamieeLee.
+Original art made for Creed UI; the skill bar's class emblems are cut from a picture made for the author. The bundled fonts in `CreedUI/Fonts` are made from Lora and Noto Sans CJK, both under the SIL Open Font License (see `CreedUI/Fonts/LICENSE.txt`); the damage numbers' fonts (Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One) are under the same license (see `CreedUI/Fonts/NumberFonts-LICENSE.txt`). Tiny Plates is based on Valorless's MIT-licensed ASTinyPlates (see `CreedUI/TinyPlates-LICENSE.txt`), brought in by JamieeLee.

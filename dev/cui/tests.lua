@@ -301,7 +301,7 @@ for _, o in ipairs(M.All()) do
 		for _, k in ipairs(M.All()) do
 			if k.__parent == o and k.__kind == "FontString" then label = k.__text end
 		end
-		if label ~= "x" and not under(o, CreedUILanguageMenu) and not under(o, CreedUIThemeMenu) then -- the languages and themes have tests of their own
+		if label ~= "x" and not under(o, CreedUILanguageMenu) then -- the languages have a test of their own
 			this = o
 			o:Click()
 			clicked = clicked + 1
@@ -315,20 +315,6 @@ check(clicked >= 14, "every hub control works (" .. clicked .. ")")
 problems("hub")
 -- the themes: a class's metal on every part, the dragons cast in it, the timer still bronze
 local function near(a, b) return math.abs(a - b) < 0.01 end
-check(near(CreedUI.Pal().rim[1], 0.95) and CreedUI.uiTheme == "bronze", "the bronze theme to begin with")
-local function themeButton(key)
-	for _, o in ipairs(M.All()) do
-		if o.__kind == "Button" and under(o, CreedUIThemeMenu) and o.key == key then return o end
-	end
-end
-check(themeButton("mage") ~= nil and themeButton("bronze") ~= nil and themeButton("class") ~= nil, "the theme list has the classes, bronze and your class")
-this = themeButton("mage")
-themeButton("mage"):Click()
-frames(5)
-local rim = CreedUI.Pal().rim
-check(near(rim[1], 0.48) and near(rim[3], 0.95), "Mage: the parts' rims turn frost blue")
-check(CreedUIDB.theme == "mage", "the theme is kept in the settings")
-check(near(CreedUI.BRONZE.rim[1], 0.95), "the boss timer keeps its bronze")
 local function onBar(file)
 	local n = 0
 	for _, o in ipairs(M.All()) do
@@ -336,20 +322,33 @@ local function onBar(file)
 	end
 	return n
 end
-check(onBar("PanelEmblemMageL") == 1 and onBar("PanelEmblemMageR") == 1 and onBar("PanelDragon") == 0, "the bar's dragons give way to the mage's emblem on the left end and crest on the right")
-check(findText(CreedUIOptions, "^Theme: Mage$") ~= nil, "the hub names the theme")
-M.Slash("theme class")
-frames(5)
-check(CreedUI.uiTheme == "class" and near(CreedUI.Pal().rim[1], 0.94), "your class (a rogue): the rogue's yellow metal")
-check(onBar("PanelEmblemRogueL") == 1 and onBar("PanelEmblemRogueR") == 1, "and the rogue's daggers on the bar")
+-- the theme is the hero's class, no choice in the options (asked for)
+check(CreedUI.uiTheme == "rogue" and near(CreedUI.Pal().rim[1], 0.94), "your class (a rogue): the rogue's yellow metal")
+check(onBar("PanelEmblemRogueL") == 1 and onBar("PanelEmblemRogueR") == 1, "the rogue's emblem and crest on the bar")
+check(onBar("PanelRailRogueT") == 1 and onBar("PanelRailRogueB") == 1, "and the rogue's own rails along it")
 check(onBar("PanelRailL") == 0 and onBar("PanelCornerTL") == 0 and onBar("PanelRailR") == 0 and onBar("PanelCornerBR") == 0, "the panel's end pieces step aside under the emblem and the crest")
-M.Slash("theme nonsense")
-check(CreedUI.uiTheme == "class", "an unknown theme changes nothing")
-M.Slash("theme bronze")
+check(CreedUIThemeMenu == nil and findText(CreedUIOptions, "^Theme") == nil, "no theme to pick in the options")
+check(near(CreedUI.BRONZE.rim[1], 0.95), "the boss timer keeps its bronze")
+M.unit.player.class = "Mage"
+M.Fire("PLAYER_ENTERING_WORLD")
 frames(5)
-check(near(CreedUI.Pal().rim[1], 0.95), "back to bronze")
-check(onBar("PanelDragon") == 2 and onBar("PanelEmblem%u%l+[LR]") == 0, "the dragons back on the bar's ends")
-check(onBar("PanelRailL") == 1 and onBar("PanelCornerTL") == 1, "and the panel's end pieces back")
+local rim = CreedUI.Pal().rim
+check(near(rim[1], 0.48) and near(rim[3], 0.95), "a mage enters the world: the parts' rims turn frost blue")
+check(onBar("PanelEmblemMageL") == 1 and onBar("PanelEmblemMageR") == 1 and onBar("PanelDragon") == 0, "the mage's emblem on the left end and crest on the right")
+local xpFill
+for _, o in ipairs(M.All()) do
+	if o.__kind == "Texture" and o.__grad and under(o, CreedUIBar) and M.Visible(o) and near(o.__grad[2][3] or 0, 0.35) then xpFill = o end
+end
+check(xpFill ~= nil, "the XP bar fills in the mage's blue")
+M.unit.player.class = nil
+M.Fire("PLAYER_ENTERING_WORLD")
+frames(5)
+check(CreedUI.uiTheme == "mage" and CreedUIDB.heroClass == "mage", "before the game names the class: the last class played (the mage), no bronze")
+check(not CreedUI.SetTheme("bronze") and CreedUI.uiTheme == "mage", "there is no bronze look any more")
+check(onBar("PanelDragon") == 0, "nor dragons")
+M.unit.player.class = "Rogue"
+M.Fire("PLAYER_ENTERING_WORLD")
+frames(5)
 problems("themes")
 
 ------------------------------------------------------------------ 8. moving frames
@@ -1793,7 +1792,7 @@ do
 	problems("languages")
 end
 
------------------------------------------------------------------- 11o. the chat stops short of the skill bar's dragon
+------------------------------------------------------------------ 11o. the chat stops short of the skill bar's emblem
 do
 	SIM.StartRun("naxx", { killAfter = 120 })
 	M.runTime = 30
@@ -1801,13 +1800,12 @@ do
 	M.Slash("reset")
 	ChatFrame1:SetWidth(420)
 	SIM.Advance(1.5, 1 / 30)
-	local dragon = CreedUIBar.deco.dragons[1]
-	local dl = M.Rect(dragon)
+	local dl = CreedUIBar.deco.LeftEnd() - 4 -- (dl + 4: where the emblem's paint begins)
 	local cl, cb, cr = M.Rect(ChatFrame1)
-	check(cr + 8 <= dl + 4 - 5, string.format("the chat's glass stops short of the dragon's snout (%.0f < %.0f)", cr + 8, dl + 4))
+	check(cr + 8 <= dl + 4 - 5, string.format("the chat's glass stops short of the emblem's paint (%.0f < %.0f)", cr + 8, dl + 4))
 	check(ChatFrame1:GetWidth() < 420 and ChatFrame1:GetWidth() >= 200, "by giving up the end of its width: " .. ChatFrame1:GetWidth())
 	-- sized by hand, that width is the one it keeps clear with
-	local clearW = math.floor(dl + 4 - 6 - 8 - cl) - 10 -- well short of the snout
+	local clearW = math.floor(dl + 4 - 6 - 8 - cl) - 10 -- well short of the emblem
 	ChatFrame1:SetWidth(clearW)
 	SIM.Advance(1, 1 / 30)
 	check(ChatFrame1:GetWidth() == clearW, "a width set by hand that's already clear stays: " .. ChatFrame1:GetWidth() .. " / " .. clearW)
@@ -2160,7 +2158,7 @@ do
 	local epic, blue, plain = bezelOf(CharacterMainHandSlot), bezelOf(CharacterChestSlot), bezelOf(CharacterHeadSlot)
 	check(epic and math.abs(epic.bezel.__vc[1] - 163 / 255) < 0.01 and math.abs(epic.bezel.__vc[3] - 238 / 255) < 0.01, "the epic blade's slot in purple")
 	check(blue and math.abs(blue.bezel.__vc[3] - 221 / 255) < 0.01 and blue.glow.__vc[4] > 0.3, "the blue chest's in blue, glowing")
-	check(plain and math.abs(plain.bezel.__vc[1] - 0.95) < 0.01 and math.abs(plain.bezel.__vc[2] - 0.79) < 0.01 and plain.glow.__vc[4] == 0, "a plain helm's in the panel's gold")
+	check(plain and math.abs(plain.bezel.__vc[1] - 0.94) < 0.01 and math.abs(plain.bezel.__vc[2] - 0.88) < 0.01 and plain.glow.__vc[4] == 0, "a plain helm's in the panel's metal (the rogue's)")
 	-- another page: the window's own pieces back, ours away; and back to this one
 	PaperDollFrame:Hide()
 	check(alpha(CharacterFramePortrait) == 1 and alpha(CharacterNameText) == 1 and not M.Visible(bg) and not M.Visible(panel),
@@ -2961,14 +2959,14 @@ do
 	problems("stacking numbers")
 end
 
------------------------------------------------------------------- 11j. the bar's dragons sit on its ends, clear of the slots
+------------------------------------------------------------------ 11j. the class's emblem and crest sit on the bar's ends, clear of the slots
 do
 	M.phase = "playing"
 	frames(10)
-	local d1, d2 = CreedUIBar.deco.dragons[1], CreedUIBar.deco.dragons[2]
+	local e1, e2 = CreedUIBar.deco.emblems[1], CreedUIBar.deco.emblems[2]
 	local pl, pb, pr, pt = M.Rect(CreedUIBar.panel)
-	local l1, b1, r1, t1 = M.Rect(d1)
-	local l2, b2, r2, t2 = M.Rect(d2)
+	local l1, b1, r1, t1 = M.Rect(e1)
+	local l2, b2, r2, t2 = M.Rect(e2)
 	local sl = 9999
 	local sr = -9999
 	for _, o in ipairs(M.All()) do
@@ -2977,12 +2975,16 @@ do
 			sl, sr = math.min(sl, l), math.max(sr, r)
 		end
 	end
-	check(math.abs(l1 - (pl - 122 * 0.4)) < 1 and r1 < sl, string.format("the left dragon straddles the panel's end, clear of the first slot (%.0f < %.0f)", r1, sl))
-	check(l2 > sr and math.abs(r2 - (pr + 122 * 0.4)) < 1, "and the right one the other end, past the last")
-	check(d1.__tc and d1.__tc[1] == 1 and d1.__tc[2] == 0 and not (d2.__tc and d2.__tc[1] == 1), "both face out: the left one mirrored, the right as painted")
-	check(d1.__vc and d1.__vc[1] == 1 and d1.__vc[2] == 1 and d1.__vc[3] == 1, "painted in its own colors (no tint)")
-	check(t1 > pt + 20, "rising over the panel's top")
-	problems("bar dragons")
+	local w1 = r1 - l1
+	-- the emblem's middle (160 of its 256) on the panel's left end; its paint ends 96 past it
+	check(math.abs(l1 + w1 * 160 / 256 - pl) < 1 and pl + w1 * 96 / 256 < sl, string.format("the emblem's middle on the panel's left end, its paint clear of the first slot (%.0f < %.0f)", pl + w1 * 96 / 256, sl))
+	-- the crest's ring (38.5 of 256 round 69, 142) as tall as the panel, its top on the panel's top
+	local w2 = r2 - l2
+	check(math.abs((t2 - w2 * (142 - 38.5) / 256) - pt) < 1 and math.abs(w2 * 77 / 256 - (pt - pb)) < 1, "the crest's ring as tall as the panel, its top on the panel's top")
+	check(l2 + w2 * (69 - 38.5) / 256 > sr, "the crest past the last slot")
+	check(not e1.__vc and not e2.__vc, "painted in their own colors (no tint)")
+	check(t1 > pt + 20, "the emblem rising over the panel's top")
+	problems("bar emblems")
 end
 
 ------------------------------------------------------------------ 11k. the bar keeps its size as a run starts
@@ -3012,25 +3014,25 @@ do
 	problems("bar size")
 end
 
------------------------------------------------------------------- 11l. bronze gold in every zone
+------------------------------------------------------------------ 11l. the class's metal in every zone
 do
-	-- a zone with silver-blue metal (as Duskwood's): every part's still the bar's bronze gold
+	-- a zone with silver-blue metal (as Duskwood's): every part's still the hero's class's (a rogue's)
 	local was = CreedUI.pal
 	CreedUI.pal = { title = { 0.7, 0.8, 1 }, rim = { 0.62, 0.70, 0.86 }, gem = { 0.5, 0.7, 1 }, glow = { 0.6, 0.8, 1 },
 		trough = { 0.02, 0.04, 0.09 }, mc = { 0.7, 0.8, 1 }, fillA = { 0.1, 0.2, 0.5 }, fillM = { 0.2, 0.4, 0.9 }, fillB = { 0.5, 0.8, 1 } }
 	CreedUI.palStamp = CreedUI.palStamp + 1
 	frames(10)
 	local p = CreedUI.Pal()
-	check(p.rim[1] == 0.95 and p.rim[2] == 0.79 and p.title[1] == 0.98 and p.fillM[3] == 0.9, "the palette keeps the zone's fills, its metal bronze gold")
+	check(p.rim[1] == 0.94 and p.rim[2] == 0.88 and p.title[1] == 1.00 and p.fillM[3] == 0.9, "the palette keeps the zone's fills, its metal the rogue's")
 	local rim
 	for _, o in ipairs(M.All()) do
 		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Art\\FrameL$") and under(o, CreedUIPlayer) then rim = o end
 	end
-	check(rim and rim.__vc and math.abs(rim.__vc[1] - 0.95) < 0.01 and math.abs(rim.__vc[3] - 0.44) < 0.01, "your frame's bar rim is bronze gold, not the zone's silver")
+	check(rim and rim.__vc and math.abs(rim.__vc[1] - 0.94) < 0.01 and math.abs(rim.__vc[3] - 0.40) < 0.01, "your frame's bar rim is the rogue's metal, not the zone's silver")
 	CreedUI.pal = was
 	CreedUI.palStamp = CreedUI.palStamp + 1
 	frames(5)
-	problems("bronze")
+	problems("class metal")
 end
 
 ------------------------------------------------------------------ 11m. the bar's ends even; the timer's metal bronze
@@ -3038,9 +3040,6 @@ do
 	M.phase = "playing"
 	frames(30)
 	local pl, pb, pr, pt = M.Rect(CreedUIBar.panel)
-	local d1, d2 = CreedUIBar.deco.dragons[1], CreedUIBar.deco.dragons[2]
-	local _, _, r1 = M.Rect(d1)
-	local l2 = M.Rect(d2)
 	local first, last = 9999, -9999
 	for _, o in ipairs(M.All()) do
 		if o.__kind == "Button" and o.__parent == CreedUIBar and M.Visible(o) then
@@ -3051,8 +3050,8 @@ do
 	end
 	local tl, _, tr = M.Rect(CreedUITally)
 	if M.Visible(CreedUITally) then last = math.max(last, tr) end
-	local gapL, gapR = first - r1, l2 - last
-	check(M.Visible(CreedUITally) and math.abs(gapL - gapR) < 16, string.format("the bar's two ends look the same: %.0f and %.0f from the dragons", gapL, gapR))
+	local gapL, gapR = first - pl, pr - last
+	check(M.Visible(CreedUITally) and math.abs(gapL - gapR) < 16, string.format("the bar's two ends look the same: %.0f and %.0f from the panel's ends", gapL, gapR))
 	local mid
 	for _, o in ipairs(M.All()) do
 		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "Art\\Diamond$") and o.__parent == CreedUIBar.panel and o.__w == 20 then

@@ -1,11 +1,12 @@
--- The target's dragons and the UI themes (1.21.0): a boss targeted in bronze (out/theme_bronze.txt),
--- then a guardian targeted in each class's theme (out/theme_<key>.txt).
+-- The target's dragons and the class looks: a boss targeted by a warrior (out/theme_boss.txt),
+-- then a guardian targeted by a hero of each class, in its theme (out/theme_<key>.txt).
 MOCK_SCRATCH = arg[1]
 local DIR, OUT = arg[2], arg[3]
 dofile(MOCK_SCRATCH .. "/cui/mock_cui.lua")
 dofile(MOCK_SCRATCH .. "/bt/sim.lua")
 local M = MOCK
 M.InstallAPI()
+M.unit.player.class = "Warrior"
 M.phase = "ready"
 M.Load(DIR)
 for i = 1, 20 do M.Frame(1 / 30) end
@@ -20,10 +21,11 @@ local function target(kind, name, hp, hpm)
 end
 target("boss", "Kirtonos the Herald", 72000, 100000)
 SIM.Advance(2, 1 / 30)
-M.Dump(OUT .. "/theme_bronze.txt")
+M.Dump(OUT .. "/theme_boss.txt")
 target("guardian", "Risen Construct", 5000, 6000)
 for _, key in ipairs({ "warrior", "paladin", "hunter", "rogue", "mage", "druid", "shaman", "priest", "warlock" }) do
-	M.Slash("theme " .. key)
+	M.unit.player.class = string.upper(string.sub(key, 1, 1)) .. string.sub(key, 2)
+	M.Fire("PLAYER_ENTERING_WORLD")
 	SIM.Advance(2, 1 / 30)
 	M.Dump(OUT .. "/theme_" .. key .. ".txt")
 end

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.4
+- **The UI is your class's, always.** No more theme to pick and no more bronze look (the skill bar's dragons are gone): Creed UI wears the class of the hero you play, its metal on every part and its emblem and crest on the skill bar. (The boss timer keeps its bronze.)
+- **The skill bar redrawn to fit the class designs:** its rails are each class's own (a bright line with its glow, as in the designs), its glass near black, and its XP bar in the class's color (green for hunters and druids, blue for mages and shamans, violet for warlocks, gold for the rest).
+- **The crest fits the bar exactly:** its ring is as tall as the bar, its top on the bar's top edge.
+
 ## 1.21.3
 - **Class themes: a bigger crest on the skill bar's right end,** as big as the emblem on its left, covering the bar's whole right end.
 
