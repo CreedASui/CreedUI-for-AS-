@@ -1,0 +1,30 @@
+-- The target's dragons and the UI themes (1.21.0): a boss targeted in bronze (out/theme_bronze.txt),
+-- then a guardian targeted in the Mage, Druid, Warlock and Paladin themes (out/theme_<key>.txt).
+MOCK_SCRATCH = arg[1]
+local DIR, OUT = arg[2], arg[3]
+dofile(MOCK_SCRATCH .. "/cui/mock_cui.lua")
+dofile(MOCK_SCRATCH .. "/bt/sim.lua")
+local M = MOCK
+M.InstallAPI()
+M.phase = "ready"
+M.Load(DIR)
+for i = 1, 20 do M.Frame(1 / 30) end
+SIM.StartRun("scholomance", { killAfter = 120 })
+M.runTime = 300
+SIM.Publish()
+SIM.Advance(1, 1 / 30)
+local function target(kind, name, hp, hpm)
+	AZS_TARGET = { kind = kind, id = 9, name = name, hp = hp, hpm = hpm, state = 0 }
+	M.unit.target = { exists = true, name = name, hp = hp, hpm = hpm, level = 63, hostile = true }
+	M.Fire("PLAYER_TARGET_CHANGED")
+end
+target("boss", "Kirtonos the Herald", 72000, 100000)
+SIM.Advance(2, 1 / 30)
+M.Dump(OUT .. "/theme_bronze.txt")
+target("guardian", "Risen Construct", 5000, 6000)
+for _, key in ipairs({ "mage", "druid", "warlock", "paladin" }) do
+	M.Slash("theme " .. key)
+	SIM.Advance(2, 1 / 30)
+	M.Dump(OUT .. "/theme_" .. key .. ".txt")
+end
+print("problems: " .. table.getn(M.problems))

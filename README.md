@@ -22,7 +22,7 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 - **Run summary:** your time, level, kills, bosses, damage and gold when a run ends.
 
 **You and your party**
-- **Your frame, your target and your party:** in class colors, portraits in metal rings.
+- **Your frame, your target and your party:** in class colors, portraits in metal rings; a boss you target wears the gold elite dragon, a guardian the silver one.
 - **Damage taken and heals:** red and green numbers rising beside your hero.
 - **Downed friends (co-op):** a warning, a glowing mark where you can revive them, and an arrow to them when they're off screen.
 
@@ -45,6 +45,8 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 
 Every part can be turned on or off, sized and moved (the chat too).
 
+**Themes:** Bronze, your class's, or any class's (Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid), picked from the options or with `/creed theme`.
+
 **Languages:** English, French, German, Spanish, Portuguese, Chinese, Russian, Japanese, Korean, Polish and Turkish, picked from the options or with `/creed language`.
 
 ## Commands
@@ -55,6 +57,7 @@ Every part can be turned on or off, sized and moved (the chat too).
 | `/creed move`, `/creed lock` | Frees the frames to drag them (the chat too), then locks them |
 | `/creed reset` | Puts every frame back in its place |
 | `/creed language <code>` | Picks the language (`auto` follows the game) |
+| `/creed theme <name>` | Picks the UI theme: `bronze`, `class` (yours) or a class (`mage`, `druid`...) |
 | `/creed timer ...`, `/creed numbers ...` | The boss timer's and damage numbers' own settings |
 | `/creed <part> on/off` | Turns a part on or off |
 | `/creed talents` | Opens the talent window |

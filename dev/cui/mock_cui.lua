@@ -980,7 +980,7 @@ function M.Dump(path)
 					local grad = "-"
 					if o.__grad then grad = o.__grad[1] .. ":" .. list(o.__grad[2]) .. ":" .. list(o.__grad[3]) end
 					f:write(head, "\t", o.__tex or "-", "\t", list(o.__solid), "\t", o.__blend or "BLEND", "\t",
-						list(o.__vc), "\t", grad, "\t", list(o.__tc), "\n")
+						list(o.__vc), "\t", grad, "\t", list(o.__tc), o.__desat and "\tdesat" or "", "\n")
 				else
 					f:write(head, "\t", o.__font or "-", "\t", fmt(o.__size or 12), "\t", o.__flags or "-", "\t",
 						list(o.__color or { 1, 1, 1, 1 }), "\t", o.__justify or "CENTER", "\t",

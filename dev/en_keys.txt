@@ -488,3 +488,17 @@ font:
 /creed numbers font <name> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...
 Storm
 /creed numbers backdrop none, fire, frost, arcane, holy, shadow or storm - behind crits
+Theme: {1}
+theme: {1}
+/creed theme followed by one of: {1}
+Bronze
+Your class
+Warrior
+Paladin
+Hunter
+Rogue
+Priest
+Shaman
+Mage
+Warlock
+Druid

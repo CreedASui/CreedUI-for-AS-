@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.20.5"
+C.VERSION = "1.21.0"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -411,13 +411,85 @@ C.BRONZE = {
 	title = { 0.98, 0.85, 0.52 }, rim = { 0.95, 0.79, 0.44 }, gem = { 1.00, 0.78, 0.32 },
 	glow = { 1.00, 0.80, 0.45 }, trough = { 0.07, 0.05, 0.03 }, mc = { 1.00, 0.88, 0.60 },
 }
+-- The UI's theme (1.21.0, asked for): the bronze gold, or a class's own metal in its class color,
+-- picked in the options. It recolors every part's rims, titles, gems, glows and glass; the boss
+-- timer keeps the bronze (C.BRONZE) whatever the theme. "class" follows the hero's class.
+C.UI_THEMES = {
+	{ key = "bronze", name = "Bronze" },
+	{ key = "class", name = "Your class" },
+	{ key = "warrior", name = "Warrior", metal = { 0.80, 0.64, 0.46 },
+		title = { 0.92, 0.80, 0.64 }, rim = { 0.80, 0.64, 0.46 }, gem = { 0.92, 0.26, 0.18 },
+		glow = { 1.00, 0.55, 0.35 }, trough = { 0.08, 0.04, 0.03 }, mc = { 0.96, 0.82, 0.64 } },
+	{ key = "paladin", name = "Paladin", metal = { 0.96, 0.62, 0.78 },
+		title = { 1.00, 0.82, 0.90 }, rim = { 0.96, 0.62, 0.78 }, gem = { 1.00, 0.85, 0.40 },
+		glow = { 1.00, 0.75, 0.88 }, trough = { 0.07, 0.03, 0.05 }, mc = { 1.00, 0.86, 0.93 } },
+	{ key = "hunter", name = "Hunter", metal = { 0.64, 0.82, 0.42 },
+		title = { 0.82, 0.94, 0.62 }, rim = { 0.64, 0.82, 0.42 }, gem = { 0.56, 0.88, 0.30 },
+		glow = { 0.76, 0.96, 0.56 }, trough = { 0.03, 0.06, 0.02 }, mc = { 0.86, 0.97, 0.72 } },
+	{ key = "rogue", name = "Rogue", metal = { 0.94, 0.88, 0.40 },
+		title = { 1.00, 0.97, 0.62 }, rim = { 0.94, 0.88, 0.40 }, gem = { 1.00, 0.94, 0.34 },
+		glow = { 1.00, 0.97, 0.56 }, trough = { 0.06, 0.06, 0.02 }, mc = { 1.00, 0.98, 0.72 } },
+	{ key = "priest", name = "Priest", metal = { 0.84, 0.86, 0.92 },
+		title = { 0.97, 0.97, 1.00 }, rim = { 0.84, 0.86, 0.92 }, gem = { 0.90, 0.93, 1.00 },
+		glow = { 0.95, 0.96, 1.00 }, trough = { 0.05, 0.05, 0.07 }, mc = { 1.00, 1.00, 1.00 } },
+	{ key = "shaman", name = "Shaman", metal = { 0.30, 0.58, 0.95 },
+		title = { 0.58, 0.82, 1.00 }, rim = { 0.30, 0.58, 0.95 }, gem = { 0.32, 0.66, 1.00 },
+		glow = { 0.46, 0.76, 1.00 }, trough = { 0.02, 0.04, 0.08 }, mc = { 0.66, 0.86, 1.00 } },
+	{ key = "mage", name = "Mage", metal = { 0.48, 0.82, 0.95 },
+		title = { 0.72, 0.93, 1.00 }, rim = { 0.48, 0.82, 0.95 }, gem = { 0.56, 0.88, 1.00 },
+		glow = { 0.66, 0.92, 1.00 }, trough = { 0.02, 0.05, 0.07 }, mc = { 0.80, 0.95, 1.00 } },
+	{ key = "warlock", name = "Warlock", metal = { 0.64, 0.55, 0.86 },
+		title = { 0.84, 0.76, 1.00 }, rim = { 0.64, 0.55, 0.86 }, gem = { 0.64, 0.42, 0.96 },
+		glow = { 0.76, 0.64, 1.00 }, trough = { 0.04, 0.03, 0.07 }, mc = { 0.86, 0.80, 1.00 } },
+	{ key = "druid", name = "Druid", metal = { 1.00, 0.58, 0.16 },
+		title = { 1.00, 0.76, 0.44 }, rim = { 1.00, 0.58, 0.16 }, gem = { 1.00, 0.56, 0.10 },
+		glow = { 1.00, 0.68, 0.30 }, trough = { 0.07, 0.04, 0.01 }, mc = { 1.00, 0.82, 0.52 } },
+}
+C.UI_THEME = C.BRONZE
+C.uiTheme = "bronze"
+
+local function FindTheme(key)
+	for i = 1, table.getn(C.UI_THEMES) do
+		if C.UI_THEMES[i].key == key then return C.UI_THEMES[i] end
+	end
+end
+
+-- the theme a key shows: "class" is the hero's class (bronze for a class without one)
+function C.ResolveTheme(key)
+	if key == "class" then
+		local _, class = UnitClass("player")
+		key = class and string.lower(class) or "bronze"
+	end
+	local t = FindTheme(key)
+	if not t or not t.rim then return "bronze", C.BRONZE end
+	return key, t
+end
+
+-- picks a theme (a key of C.UI_THEMES), keeps it in the settings and recolors every part
+function C.SetTheme(key, save)
+	if not FindTheme(key) then return false end
+	if save and CreedUIDB then CreedUIDB.theme = key end
+	C.uiTheme = key
+	local _, t = C.ResolveTheme(key)
+	if t ~= C.UI_THEME then
+		C.UI_THEME = t
+		C.palStamp = C.palStamp + 1
+	end
+	return true
+end
+
+function C.ThemeName(key)
+	local t = FindTheme(key)
+	return C.L(t and t.name or "Bronze")
+end
+
 local bronzed, bronzedFrom, bronzedAt = {}, nil, nil
 function C.Pal()
 	local base = C.pal or C.DEFAULT_PAL
 	if base ~= bronzedFrom or C.palStamp ~= bronzedAt then
 		bronzedFrom, bronzedAt = base, C.palStamp
 		for k, v in pairs(base) do bronzed[k] = v end
-		for k, v in pairs(C.BRONZE) do bronzed[k] = v end
+		for k, v in pairs(C.BRONZE) do bronzed[k] = C.UI_THEME[k] or v end
 	end
 	return bronzed
 end
@@ -916,7 +988,8 @@ function C.Panel(frame, dragons)
 end
 
 function C.PanelMetal(pal)
-	return GOLD[1], GOLD[2], GOLD[3]
+	local m = C.UI_THEME and C.UI_THEME.metal or GOLD
+	return m[1], m[2], m[3]
 end
 
 function C.PanelTheme(p, pal)
@@ -925,9 +998,18 @@ function C.PanelTheme(p, pal)
 	for i = 1, table.getn(p.metal) do p.metal[i]:SetVertexColor(mr, mg, mb) end
 	p.fill:SetVertexColor(0.5 + tr[1] * 0.3, 0.47 + tr[2] * 0.3, 0.44 + tr[3] * 0.3, 0.95)
 	if p.dragons then
+		-- painted in its own gold; in a class's theme, its gold drained and cast in the class's metal
+		local theme = C.UI_THEME and C.UI_THEME.metal and C.UI_THEME
 		for i = 1, 2 do
-			p.dragons[i]:SetVertexColor(1, 1, 1) -- painted in its own gold
-			p.eyes[i]:SetVertexColor(1, 0.62, 0.14, 0.95) -- the eyes glow amber, as painted
+			p.dragons[i]:SetDesaturated(theme and true or false)
+			if theme then
+				local m, g = theme.metal, theme.glow
+				p.dragons[i]:SetVertexColor(math.min(1, 0.25 + m[1] * 0.95), math.min(1, 0.25 + m[2] * 0.95), math.min(1, 0.25 + m[3] * 0.95))
+				p.eyes[i]:SetVertexColor(g[1], g[2], g[3], 0.95)
+			else
+				p.dragons[i]:SetVertexColor(1, 1, 1)
+				p.eyes[i]:SetVertexColor(1, 0.62, 0.14, 0.95) -- the eyes glow amber, as painted
+			end
 		end
 	end
 end
@@ -1267,6 +1349,14 @@ RefreshHub = function()
 		b.selected = b.code == C.lang
 		PaintButton(b)
 	end
+	C.SetText(hub.theme.text, C.F("Theme: {1}", C.ThemeName(C.uiTheme)))
+	hub.theme.selected = hub.themeMenu:IsShown()
+	PaintButton(hub.theme)
+	for i = 1, table.getn(hub.themeMenu.items) do
+		local b = hub.themeMenu.items[i]
+		b.selected = b.key == C.uiTheme
+		PaintButton(b)
+	end
 end
 C.RefreshHub = function() RefreshHub() end
 
@@ -1372,7 +1462,7 @@ local function BuildHub()
 	C.LText(platesButton.text, "Tiny Plates settings")
 	platesButton:SetPoint("TOPLEFT", o, "TOPLEFT", 14, y)
 	local langButton = C.Button(o, 148, 24, "", function()
-		if o.langMenu:IsShown() then o.langMenu:Hide() else o.langMenu:Show() end
+		if o.langMenu:IsShown() then o.langMenu:Hide() else o.themeMenu:Hide(); o.langMenu:Show() end
 		RefreshHub()
 	end)
 	C.LText(langButton.text, "Language")
@@ -1406,6 +1496,41 @@ local function BuildHub()
 		b:SetPoint("TOPLEFT", menu, "TOPLEFT", 4 + col * 148, -4 - row * 22)
 		menu.items[i] = b
 	end
+	-- the theme: a button beside it that opens the list of themes, each name in its class's color
+	local themeButton = C.Button(o, 148, 24, "", function()
+		if o.themeMenu:IsShown() then o.themeMenu:Hide() else o.langMenu:Hide(); o.themeMenu:Show() end
+		RefreshHub()
+	end)
+	themeButton:SetPoint("TOPLEFT", o, "TOPLEFT", 14 + COL_W, y)
+	o.theme = themeButton
+	local tmenu = CreateFrame("Frame", "CreedUIThemeMenu", o)
+	o.themeMenu = tmenu
+	local tn = table.getn(C.UI_THEMES)
+	tmenu:SetWidth(298)
+	tmenu:SetHeight(math.ceil(tn / 2) * 22 + 8)
+	tmenu:SetPoint("BOTTOM", themeButton, "TOP", 0, 2)
+	tmenu:SetFrameStrata("FULLSCREEN_DIALOG")
+	tmenu:SetBackdrop({ bgFile = C.FLAT, edgeFile = C.FLAT, edgeSize = 1, insets = { left = 1, right = 1, top = 1, bottom = 1 } })
+	tmenu:SetBackdropColor(0.05, 0.05, 0.07, 0.98)
+	tmenu:SetBackdropBorderColor(0.91, 0.70, 0.30, 0.8)
+	tmenu:EnableMouse(true)
+	tmenu:Hide()
+	tmenu.items = {}
+	for i = 1, tn do
+		local info = C.UI_THEMES[i]
+		local b = C.Button(tmenu, 142, 20, "", function()
+			C.SetTheme(this.key, true)
+			tmenu:Hide()
+			RefreshHub()
+		end)
+		b.key = info.key
+		C.LText(b.text, info.name)
+		local tc = info.title or C.BRONZE.title
+		b.text:SetTextColor(tc[1], tc[2], tc[3])
+		local col, row = math.mod(i - 1, 2), math.floor((i - 1) / 2)
+		b:SetPoint("TOPLEFT", tmenu, "TOPLEFT", 4 + col * 148, -4 - row * 22)
+		tmenu.items[i] = b
+	end
 end
 
 function C.ToggleHub()
@@ -1429,6 +1554,16 @@ local function Slash(msg)
 		if C.timerSlash then C.timerSlash(rest) end
 	elseif cmd == "numbers" or cmd == "sn" or cmd == "dmg" then
 		if C.numberSlash then C.numberSlash(rest) end
+	elseif cmd == "theme" then
+		local want = string.lower(rest or "")
+		local keys = {}
+		for i = 1, table.getn(C.UI_THEMES) do table.insert(keys, C.UI_THEMES[i].key) end
+		if want ~= "" and C.SetTheme(want, true) then
+			C.RefreshHub()
+			C.Print(C.F("theme: {1}", C.ThemeName(C.uiTheme)))
+		else
+			C.Print(C.F("/creed theme followed by one of: {1}", table.concat(keys, ", ")))
+		end
 	elseif cmd == "talents" then
 		if C.ToggleTalents then C.ToggleTalents() end
 	elseif cmd == "probe" then
@@ -1630,6 +1765,9 @@ local function GuardGameMenu()
 	end)
 end
 C.OnInit(function() pcall(GuardGameMenu) end)
+-- the theme kept in the settings, and again once the hero is in the world ("class" needs its class)
+C.OnInit(function() C.SetTheme(CreedUIDB and CreedUIDB.theme or "bronze") end)
+C.OnWorld(function() C.SetTheme(C.uiTheme) end)
 
 -- is the addon this part grew out of still running? then that part stays off
 function C.OldAddon(name)
