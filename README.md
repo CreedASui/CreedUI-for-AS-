@@ -45,7 +45,7 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 
 Every part can be turned on or off, sized and moved (the chat too).
 
-**Themes:** Bronze, your class's, or any class's (Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid), picked from the options or with `/creed theme`.
+**Themes:** Bronze, your class's, or any class's (Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid), picked from the options or with `/creed theme`. Each class's theme puts its own emblem on the skill bar's ends (a shield and axes, a bow, a horned skull...).
 
 **Languages:** English, French, German, Spanish, Portuguese, Chinese, Russian, Japanese, Korean, Polish and Turkish, picked from the options or with `/creed language`.
 

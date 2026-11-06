@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.21.1
+- **Each class theme has its own emblem on the skill bar's ends** in place of the dragons (Bronze keeps the dragons): the **Warrior** a round shield over crossed axes, the **Paladin** a radiant kite shield with a cross, the **Hunter** a drawn bow with its arrow pointing out, the **Rogue** crossed daggers with a gold coin and a drop of poison, the **Priest** a winged staff with a halo, the **Shaman** a carved totem under a thunderbird with lightning, the **Mage** a glowing orb in a rune ring, the **Warlock** a horned skull with fel-green eyes in a violet flame, and the **Druid** a crescent moon in antlers with leaves. Each one's gem glows softly in its class's light.
+
 ## 1.21.0
 - **UI themes for every class.** Pick one in the options (**Theme**, beside Language) or with `/creed theme <name>`: **Bronze** (as before), **Your class** (follows the hero you play), or **Warrior**, **Paladin**, **Hunter**, **Rogue**, **Priest**, **Shaman**, **Mage**, **Warlock** or **Druid**. Each recolors every part's metal (rims, rails, titles, gems, glows and the panels' glass) in its class's color, and casts the skill bar's dragons in it. The boss timer keeps its bronze.
 - **Target frame: the game's own dragons.** A boss you target wears the gold elite dragon round its portrait, a guardian the silver rare one.

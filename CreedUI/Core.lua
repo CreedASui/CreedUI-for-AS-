@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.21.0"
+C.VERSION = "1.21.1"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -412,36 +412,37 @@ C.BRONZE = {
 	glow = { 1.00, 0.80, 0.45 }, trough = { 0.07, 0.05, 0.03 }, mc = { 1.00, 0.88, 0.60 },
 }
 -- The UI's theme (1.21.0, asked for): the bronze gold, or a class's own metal in its class color,
--- picked in the options. It recolors every part's rims, titles, gems, glows and glass; the boss
--- timer keeps the bronze (C.BRONZE) whatever the theme. "class" follows the hero's class.
+-- picked in the options. It recolors every part's rims, titles, gems, glows and glass, and puts the
+-- class's emblem on the skill bar's ends (gemAt: its gem, as shares of the picture facing right);
+-- the boss timer keeps the bronze (C.BRONZE) whatever the theme. "class" follows the hero's class.
 C.UI_THEMES = {
 	{ key = "bronze", name = "Bronze" },
 	{ key = "class", name = "Your class" },
-	{ key = "warrior", name = "Warrior", metal = { 0.80, 0.64, 0.46 },
+	{ key = "warrior", name = "Warrior", emblem = "Warrior", gemAt = { 0.580, 0.582 }, metal = { 0.80, 0.64, 0.46 },
 		title = { 0.92, 0.80, 0.64 }, rim = { 0.80, 0.64, 0.46 }, gem = { 0.92, 0.26, 0.18 },
 		glow = { 1.00, 0.55, 0.35 }, trough = { 0.08, 0.04, 0.03 }, mc = { 0.96, 0.82, 0.64 } },
-	{ key = "paladin", name = "Paladin", metal = { 0.96, 0.62, 0.78 },
+	{ key = "paladin", name = "Paladin", emblem = "Paladin", gemAt = { 0.580, 0.496 }, metal = { 0.96, 0.62, 0.78 },
 		title = { 1.00, 0.82, 0.90 }, rim = { 0.96, 0.62, 0.78 }, gem = { 1.00, 0.85, 0.40 },
 		glow = { 1.00, 0.75, 0.88 }, trough = { 0.07, 0.03, 0.05 }, mc = { 1.00, 0.86, 0.93 } },
-	{ key = "hunter", name = "Hunter", metal = { 0.64, 0.82, 0.42 },
+	{ key = "hunter", name = "Hunter", emblem = "Hunter", gemAt = { 0.407, 0.560 }, metal = { 0.64, 0.82, 0.42 },
 		title = { 0.82, 0.94, 0.62 }, rim = { 0.64, 0.82, 0.42 }, gem = { 0.56, 0.88, 0.30 },
 		glow = { 0.76, 0.96, 0.56 }, trough = { 0.03, 0.06, 0.02 }, mc = { 0.86, 0.97, 0.72 } },
-	{ key = "rogue", name = "Rogue", metal = { 0.94, 0.88, 0.40 },
+	{ key = "rogue", name = "Rogue", emblem = "Rogue", gemAt = { 0.580, 0.582 }, metal = { 0.94, 0.88, 0.40 },
 		title = { 1.00, 0.97, 0.62 }, rim = { 0.94, 0.88, 0.40 }, gem = { 1.00, 0.94, 0.34 },
 		glow = { 1.00, 0.97, 0.56 }, trough = { 0.06, 0.06, 0.02 }, mc = { 1.00, 0.98, 0.72 } },
-	{ key = "priest", name = "Priest", metal = { 0.84, 0.86, 0.92 },
+	{ key = "priest", name = "Priest", emblem = "Priest", gemAt = { 0.580, 0.465 }, metal = { 0.84, 0.86, 0.92 },
 		title = { 0.97, 0.97, 1.00 }, rim = { 0.84, 0.86, 0.92 }, gem = { 0.90, 0.93, 1.00 },
 		glow = { 0.95, 0.96, 1.00 }, trough = { 0.05, 0.05, 0.07 }, mc = { 1.00, 1.00, 1.00 } },
-	{ key = "shaman", name = "Shaman", metal = { 0.30, 0.58, 0.95 },
+	{ key = "shaman", name = "Shaman", emblem = "Shaman", gemAt = { 0.580, 0.334 }, metal = { 0.30, 0.58, 0.95 },
 		title = { 0.58, 0.82, 1.00 }, rim = { 0.30, 0.58, 0.95 }, gem = { 0.32, 0.66, 1.00 },
 		glow = { 0.46, 0.76, 1.00 }, trough = { 0.02, 0.04, 0.08 }, mc = { 0.66, 0.86, 1.00 } },
-	{ key = "mage", name = "Mage", metal = { 0.48, 0.82, 0.95 },
+	{ key = "mage", name = "Mage", emblem = "Mage", gemAt = { 0.580, 0.472 }, metal = { 0.48, 0.82, 0.95 },
 		title = { 0.72, 0.93, 1.00 }, rim = { 0.48, 0.82, 0.95 }, gem = { 0.56, 0.88, 1.00 },
 		glow = { 0.66, 0.92, 1.00 }, trough = { 0.02, 0.05, 0.07 }, mc = { 0.80, 0.95, 1.00 } },
-	{ key = "warlock", name = "Warlock", metal = { 0.64, 0.55, 0.86 },
+	{ key = "warlock", name = "Warlock", emblem = "Warlock", gemAt = { 0.580, 0.416 }, metal = { 0.64, 0.55, 0.86 },
 		title = { 0.84, 0.76, 1.00 }, rim = { 0.64, 0.55, 0.86 }, gem = { 0.64, 0.42, 0.96 },
 		glow = { 0.76, 0.64, 1.00 }, trough = { 0.04, 0.03, 0.07 }, mc = { 0.86, 0.80, 1.00 } },
-	{ key = "druid", name = "Druid", metal = { 1.00, 0.58, 0.16 },
+	{ key = "druid", name = "Druid", emblem = "Druid", gemAt = { 0.580, 0.698 }, metal = { 1.00, 0.58, 0.16 },
 		title = { 1.00, 0.76, 0.44 }, rim = { 1.00, 0.58, 0.16 }, gem = { 1.00, 0.56, 0.10 },
 		glow = { 1.00, 0.68, 0.30 }, trough = { 0.07, 0.04, 0.01 }, mc = { 1.00, 0.82, 0.52 } },
 }
@@ -976,13 +977,21 @@ function C.Panel(frame, dragons)
 			t:SetPoint("BOTTOM" .. side, frame, "BOTTOM" .. side, k * out, -P_FOOT)
 			if k < 0 then t:SetTexCoord(1, 0, 0, 1) end
 			p.dragons[i] = t
-			local ex = (k < 0) and (-out + (1 - EYE_X) * P_DRAGON) or (out - (1 - EYE_X) * P_DRAGON)
 			local e = C.Tex(p.eyeLayer, "OVERLAY", C.ART .. "Glow", "ADD")
-			e:SetWidth(8)
-			e:SetHeight(8)
-			e:SetPoint("CENTER", frame, "BOTTOM" .. side, ex, -P_FOOT + P_DRAGON * (1 - EYE_Y))
 			p.eyes[i] = e
 		end
+		p.PlaceEye = function(ex, ey, size)
+			for i, side in ipairs({ "LEFT", "RIGHT" }) do
+				local k = (side == "LEFT") and -1 or 1
+				local x = (k < 0) and (-out + (1 - ex) * P_DRAGON) or (out - (1 - ex) * P_DRAGON)
+				local e = p.eyes[i]
+				e:ClearAllPoints()
+				e:SetWidth(size)
+				e:SetHeight(size)
+				e:SetPoint("CENTER", frame, "BOTTOM" .. side, x, -P_FOOT + P_DRAGON * (1 - ey))
+			end
+		end
+		p.PlaceEye(EYE_X, EYE_Y, 8)
 	end
 	return p
 end
@@ -998,16 +1007,22 @@ function C.PanelTheme(p, pal)
 	for i = 1, table.getn(p.metal) do p.metal[i]:SetVertexColor(mr, mg, mb) end
 	p.fill:SetVertexColor(0.5 + tr[1] * 0.3, 0.47 + tr[2] * 0.3, 0.44 + tr[3] * 0.3, 0.95)
 	if p.dragons then
-		-- painted in its own gold; in a class's theme, its gold drained and cast in the class's metal
-		local theme = C.UI_THEME and C.UI_THEME.metal and C.UI_THEME
+		-- painted in its own gold; in a class's theme, the class's own emblem in their place (drawn
+		-- by dev/art/make_art21.py), its gem glowing in the class's light
+		local theme = C.UI_THEME and C.UI_THEME.emblem and C.UI_THEME
+		if p.emblem ~= (theme and theme.emblem) then
+			p.emblem = theme and theme.emblem
+			for i = 1, 2 do
+				p.dragons[i]:SetTexture(C.ART .. (theme and ("PanelEmblem" .. theme.emblem) or "PanelDragon"))
+			end
+			if theme then p.PlaceEye(theme.gemAt[1], theme.gemAt[2], 18) else p.PlaceEye(EYE_X, EYE_Y, 8) end
+		end
 		for i = 1, 2 do
-			p.dragons[i]:SetDesaturated(theme and true or false)
+			p.dragons[i]:SetVertexColor(1, 1, 1)
 			if theme then
-				local m, g = theme.metal, theme.glow
-				p.dragons[i]:SetVertexColor(math.min(1, 0.25 + m[1] * 0.95), math.min(1, 0.25 + m[2] * 0.95), math.min(1, 0.25 + m[3] * 0.95))
-				p.eyes[i]:SetVertexColor(g[1], g[2], g[3], 0.95)
+				local g = theme.glow
+				p.eyes[i]:SetVertexColor(g[1], g[2], g[3], 0.8)
 			else
-				p.dragons[i]:SetVertexColor(1, 1, 1)
 				p.eyes[i]:SetVertexColor(1, 0.62, 0.14, 0.95) -- the eyes glow amber, as painted
 			end
 		end

@@ -329,25 +329,25 @@ local rim = CreedUI.Pal().rim
 check(near(rim[1], 0.48) and near(rim[3], 0.95), "Mage: the parts' rims turn frost blue")
 check(CreedUIDB.theme == "mage", "the theme is kept in the settings")
 check(near(CreedUI.BRONZE.rim[1], 0.95), "the boss timer keeps its bronze")
-local desat = 0
-for _, o in ipairs(M.All()) do
-	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelDragon$") and o.__desat then desat = desat + 1 end
+local function onBar(file)
+	local n = 0
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Texture" and o.__tex and string.find(o.__tex, file .. "$") and under(o, CreedUIBar) and M.Visible(o) then n = n + 1 end
+	end
+	return n
 end
-check(desat >= 2, "the bar's dragons are cast in the mage's metal (" .. desat .. ")")
+check(onBar("PanelEmblemMage") == 2 and onBar("PanelDragon") == 0, "the bar's dragons give way to the mage's emblem, one on each end")
 check(findText(CreedUIOptions, "^Theme: Mage$") ~= nil, "the hub names the theme")
 M.Slash("theme class")
 frames(5)
 check(CreedUI.uiTheme == "class" and near(CreedUI.Pal().rim[1], 0.94), "your class (a rogue): the rogue's yellow metal")
+check(onBar("PanelEmblemRogue") == 2, "and the rogue's daggers on the bar")
 M.Slash("theme nonsense")
 check(CreedUI.uiTheme == "class", "an unknown theme changes nothing")
 M.Slash("theme bronze")
 frames(5)
 check(near(CreedUI.Pal().rim[1], 0.95), "back to bronze")
-desat = 0
-for _, o in ipairs(M.All()) do
-	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelDragon$") and o.__desat then desat = desat + 1 end
-end
-check(desat == 0, "the dragons in their own gold again")
+check(onBar("PanelDragon") == 2 and onBar("PanelEmblem") == 0, "the dragons back on the bar's ends")
 problems("themes")
 
 ------------------------------------------------------------------ 8. moving frames
