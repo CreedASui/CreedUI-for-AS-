@@ -505,4 +505,12 @@ CreedUI.AddLanguage("zh", "中文", CreedUI.FACE_CJK, {
 	["Mage"] = "法师",
 	["Warlock"] = "术士",
 	["Druid"] = "德鲁伊",
+	["Stats"] = "属性",
+	["Vs Elites"] = "对精英",
+	["Vs Controlled"] = "对受控",
+	["Shielded"] = "护盾时",
+	["Pick the stats to show"] = "选择显示的属性",
+	["Hide the stats window (Creed UI Options brings it back)"] = "隐藏属性窗口（Creed UI 选项可恢复）",
+	["the stats window stopped after an error: "] = "属性窗口出错后停止：",
+	["Your run's stats at a glance, grouped (Offense, Survival, Area and DoTs, Run); a change flashes green going up, red going down. The + in its head picks the stats it shows."] = "一眼看清本局属性，分组显示（进攻、生存、范围与持续伤害、本局）；数值上升闪绿，下降闪红。标题上的 + 可选择显示的属性。",
 })

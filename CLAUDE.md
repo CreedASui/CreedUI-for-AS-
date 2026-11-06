@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.21.8**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.22.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -85,6 +85,8 @@ CreedUI/            the addon (this folder name is the install folder; never ren
                     "set.<class>.<rarity>" and "weapon.<class>.<n>.<rarity>" words; 1.20.2; Tier 0.5 is
                     purple in game, 1.20.3; set rarity 4 (AQ, Naxx) armor is purple, only weapons orange, 1.20.5)
   Luck.lua          luck medallion (shown or hidden from the options hub since 1.14.3)
+  Stats.lua         the run's stats window (1.22.0, asked for by a player): AZS_STATS's fields, worded as
+                    the game's own character panel, grouped as Character.lua's; the + picks them (db.track)
   TinyPlates.lua    nameplates (contributor JamieeLee, 1.14.3): based on Valorless's MIT-licensed
   TinyPlatesOptions.lua  ASTinyPlates (TinyPlates-LICENSE.txt); its own panel from the hub's button
   Character.lua     the game's character window dressed: gear slots lit by rarity, the run's stats
@@ -181,6 +183,7 @@ lua50 cui/smoke.lua . ../CreedUI out            # problems: 0
 lua50 cui/globals.lua . ../CreedUI              # only this, event, arg1
 lua50 cui/overflow.lua . ../CreedUI             # overflows: 0
 python3 cui/locale_check.py ../CreedUI          # LOCALE OK
+python3 cui/art_check.py ../CreedUI             # ART OK (every BLP at most 512 a side: bigger shows flat)
 ```
 
 For pictures, use a `cui/*prev.lua` scene and then `cui/render_cui.py`. To ship: bump `C.VERSION` in

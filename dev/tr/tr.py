@@ -311,4 +311,12 @@ T = {
 502: "Büyücü",
 503: "Kara Büyücü",
 504: "Druid",
+505: "İstatistikler",
+506: "Elitlere karşı",
+507: "Kontrol altındakilere",
+508: "Kalkanlıyken",
+509: "Gösterilecek istatistikleri seç",
+510: "İstatistik penceresini gizle (Creed UI ayarları geri getirir)",
+511: "istatistik penceresi bir hatadan sonra durdu: ",
+512: "Koşunun istatistikleri bir bakışta, gruplu (Saldırı, Hayatta kalma, Alan ve DoT, Koşu); artış yeşil, düşüş kırmızı yanar. Başlıktaki + gösterilecekleri seçer.",
 }

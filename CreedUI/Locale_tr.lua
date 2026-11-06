@@ -505,4 +505,12 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Mage"] = "Büyücü",
 	["Warlock"] = "Kara Büyücü",
 	["Druid"] = "Druid",
+	["Stats"] = "İstatistikler",
+	["Vs Elites"] = "Elitlere karşı",
+	["Vs Controlled"] = "Kontrol altındakilere",
+	["Shielded"] = "Kalkanlıyken",
+	["Pick the stats to show"] = "Gösterilecek istatistikleri seç",
+	["Hide the stats window (Creed UI Options brings it back)"] = "İstatistik penceresini gizle (Creed UI ayarları geri getirir)",
+	["the stats window stopped after an error: "] = "istatistik penceresi bir hatadan sonra durdu: ",
+	["Your run's stats at a glance, grouped (Offense, Survival, Area and DoTs, Run); a change flashes green going up, red going down. The + in its head picks the stats it shows."] = "Koşunun istatistikleri bir bakışta, gruplu (Saldırı, Hayatta kalma, Alan ve DoT, Koşu); artış yeşil, düşüş kırmızı yanar. Başlıktaki + gösterilecekleri seçer.",
 })

@@ -505,4 +505,12 @@ CreedUI.AddLanguage("pl", "Polski", CreedUI.FACE_LETTERS, {
 	["Mage"] = "Mag",
 	["Warlock"] = "Czarnoksiężnik",
 	["Druid"] = "Druid",
+	["Stats"] = "Statystyki",
+	["Vs Elites"] = "Na elity",
+	["Vs Controlled"] = "Na kontrolowanych",
+	["Shielded"] = "Pod tarczą",
+	["Pick the stats to show"] = "Wybierz statystyki",
+	["Hide the stats window (Creed UI Options brings it back)"] = "Ukryj okno statystyk (opcje Creed UI je przywrócą)",
+	["the stats window stopped after an error: "] = "okno statystyk zatrzymało się po błędzie: ",
+	["Your run's stats at a glance, grouped (Offense, Survival, Area and DoTs, Run); a change flashes green going up, red going down. The + in its head picks the stats it shows."] = "Statystyki rozgrywki w skrócie, w grupach (Atak, Przetrwanie, Obszar i DoT, Rozgrywka); wzrost błyska na zielono, spadek na czerwono. Przycisk + w nagłówku wybiera statystyki.",
 })

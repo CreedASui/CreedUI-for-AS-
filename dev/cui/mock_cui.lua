@@ -274,6 +274,8 @@ function IMPL.SetTexture(self, a, g, b, al)
 		M.artUsed = M.artUsed or {}
 		M.artUsed[name] = true
 	end
+	-- as the game: nothing back for a file it can't show (M.missingArt names them, for tests)
+	if a and M.missingArt and M.missingArt[string.gsub(a, ".*\\", "")] then return nil end
 	return 1
 end
 function IMPL.GetTexture(self) return self.__tex end
@@ -888,7 +890,7 @@ function M.Frame(dt)
 end
 
 M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Hurt.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Pets.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua",
-	"Chests.lua", "Meter.lua", "Luck.lua", "LootSets.lua", "Loot.lua", "Summary.lua", "Character.lua", "Talents.lua", "Chat.lua" }
+	"Chests.lua", "Meter.lua", "Luck.lua", "Stats.lua", "LootSets.lua", "Loot.lua", "Summary.lua", "Character.lua", "Talents.lua", "Chat.lua" }
 function M.Load(dir)
 	for i = 1, table.getn(M.files) do
 		local chunk, err = loadfile(dir .. "/" .. M.files[i])
@@ -908,7 +910,7 @@ function M.Reload(dir, fireLogout)
 	for _, name in ipairs({ "CreedUITimerFrame", "CreedUIOptions", "CreedUITimerOptions", "CreedUINumbersOptions",
 		"CreedUIBosses", "CreedUISkulls", "CreedUISkullsDriver", "CreedUIDowned", "CreedUIDownedBanner", "CreedUIDownedDriver", "CreedUILevelUps", "CreedUILevelUpsDriver", "CreedUISummary", "CreedUISummaryDriver", "CreedUITalents", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
 		"CreedUIParty", "CreedUITally", "CreedUIMinimap", "CreedUIMenuGuard", "GameMenuFrame", "Minimap", "CreedUIMeter",
-		"CreedUILuck", "CreedUIMeterToggle", "CreedUIChatGlass", "CreedUIChatDown", "ChatFrame1", "ChatFrame2", "CreedUIChests", "CreedUIMinimapClock", "CreedUIMeterSizer", "CreedUILuckSizer", "CreedUILuckToggle",
+		"CreedUILuck", "CreedUIStats", "CreedUIStatsMenu", "CreedUIMeterToggle", "CreedUIChatGlass", "CreedUIChatDown", "ChatFrame1", "ChatFrame2", "CreedUIChests", "CreedUIMinimapClock", "CreedUIMeterSizer", "CreedUILuckSizer", "CreedUILuckToggle",
 		"ChatFrameEditBox", "ChatFrameMenuButton" }) do
 		setglobal(name, nil)
 	end

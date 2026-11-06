@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.21.8"
+C.VERSION = "1.22.0"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -1057,12 +1057,15 @@ function C.PanelTheme(p, pal)
 		p.railB:SetVertexColor(1, 1, 1)
 		-- the class's glass (1.21.8, asked for: its color, not black): Art/PanelGlass, its filigree and
 		-- middle light, tinted with the theme's fill
-		if not p.glassSet then
-			p.fill:SetTexture(C.ART .. "PanelGlass")
-			p.glassSet = true
+		-- (should the game not show it, SetTexture answers nothing: the panel's own glass, darkened
+		-- to the class's color, rather than a flat bright one)
+		if p.glassSet == nil then
+			p.glassSet = p.fill:SetTexture(C.ART .. "PanelGlass") and true or false
+			if not p.glassSet then p.fill:SetTexture(C.ART .. "PanelFill") end
 		end
 		local f = C.UI_THEME.fill
-		p.fill:SetVertexColor(f[1], f[2], f[3], 0.97)
+		local k = p.glassSet and 1 or 0.45
+		p.fill:SetVertexColor(f[1] * k, f[2] * k, f[3] * k, 0.97)
 	end
 end
 

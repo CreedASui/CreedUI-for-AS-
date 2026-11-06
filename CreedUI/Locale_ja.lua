@@ -505,4 +505,12 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Mage"] = "メイジ",
 	["Warlock"] = "ウォーロック",
 	["Druid"] = "ドルイド",
+	["Stats"] = "ステータス",
+	["Vs Elites"] = "対エリート",
+	["Vs Controlled"] = "対行動阻害",
+	["Shielded"] = "シールド中",
+	["Pick the stats to show"] = "表示するステータスを選ぶ",
+	["Hide the stats window (Creed UI Options brings it back)"] = "ステータス窓を隠す（Creed UI の設定で戻せます）",
+	["the stats window stopped after an error: "] = "ステータス窓はエラーで停止しました：",
+	["Your run's stats at a glance, grouped (Offense, Survival, Area and DoTs, Run); a change flashes green going up, red going down. The + in its head picks the stats it shows."] = "ランのステータスを一目で、グループ別に（攻撃、生存、範囲とDoT、ラン）。上がると緑、下がると赤に光ります。見出しの + で表示するステータスを選べます。",
 })

@@ -505,4 +505,12 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Mage"] = "Маг",
 	["Warlock"] = "Чернокнижник",
 	["Druid"] = "Друид",
+	["Stats"] = "Статы",
+	["Vs Elites"] = "Против элиты",
+	["Vs Controlled"] = "Против контроля",
+	["Shielded"] = "Под щитом",
+	["Pick the stats to show"] = "Выбрать показатели",
+	["Hide the stats window (Creed UI Options brings it back)"] = "Скрыть окно характеристик (вернуть — в настройках Creed UI)",
+	["the stats window stopped after an error: "] = "окно характеристик остановлено после ошибки: ",
+	["Your run's stats at a glance, grouped (Offense, Survival, Area and DoTs, Run); a change flashes green going up, red going down. The + in its head picks the stats it shows."] = "Характеристики забега одним взглядом, по группам (Атака, Выживание, Область и DoT, Забег); рост вспыхивает зелёным, падение — красным. Кнопка + в заголовке выбирает показатели.",
 })

@@ -340,6 +340,17 @@ for _, o in ipairs(M.All()) do
 	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelGlass$") and under(o, CreedUIBar) then fill = o end
 end
 check(fill and fill.__vc and near(fill.__vc[3], 0.95) and fill.__vc[3] > fill.__vc[1], "the bar's glass in the mage's blue")
+-- a game that can't show the glass: the panel's own, darkened to the class's color, never flat bright
+CreedUIBar.deco.glassSet = nil
+M.missingArt = { PanelGlass = true }
+CreedUI.palStamp = CreedUI.palStamp + 1
+frames(3)
+check(fill.__tex and string.find(fill.__tex, "PanelFill$") and fill.__vc[3] < 0.5, "no glass texture: the panel's own glass, darkened in the mage's blue")
+M.missingArt = nil
+CreedUIBar.deco.glassSet = nil
+CreedUI.palStamp = CreedUI.palStamp + 1
+frames(3)
+check(string.find(fill.__tex, "PanelGlass$") ~= nil, "and the class glass when it's there")
 M.unit.player.class = nil
 M.Fire("PLAYER_ENTERING_WORLD")
 frames(5)
@@ -1808,6 +1819,63 @@ do
 	if CreedUIOptions.__shown then M.Slash("") end
 	SIM.Publish = pub
 	problems("languages")
+end
+
+------------------------------------------------------------------ 11n2. the stats window: the run's stats, grouped, the ones you pick
+do
+	local was = AZS_STATS
+	AZS_STATS = { dmg = 2.57, crit = 0.404, cm = 2.97, cd = 0.71, echo = 0.32, hp = 2480, arm = 0.39, reg = 4.5, lch = 0.015,
+		spd = 1.58, luck = 0.2, area = 1.3, cnt = 2, xp = 1.2, gold = 1.27, pick = 9, heal = 0, thn = 0, liv = 1, bp = 0.3,
+		dots = 1, doth = 0, big = 0, exe = 0.3, cc = 0, dotd = 0.15, shd = 0, auto = 0.1, pet = 0 }
+	M.phase = "playing"
+	frames(30)
+	check(CreedUIStats and M.Visible(CreedUIStats), "the stats window shows in a run")
+	check(findText(CreedUIStats, "^Stats$") ~= nil and findText(CreedUIStats, "^OFFENSE$") ~= nil and findText(CreedUIStats, "^SURVIVAL$") ~= nil,
+		"titled, its groups under their headers")
+	check(findText(CreedUIStats, "^%+157%%$") ~= nil and findText(CreedUIStats, "^40.4%%$") ~= nil and findText(CreedUIStats, "^297%%$") ~= nil,
+		"damage, crit and crit damage as the game writes them: " .. table.concat(textsUnder(CreedUIStats), " | "))
+	check(findText(CreedUIStats, "^2,480$") ~= nil and findText(CreedUIStats, "^39%%$") ~= nil and findText(CreedUIStats, "^%+58%%$") ~= nil, "health, armor and speed")
+	local function rowShown(label)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "FontString" and o.__text == label and under(o, CreedUIStats) and not under(o, CreedUIStatsMenu) and M.Visible(o) then return true end
+		end
+		return false
+	end
+	check(not rowShown("Melee") and not rowShown("Pickup"), "the ones not picked stay out")
+	-- the + opens the list; ticking Melee adds it, kept in the settings
+	local pick
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "Button" and o.__parent == CreedUIStats and o.__scripts.OnClick then
+			for _, k in ipairs(M.All()) do if k.__parent == o and k.__text == "+" then pick = o end end
+		end
+	end
+	this = pick
+	pick:Click()
+	frames(3)
+	check(M.Visible(CreedUIStatsMenu), "its + opens the list of every stat")
+	for _, b in ipairs(CreedUIStatsMenu.items) do if b.name == "Melee" then this = b; b:Click() end end
+	frames(5)
+	check(rowShown("Melee") and findText(CreedUIStats, "^%+10%%$") ~= nil and CreedUIDB.stats.track["Melee"] == true, "ticked: Melee shows, and is kept")
+	for _, b in ipairs(CreedUIStatsMenu.items) do if b.name == "Crit" then this = b; b:Click() end end
+	frames(5)
+	check(not rowShown("Crit"), "unticked: Crit goes")
+	for _, b in ipairs(CreedUIStatsMenu.items) do if b.name == "Crit" then this = b; b:Click() end end
+	-- a stat going up flashes green
+	AZS_STATS.dmg = 2.80
+	frames(15)
+	local v
+	for _, o in ipairs(M.All()) do
+		if o.__kind == "FontString" and o.__text == "+180%" and under(o, CreedUIStats) then v = o end
+	end
+	check(v and v.__color and v.__color[2] > v.__color[1] + 0.1, "damage going up flashes green")
+	-- out of a run, it goes
+	AZS_STATS = nil
+	frames(40)
+	check(not M.Visible(CreedUIStats), "no run: no stats window")
+	AZS_STATS = was
+	this = pick
+	pick:Click()
+	problems("stats window")
 end
 
 ------------------------------------------------------------------ 11o. the chat stops short of the skill bar's emblem
