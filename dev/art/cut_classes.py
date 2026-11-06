@@ -81,7 +81,9 @@ lift = np.clip(im - BG, 0, 1)
 # alpha off the black: light and glow by how far they rise above it, solid shapes (dark shields, the
 # bar's tinted glass) whole, their holes filled
 glow_a = np.clip(lift.max(axis=2) / 0.25, 0, 1)
-solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.05, iterations=K))
+# (dark cloaks and shadows count as solid too: anything above the black, its gaps closed first, then
+# only single stray pixels opened away, at any size of picture; 1.23.1, asked for: no holes in the flags)
+solid = ndimage.binary_opening(ndimage.binary_fill_holes(ndimage.binary_closing(lift.max(axis=2) > 0.035, iterations=K)), iterations=1)
 solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7 * K) * 1.2, 0, 1)
 alpha_all = np.maximum(glow_a, solid_a)
 bright = np.clip((lift.max(axis=2) - 0.14) / 0.16, 0, 1)   # clearly brighter than the bars' dark glass
@@ -94,9 +96,13 @@ def ramp(v, a, b):
     return np.clip((v - a) / (b - a), 0, 1)
 
 
-def cut(name, cx, mid, s, keep, anchor_x, stray=0.02):
-    """the picture round (cx, mid), its rails RAIL apart, onto a TW x TH texture"""
+def cut(name, cx, mid, s, keep, anchor_x, stray=0.02, face=None, bar_side=0):
+    """the picture round (cx, mid), its rails RAIL apart, onto a TW x TH texture; face: the radius of its
+    round face (picture px), always solid so nothing shows through it; bar_side: -1 or 1, the side
+    facing the bar, the only side small loose pieces are dropped from"""
     a = alpha_all * keep
+    if face:
+        a = np.maximum(a, ramp(np.hypot(xx - cx, yy - mid), face, face - 2 * K))
     with np.errstate(invalid="ignore", divide="ignore"):
         col = np.clip(np.where(a[..., None] > 1e-3, lift / np.maximum(a, 1e-3)[..., None], 0), 0, 1)
     u = (np.arange(TW) + 0.5 - anchor_x) * s + cx
@@ -116,6 +122,12 @@ def cut(name, cx, mid, s, keep, anchor_x, stray=0.02):
         sizes = ndimage.sum(np.ones_like(pa), lab, index=np.arange(1, n + 1))
         big = np.zeros(n + 1, dtype=bool)
         big[1:] = sizes >= max(120, stray * sizes.max())
+        if bar_side:
+            # only on the bar's side: on the outer side, a flag's or a cape's own pieces are the design
+            cols = ndimage.center_of_mass(np.ones_like(pa), lab, index=np.arange(1, n + 1))
+            for j, (_, ccol) in enumerate(cols):
+                if (ccol - anchor_x) * bar_side < 0:
+                    big[j + 1] = True
         keepm = ndimage.binary_dilation(big[lab], iterations=2) | (pa <= 0.12) & ndimage.binary_dilation(big[lab], iterations=4)
         pa = pa * ndimage.gaussian_filter(keepm.astype(np.float64), 0.6)
     write_blp(name, np.dstack([np.clip(c, 0, 1), np.clip(pa, 0, 1)]))
@@ -153,7 +165,7 @@ for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
     # (no margin of the picture's own dark glass round the ring: Creed UI's bar has its class's glass)
     inner_l = np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ring), over_l)
     keep_l = keep_l * np.maximum(1 - band, inner_l)
-    cut("PanelEmblem" + cls + "L", lx, mid, s, keep_l, ANCHOR_L, 0.06)
+    cut("PanelEmblem" + cls + "L", lx, mid, s, keep_l, ANCHOR_L, 0.06, rg - 4 * K, 1)
     out_r = OUTER.get(cls + "R", 140) * s
     keep_r = near * ramp(xx, rx + out_r, rx + out_r - 8 * K) * ramp(xx, rx - 150 * s, rx - 140 * s)
     end_r, start_r = Fade(gap_r, s)
@@ -161,7 +173,7 @@ for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
     # (the crest: cut at its ring on the bar's side, no margin: its flag's bits there flew loose)
     inner_r = np.maximum(ramp(xx, rx - 2 * K, rx + 2 * K), ring)
     keep_r = keep_r * np.maximum(1 - band, inner_r)
-    cut("PanelEmblem" + cls + "R", rx, mid, s, keep_r, ANCHOR_R, 0.06)
+    cut("PanelEmblem" + cls + "R", rx, mid, s, keep_r, ANCHOR_R, 0.06, rg - 4 * K, -1)
     # the rails: each one's line and glow, taken across the bar's clear middle, averaged into one
     # smooth line (only the line: the glass on either side of it is Creed UI's)
     x0, x1 = int(lx + (rx - lx) * 0.35), int(lx + (rx - lx) * 0.65)
@@ -193,7 +205,7 @@ if os.path.exists(FIRST):
     PH, PW, _ = im.shape
     lift = np.clip(im - np.array([0.035, 0.035, 0.04]), 0, 1)
     glow_a = np.clip(lift.max(axis=2) / 0.32, 0, 1)
-    solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.07, iterations=K))
+    solid = ndimage.binary_opening(ndimage.binary_fill_holes(ndimage.binary_closing(lift.max(axis=2) > 0.05, iterations=K)), iterations=1)
     solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7 * K) * 1.2, 0, 1)
     alpha_all = np.maximum(glow_a, solid_a)
     yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float64)
@@ -204,7 +216,7 @@ if os.path.exists(FIRST):
     keep = near * ramp(xx, lx - 150 * K, lx - 142 * K) * ramp(xx, lx + 150 * K, lx + 140 * K)
     keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ramp(np.hypot(xx - lx, yy - mid), 73 * K, 70 * K)))
     # its ring is bigger than the others' (70 to their 43, at its rails' scale): drawn to their size
-    cut("PanelEmblemShamanL", lx, mid, s * (70 / (bot - top) * K) / (RING / 72.0), keep, ANCHOR_L)
+    cut("PanelEmblemShamanL", lx, mid, s * (70 / (bot - top) * K) / (RING / 72.0), keep, ANCHOR_L, 0.06, 66 * K, 1)
     # the priest's crest is the first picture's too (asked for): the gold winged light in its ring (about
     # 38 px round, at 957, 1160), its feathers flying out; inside the bar's band cut at the ring, the
     # first picture's bar bracket left behind; drawn to the other crests' size, its ring on the bar's middle
@@ -217,5 +229,5 @@ if os.path.exists(FIRST):
     keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, cx - 2 * K, cx + 2 * K), ramp(np.hypot(xx - cx, yy - cy), r + 3 * K, r)))
     # (and the stub of that bar's top rail and spike over the ring, 1104 to 1122: asked for)
     keep = keep * np.maximum(ramp(np.abs(yy - 1113 * K), 6 * K, 9 * K), ramp(xx, cx + 16 * K, cx + 22 * K))
-    cut("PanelEmblemPriestR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R)
+    cut("PanelEmblemPriestR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R, 0.06, r - 3 * K, -1)
 print("wrote", OUT_BLP)
