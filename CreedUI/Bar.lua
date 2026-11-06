@@ -504,9 +504,6 @@ end
 local function Theme(pal)
 	local rim = pal.rim
 	C.PanelTheme(root.deco, pal)
-	-- the XP bar in the theme's color (a class's, as in its picture), else gold
-	local xc = C.UI_THEME and C.UI_THEME.xp or XP_COLORS
-	C.BarColors(xp, xc[1], xc[2], xc[3])
 	local mr, mg, mb = C.PanelMetal(pal)
 	for i = 1, 3 do root.dividers[i]:SetVertexColor(mr, mg, mb) end
 	for i = 1, 7 do

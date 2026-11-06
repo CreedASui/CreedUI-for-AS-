@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.21.4"
+C.VERSION = "1.21.5"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -416,35 +416,39 @@ C.BRONZE = {
 -- the class's emblem, crest and rails (from the user's own picture) on the skill bar; the boss timer
 -- keeps its bronze (C.BRONZE) whatever the class.
 C.UI_THEMES = {
-	{ key = "warrior", name = "Warrior", emblem = "Warrior", metal = { 0.80, 0.64, 0.46 },
+	{ key = "warrior", name = "Warrior", emblem = "Warrior", fill = { 0.31, 0.15, 0.07 },
+		metal = { 0.80, 0.64, 0.46 },
 		title = { 0.92, 0.80, 0.64 }, rim = { 0.80, 0.64, 0.46 }, gem = { 0.92, 0.26, 0.18 },
 		glow = { 1.00, 0.55, 0.35 }, trough = { 0.08, 0.04, 0.03 }, mc = { 0.96, 0.82, 0.64 } },
-	{ key = "paladin", name = "Paladin", emblem = "Paladin", metal = { 0.96, 0.62, 0.78 },
+	{ key = "paladin", name = "Paladin", emblem = "Paladin", fill = { 0.30, 0.17, 0.04 },
+		metal = { 0.96, 0.62, 0.78 },
 		title = { 1.00, 0.82, 0.90 }, rim = { 0.96, 0.62, 0.78 }, gem = { 1.00, 0.85, 0.40 },
 		glow = { 1.00, 0.75, 0.88 }, trough = { 0.07, 0.03, 0.05 }, mc = { 1.00, 0.86, 0.93 } },
-	{ key = "hunter", name = "Hunter", emblem = "Hunter", xp = { { 0.08, 0.28, 0.04 }, { 0.30, 0.78, 0.18 }, { 0.70, 1.00, 0.50 } },
+	{ key = "hunter", name = "Hunter", emblem = "Hunter", fill = { 0.18, 0.26, 0.00 },
 		metal = { 0.64, 0.82, 0.42 },
 		title = { 0.82, 0.94, 0.62 }, rim = { 0.64, 0.82, 0.42 }, gem = { 0.56, 0.88, 0.30 },
 		glow = { 0.76, 0.96, 0.56 }, trough = { 0.03, 0.06, 0.02 }, mc = { 0.86, 0.97, 0.72 } },
-	{ key = "rogue", name = "Rogue", emblem = "Rogue", metal = { 0.94, 0.88, 0.40 },
+	{ key = "rogue", name = "Rogue", emblem = "Rogue", fill = { 0.18, 0.09, 0.13 },
+		metal = { 0.94, 0.88, 0.40 },
 		title = { 1.00, 0.97, 0.62 }, rim = { 0.94, 0.88, 0.40 }, gem = { 1.00, 0.94, 0.34 },
 		glow = { 1.00, 0.97, 0.56 }, trough = { 0.06, 0.06, 0.02 }, mc = { 1.00, 0.98, 0.72 } },
-	{ key = "priest", name = "Priest", emblem = "Priest", metal = { 0.84, 0.86, 0.92 },
+	{ key = "priest", name = "Priest", emblem = "Priest", fill = { 0.11, 0.06, 0.06 },
+		metal = { 0.84, 0.86, 0.92 },
 		title = { 0.97, 0.97, 1.00 }, rim = { 0.84, 0.86, 0.92 }, gem = { 0.90, 0.93, 1.00 },
 		glow = { 0.95, 0.96, 1.00 }, trough = { 0.05, 0.05, 0.07 }, mc = { 1.00, 1.00, 1.00 } },
-	{ key = "shaman", name = "Shaman", emblem = "Shaman", xp = { { 0.02, 0.18, 0.35 }, { 0.15, 0.62, 0.95 }, { 0.60, 0.92, 1.00 } },
+	{ key = "shaman", name = "Shaman", emblem = "Shaman", fill = { 0.04, 0.07, 0.09 },
 		metal = { 0.30, 0.58, 0.95 },
 		title = { 0.58, 0.82, 1.00 }, rim = { 0.30, 0.58, 0.95 }, gem = { 0.32, 0.66, 1.00 },
 		glow = { 0.46, 0.76, 1.00 }, trough = { 0.02, 0.04, 0.08 }, mc = { 0.66, 0.86, 1.00 } },
-	{ key = "mage", name = "Mage", emblem = "Mage", xp = { { 0.02, 0.18, 0.35 }, { 0.15, 0.62, 0.95 }, { 0.60, 0.92, 1.00 } },
+	{ key = "mage", name = "Mage", emblem = "Mage", fill = { 0.06, 0.11, 0.18 },
 		metal = { 0.48, 0.82, 0.95 },
 		title = { 0.72, 0.93, 1.00 }, rim = { 0.48, 0.82, 0.95 }, gem = { 0.56, 0.88, 1.00 },
 		glow = { 0.66, 0.92, 1.00 }, trough = { 0.02, 0.05, 0.07 }, mc = { 0.80, 0.95, 1.00 } },
-	{ key = "warlock", name = "Warlock", emblem = "Warlock", xp = { { 0.18, 0.05, 0.30 }, { 0.60, 0.30, 0.92 }, { 0.88, 0.70, 1.00 } },
+	{ key = "warlock", name = "Warlock", emblem = "Warlock", fill = { 0.13, 0.02, 0.13 },
 		metal = { 0.64, 0.55, 0.86 },
 		title = { 0.84, 0.76, 1.00 }, rim = { 0.64, 0.55, 0.86 }, gem = { 0.64, 0.42, 0.96 },
 		glow = { 0.76, 0.64, 1.00 }, trough = { 0.04, 0.03, 0.07 }, mc = { 0.86, 0.80, 1.00 } },
-	{ key = "druid", name = "Druid", emblem = "Druid", xp = { { 0.08, 0.28, 0.04 }, { 0.30, 0.78, 0.18 }, { 0.70, 1.00, 0.50 } },
+	{ key = "druid", name = "Druid", emblem = "Druid", fill = { 0.18, 0.28, 0.04 },
 		metal = { 1.00, 0.58, 0.16 },
 		title = { 1.00, 0.76, 0.44 }, rim = { 1.00, 0.58, 0.16 }, gem = { 1.00, 0.56, 0.10 },
 		glow = { 1.00, 0.68, 0.30 }, trough = { 0.07, 0.04, 0.01 }, mc = { 1.00, 0.82, 0.52 } },
@@ -924,14 +928,13 @@ local P_RAIL, P_CORNER = 8, 16
 C.PANEL_ROOM = 79
 -- Creed UI's gold, taken from the user's bar picture (dev/art/source/bar_reference.webp): borders and
 -- rims (0.91, 0.70, 0.30), titles and tooltip heads (0.98, 0.85, 0.52), panel metal (0.95, 0.79, 0.44)
--- a class's emblem and crest (dev/art/cut_classes.py): square textures whose rails lie 110 of their 256
--- pixels apart, scaled so they lie on the panel's (76 apart); the emblem's middle is at 160/256 across
--- its picture, on the line between the rails. The crest (asked for) is sized so its ring (38.5 of 256
--- across its radius, its middle at 69, 142, fitted) is exactly as tall as the panel, its top on the panel's
--- top edge, a little in from the panel's right end, so it closes that end
-local EMBLEM_SIZE = 256 * 76 / 110
-local EMBLEM_L = 160 / 256
-local CREST_RING, CREST_X, CREST_Y, CREST_IN = 38.5 / 256, 69 / 256, 142 / 256, 10
+-- a class's emblem and crest (dev/art/cut_classes.py): 512x256 textures whose rails lie 110 of their
+-- pixels apart, scaled so they lie on the panel's (76 apart); the emblem's middle is at 220 across its
+-- picture and the crest's at 292, both on the line between the rails, put on the panel's two ends. Each
+-- carries the picture's bar a little way in, fading out over the panel's own (painted to match)
+local EMBLEM_U = 76 / 110
+local EMBLEM_W, EMBLEM_H = 512 * EMBLEM_U, 256 * EMBLEM_U
+local EMBLEM_L, EMBLEM_R = 220, 292
 -- the class's rails (PanelRail<Class>T / B, 16 pixels tall round their line) at the same scale
 local RAIL_TH = 16 * 76 / 110
 
@@ -996,27 +999,17 @@ function C.Panel(frame, emblems)
 				local t = p.emblems[i]
 				t:ClearAllPoints()
 				t:SetTexture(C.ART .. "PanelEmblem" .. emblem .. ((i == 1) and "L" or "R"))
-				if i == 1 then
-					t:SetWidth(EMBLEM_SIZE)
-					t:SetHeight(EMBLEM_SIZE)
-					t:SetPoint("TOPLEFT", frame, side, -EMBLEM_L * EMBLEM_SIZE, EMBLEM_SIZE / 2)
-				else
-					local h = frame:GetHeight()
-					p.endsH = h
-					if not h or h <= 0 then h = 84 end
-					local size = h / (2 * CREST_RING)
-					t:SetWidth(size)
-					t:SetHeight(size)
-					t:SetPoint("TOPLEFT", frame, side, -CREST_IN - CREST_X * size, CREST_Y * size)
-				end
+				t:SetWidth(EMBLEM_W)
+				t:SetHeight(EMBLEM_H)
+				t:SetPoint("TOPLEFT", frame, side, -((i == 1) and EMBLEM_L or EMBLEM_R) * EMBLEM_U, EMBLEM_H / 2)
 			end
 		end
 		-- where the left end's art begins (the chat keeps clear of it): the emblem's round (about 70 of
-		-- its 256 pixels round its middle, at 160, 128), its wings and smoke free to reach past
+		-- its pixels round its middle, at 220, 128), its wings and capes free to reach past
 		p.LeftEnd = function()
 			local t = p.emblems[1]
 			if not (t:GetLeft() and t:GetTop()) then return nil end
-			return t:GetLeft() + EMBLEM_SIZE * 90 / 256, t:GetTop() - EMBLEM_SIZE * 53 / 256
+			return t:GetLeft() + 150 * EMBLEM_U, t:GetTop() - 52 * EMBLEM_U
 		end
 	end
 	return p
@@ -1033,8 +1026,8 @@ function C.PanelTheme(p, pal)
 	for i = 1, table.getn(p.metal) do p.metal[i]:SetVertexColor(mr, mg, mb) end
 	p.fill:SetVertexColor(0.5 + tr[1] * 0.3, 0.47 + tr[2] * 0.3, 0.44 + tr[3] * 0.3, 0.95)
 	if p.emblems then
-		-- the hero's class's emblem, crest and rails, in their own paint; the glass near black, as in
-		-- its picture
+		-- the hero's class's emblem, crest and rails, in their own paint; the glass tinted as its bar in
+		-- the picture (the theme's fill)
 		local emblem = C.UI_THEME.emblem
 		if p.emblem ~= emblem then
 			p.emblem = emblem
@@ -1042,13 +1035,12 @@ function C.PanelTheme(p, pal)
 		end
 		p.railT:SetVertexColor(1, 1, 1)
 		p.railB:SetVertexColor(1, 1, 1)
-		p.fill:SetVertexColor(0.30, 0.28, 0.27, 0.97)
+		local f = C.UI_THEME.fill
+		p.fill:SetVertexColor(f[1], f[2], f[3], 0.97)
 	end
 end
 
--- the crest follows the panel's height (it may be laid out after the class is known)
 function C.PanelStep(p, now)
-	if p.emblem and p.endsH ~= p.frame:GetHeight() then p.PlaceEnds(p.emblem) end
 end
 
 ------------------------------------------------------------------------ calling the game safely

@@ -335,11 +335,11 @@ frames(5)
 local rim = CreedUI.Pal().rim
 check(near(rim[1], 0.48) and near(rim[3], 0.95), "a mage enters the world: the parts' rims turn frost blue")
 check(onBar("PanelEmblemMageL") == 1 and onBar("PanelEmblemMageR") == 1 and onBar("PanelDragon") == 0, "the mage's emblem on the left end and crest on the right")
-local xpFill
+local fill
 for _, o in ipairs(M.All()) do
-	if o.__kind == "Texture" and o.__grad and under(o, CreedUIBar) and M.Visible(o) and near(o.__grad[2][3] or 0, 0.35) then xpFill = o end
+	if o.__kind == "Texture" and o.__tex and string.find(o.__tex, "PanelFill$") and under(o, CreedUIBar) then fill = o end
 end
-check(xpFill ~= nil, "the XP bar fills in the mage's blue")
+check(fill and fill.__vc and near(fill.__vc[3], 0.18) and fill.__vc[3] > fill.__vc[1], "the bar's glass tinted the mage's dark blue, as in the picture")
 M.unit.player.class = nil
 M.Fire("PLAYER_ENTERING_WORLD")
 frames(5)
@@ -2975,13 +2975,12 @@ do
 			sl, sr = math.min(sl, l), math.max(sr, r)
 		end
 	end
-	local w1 = r1 - l1
-	-- the emblem's middle (160 of its 256) on the panel's left end; its paint ends 96 past it
-	check(math.abs(l1 + w1 * 160 / 256 - pl) < 1 and pl + w1 * 96 / 256 < sl, string.format("the emblem's middle on the panel's left end, its paint clear of the first slot (%.0f < %.0f)", pl + w1 * 96 / 256, sl))
-	-- the crest's ring (38.5 of 256 round 69, 142) as tall as the panel, its top on the panel's top
-	local w2 = r2 - l2
-	check(math.abs((t2 - w2 * (142 - 38.5) / 256) - pt) < 1 and math.abs(w2 * 77 / 256 - (pt - pb)) < 1, "the crest's ring as tall as the panel, its top on the panel's top")
-	check(l2 + w2 * (69 - 38.5) / 256 > sr, "the crest past the last slot")
+	local u = 76 / 110
+	-- the emblem's middle (220 of its 512) on the panel's left end, its bar faded out before the first
+	-- slot (by 118 of its pixels past it); the crest's (292) on the right end, likewise
+	check(math.abs(l1 + 220 * u - pl) < 1 and pl + 118 * u < sl, string.format("the emblem's middle on the panel's left end, clear of the first slot (%.0f < %.0f)", pl + 118 * u, sl))
+	check(math.abs(l2 + 292 * u - pr) < 1 and pr - 118 * u > sr, "the crest's middle on the right end, clear of the last")
+	check(math.abs((t1 - b1) / 2 + b1 - (pb + pt) / 2) < 1 and math.abs(t1 - b1 - 256 * u) < 1, "both centred on the bar, at its rails' scale")
 	check(not e1.__vc and not e2.__vc, "painted in their own colors (no tint)")
 	check(t1 > pt + 20, "the emblem rising over the panel's top")
 	problems("bar emblems")
