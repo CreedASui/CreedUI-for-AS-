@@ -84,6 +84,7 @@ glow_a = np.clip(lift.max(axis=2) / 0.25, 0, 1)
 solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.05, iterations=K))
 solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7 * K) * 1.2, 0, 1)
 alpha_all = np.maximum(glow_a, solid_a)
+bright = np.clip((lift.max(axis=2) - 0.14) / 0.16, 0, 1)   # clearly brighter than the bars' dark glass
 yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float64)
 fill_mean = read_blp(os.path.join(ART, "PanelFill.blp"))[..., :3].mean()
 
@@ -93,7 +94,7 @@ def ramp(v, a, b):
     return np.clip((v - a) / (b - a), 0, 1)
 
 
-def cut(name, cx, mid, s, keep, anchor_x):
+def cut(name, cx, mid, s, keep, anchor_x, stray=0.02):
     """the picture round (cx, mid), its rails RAIL apart, onto a TW x TH texture"""
     a = alpha_all * keep
     with np.errstate(invalid="ignore", divide="ignore"):
@@ -114,7 +115,7 @@ def cut(name, cx, mid, s, keep, anchor_x):
     if n > 1:
         sizes = ndimage.sum(np.ones_like(pa), lab, index=np.arange(1, n + 1))
         big = np.zeros(n + 1, dtype=bool)
-        big[1:] = sizes >= max(120, 0.02 * sizes.max())
+        big[1:] = sizes >= max(120, stray * sizes.max())
         keepm = ndimage.binary_dilation(big[lab], iterations=2) | (pa <= 0.12) & ndimage.binary_dilation(big[lab], iterations=4)
         pa = pa * ndimage.gaussian_filter(keepm.astype(np.float64), 0.6)
     write_blp(name, np.dstack([np.clip(c, 0, 1), np.clip(pa, 0, 1)]))
@@ -145,17 +146,22 @@ for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
     # (the picture's own rail lines left out there: they'd double Creed UI's)
     norail = ramp(np.abs(yy - top), 2 * K, 5 * K) * ramp(np.abs(yy - bot), 2 * K, 5 * K)
     near_ring = ramp(np.hypot(xx - lx, yy - mid), rg + 20 * K, rg + 4 * K) * norail
-    inner_l = ramp(xx, lx + end_l, lx + start_l) if end_l else np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), np.maximum(ring, near_ring))
+    # and what of the emblem reaches over the bar (a dagger, an antler, the bow): everything clearly
+    # brighter than the bar's dark glass, up to where Creed UI's slots begin (1.21.8, asked for)
+    reach = min(gap_l - 12 * K, 72 * K)
+    over_l = bright * norail * ramp(xx, lx + reach, lx + reach - 8 * K)
+    # (no margin of the picture's own dark glass round the ring: Creed UI's bar has its class's glass)
+    inner_l = np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ring), over_l)
     keep_l = keep_l * np.maximum(1 - band, inner_l)
-    cut("PanelEmblem" + cls + "L", lx, mid, s, keep_l, ANCHOR_L)
+    cut("PanelEmblem" + cls + "L", lx, mid, s, keep_l, ANCHOR_L, 0.06)
     out_r = OUTER.get(cls + "R", 140) * s
     keep_r = near * ramp(xx, rx + out_r, rx + out_r - 8 * K) * ramp(xx, rx - 150 * s, rx - 140 * s)
     end_r, start_r = Fade(gap_r, s)
     ring = ramp(np.hypot(xx - rx, yy - mid), rg + 3 * K, rg)
-    near_ring = ramp(np.hypot(xx - rx, yy - mid), rg + 20 * K, rg + 4 * K) * norail
-    inner_r = ramp(xx, rx - end_r, rx - start_r) if end_r else np.maximum(ramp(xx, rx - 2 * K, rx + 2 * K), np.maximum(ring, near_ring))
+    # (the crest: cut at its ring on the bar's side, no margin: its flag's bits there flew loose)
+    inner_r = np.maximum(ramp(xx, rx - 2 * K, rx + 2 * K), ring)
     keep_r = keep_r * np.maximum(1 - band, inner_r)
-    cut("PanelEmblem" + cls + "R", rx, mid, s, keep_r, ANCHOR_R)
+    cut("PanelEmblem" + cls + "R", rx, mid, s, keep_r, ANCHOR_R, 0.06)
     # the rails: each one's line and glow, taken across the bar's clear middle, averaged into one
     # smooth line (only the line: the glass on either side of it is Creed UI's)
     x0, x1 = int(lx + (rx - lx) * 0.35), int(lx + (rx - lx) * 0.65)
