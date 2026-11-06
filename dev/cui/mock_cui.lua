@@ -889,7 +889,7 @@ function M.Frame(dt)
 	end
 end
 
-M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Hurt.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Pets.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua", "Music.lua",
+M.files = { "Core.lua", "Locale.lua", "Locale_zh.lua", "Locale_ru.lua", "Locale_ja.lua", "Locale_ko.lua", "Locale_pl.lua", "Locale_tr.lua", "Timer.lua", "Numbers.lua", "Hurt.lua", "Bosses.lua", "Skulls.lua", "Units.lua", "Party.lua", "Downed.lua", "Bar.lua", "Pets.lua", "Tally.lua", "LevelUps.lua", "Minimap.lua", "MinimapButton.lua",
 	"Chests.lua", "Meter.lua", "Luck.lua", "Stats.lua", "LootSets.lua", "Loot.lua", "Summary.lua", "Character.lua", "Talents.lua", "Chat.lua" }
 function M.Load(dir)
 	for i = 1, table.getn(M.files) do
@@ -910,7 +910,7 @@ function M.Reload(dir, fireLogout)
 	for _, name in ipairs({ "CreedUITimerFrame", "CreedUIOptions", "CreedUITimerOptions", "CreedUINumbersOptions",
 		"CreedUIBosses", "CreedUISkulls", "CreedUISkullsDriver", "CreedUIDowned", "CreedUIDownedBanner", "CreedUIDownedDriver", "CreedUILevelUps", "CreedUILevelUpsDriver", "CreedUISummary", "CreedUISummaryDriver", "CreedUITalents", "CreedUIPlayer", "CreedUITarget", "CreedUIBar", "CreedUINumbersLayer", "CreedUIHidden",
 		"CreedUIParty", "CreedUITally", "CreedUIMinimap", "CreedUIMenuGuard", "GameMenuFrame", "Minimap", "CreedUIMeter",
-		"CreedUILuck", "CreedUIMusicButton", "CreedUIStats", "CreedUIStatsMenu", "CreedUIMeterToggle", "CreedUIChatGlass", "CreedUIChatDown", "ChatFrame1", "ChatFrame2", "CreedUIChests", "CreedUIMinimapClock", "CreedUIMeterSizer", "CreedUILuckSizer", "CreedUILuckToggle",
+		"CreedUILuck", "CreedUIStats", "CreedUIStatsMenu", "CreedUIMeterToggle", "CreedUIChatGlass", "CreedUIChatDown", "ChatFrame1", "ChatFrame2", "CreedUIChests", "CreedUIMinimapClock", "CreedUIMeterSizer", "CreedUILuckSizer", "CreedUILuckToggle",
 		"ChatFrameEditBox", "ChatFrameMenuButton" }) do
 		setglobal(name, nil)
 	end
@@ -1106,17 +1106,7 @@ function CastPetAction(i) table.insert(M.petCast, "cast " .. tostring(i)) end
 function TogglePetAutocast(i) table.insert(M.petCast, "auto " .. tostring(i)); local a = M.petActions and M.petActions[i]; if a then a.auto = not a.auto end end
 M.loaded = {}
 function IsAddOnLoaded(name) return M.loaded[name] and 1 or nil end
-M.cvars = { CombatDamage = "1", EnableMusic = "1", MusicVolume = "1" }
--- the game's music: what PlayMusic was last given (nil once StopMusic), strict as the game
-M.music = nil
-function PlayMusic(...)
-	if arg.n ~= 1 or type(arg[1]) ~= "string" then M.Problem("PlayMusic takes one file") return end
-	M.music = arg[1]
-end
-function StopMusic(...)
-	if arg.n ~= 0 then M.Problem("StopMusic takes no arguments") return end
-	M.music = nil
-end
+M.cvars = { CombatDamage = "1" }
 function GetCVar(k) return M.cvars[k] end
 function SetCVar(k, v) M.cvars[k] = v end
 

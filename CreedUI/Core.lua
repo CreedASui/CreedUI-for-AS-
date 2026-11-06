@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.23.4"
+C.VERSION = "1.24.0"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -1393,7 +1393,6 @@ RefreshHub = function()
 	C.LText(hub.lock.text, locked and "Meter and luck windows: locked" or "Meter and luck windows: drag them to move")
 	PaintButton(hub.lock)
 	C.SetText(hub.lang.text, C.F("Language: {1}", C.LangName(C.lang)))
-	if C.MusicHubRefresh then C.MusicHubRefresh() end
 	hub.lang.selected = hub.langMenu:IsShown()
 	PaintButton(hub.lang)
 	for i = 1, table.getn(hub.langMenu.items) do
@@ -1512,8 +1511,6 @@ local function BuildHub()
 	C.LText(langButton.text, "Language")
 	langButton:SetPoint("TOPLEFT", o, "TOPLEFT", 168, y)
 	o.lang = langButton
-	-- the music button's volume, across from them (Music.lua)
-	if C.MusicHubRow then C.MusicHubRow(o, 14 + COL_W, y, 302) end
 	local menu = CreateFrame("Frame", "CreedUILanguageMenu", o)
 	o.langMenu = menu
 	local n = table.getn(C.LANG_LIST)
@@ -1565,8 +1562,6 @@ local function Slash(msg)
 		if C.timerSlash then C.timerSlash(rest) end
 	elseif cmd == "numbers" or cmd == "sn" or cmd == "dmg" then
 		if C.numberSlash then C.numberSlash(rest) end
-	elseif cmd == "music" and rest ~= "on" and rest ~= "off" then
-		if C.MusicSlash then C.MusicSlash(rest) end
 	elseif cmd == "talents" then
 		if C.ToggleTalents then C.ToggleTalents() end
 	elseif cmd == "probe" then
@@ -1771,6 +1766,8 @@ C.OnInit(function() pcall(GuardGameMenu) end)
 -- the theme is the hero's class (1.21.4, asked for, in place of a choice in the options): put on as the
 -- addon starts and each time the hero enters the world, and as each run's hero class comes in (1.21.7)
 C.OnInit(function() C.SetTheme("class") end)
+-- the music button's settings, gone with it (1.24.0)
+C.OnInit(function() if CreedUIDB then CreedUIDB.music = nil end end)
 C.OnWorld(function() C.SetTheme("class") end)
 do
 	local watch = CreateFrame("Frame", "CreedUIClassWatch", UIParent)
