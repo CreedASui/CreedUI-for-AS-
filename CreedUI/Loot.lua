@@ -50,8 +50,8 @@ local LOOKS = {
 
 -- a drop's rarity by its name: a weapon by its whole name, a piece by its set's name in it (the
 -- longest found), from the game's own words in LootSets.lua; as WoW's colors: the game's Common is
--- white, Uncommon green, Rare blue, Epic purple, Legendary orange, and its Tier 0.5 blue
-local TO_QUALITY = { [0] = 1, [1] = 2, [2] = 3, [3] = 4, [4] = 5, [7] = 3 }
+-- white, Uncommon green, Rare blue, Epic purple, Legendary orange, and its Tier 0.5 purple (as in game)
+local TO_QUALITY = { [0] = 1, [1] = 2, [2] = 3, [3] = 4, [4] = 5, [7] = 4 }
 
 local function RarityOfName(name)
 	if type(name) ~= "string" then return nil end
