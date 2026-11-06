@@ -793,6 +793,10 @@ local function InstallAPI()
 		M.loadoutReads = (M.loadoutReads or 0) + 1
 		local out = { apiVersion = 1, complete = true, context = AZS_GetMeterContext(), ownerId = "H1", loadoutRevision = "l1",
 			equipment = {}, abilities = {}, talents = {}, runJewelry = {}, sources = {}, actors = {} }
+		-- the owner's actor, as the game's closure gives it: the run's hero, with its class (M.heroClass,
+		-- else the character's)
+		out.actors.H1 = { actorId = "H1", kind = "hero", name = "Creed", state = "present",
+			classKey = M.heroClass or (M.unit.player.class and string.lower(M.unit.player.class)) }
 		-- the run's talents: M.loadout.talents = { { key, rank, tree, name, icon } }
 		for i = 1, table.getn(M.loadout.talents or {}) do
 			local t = M.loadout.talents[i]

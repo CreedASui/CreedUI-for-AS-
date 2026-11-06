@@ -343,12 +343,30 @@ check(fill and fill.__vc and near(fill.__vc[3], 0.18) and fill.__vc[3] > fill.__
 M.unit.player.class = nil
 M.Fire("PLAYER_ENTERING_WORLD")
 frames(5)
-check(CreedUI.uiTheme == "mage" and CreedUIDB.heroClass == "mage", "before the game names the class: the last class played (the mage), no bronze")
-check(not CreedUI.SetTheme("bronze") and CreedUI.uiTheme == "mage", "there is no bronze look any more")
+check(CreedUI.uiTheme == "warrior", "before any run or class is known: a warrior's look, no bronze")
+check(not CreedUI.SetTheme("bronze") and CreedUI.uiTheme == "warrior", "there is no bronze look any more")
 check(onBar("PanelDragon") == 0, "nor dragons")
 M.unit.player.class = "Rogue"
 M.Fire("PLAYER_ENTERING_WORLD")
 frames(5)
+-- the class of the hero the run was started with, read from the run's loadout (asked for: the
+-- character's class isn't the run's hero's)
+local meterWas, loadoutWas, runWas = M.meter, M.loadout, M.meterRun
+M.meter = M.meter or { damage = {} }
+M.loadout, M.heroClass, M.meterRun = { abilities = {} }, "druid", "runA"
+SIM.Advance(1.5, 1 / 30)
+check(CreedUI.uiTheme == "druid" and onBar("PanelEmblemDruidL") == 1, "a run started as a druid (the character a rogue): the druid's look")
+check(CreedUIDB.heroClass == "druid", "kept for next time")
+M.Fire("PLAYER_ENTERING_WORLD")
+frames(5)
+check(CreedUI.uiTheme == "druid", "and it stays through a loading screen")
+M.heroClass, M.meterRun = "HUNTER", "runB"
+SIM.Advance(1.5, 1 / 30)
+check(CreedUI.uiTheme == "hunter", "the next run, as a hunter: the hunter's look")
+M.heroClass, M.meterRun = nil, "runC"
+SIM.Advance(1.5, 1 / 30)
+check(CreedUI.uiTheme == "rogue", "a run as the rogue again: the rogue's look")
+M.meter, M.loadout, M.meterRun = meterWas, loadoutWas, runWas
 problems("themes")
 
 ------------------------------------------------------------------ 8. moving frames
@@ -2975,12 +2993,13 @@ do
 			sl, sr = math.min(sl, l), math.max(sr, r)
 		end
 	end
-	local u = 76 / 110
-	-- the emblem's middle (220 of its 512) on the panel's left end, its bar faded out before the first
-	-- slot (by 118 of its pixels past it); the crest's (292) on the right end, likewise
-	check(math.abs(l1 + 220 * u - pl) < 1 and pl + 118 * u < sl, string.format("the emblem's middle on the panel's left end, clear of the first slot (%.0f < %.0f)", pl + 118 * u, sl))
-	check(math.abs(l2 + 292 * u - pr) < 1 and pr - 118 * u > sr, "the crest's middle on the right end, clear of the last")
-	check(math.abs((t1 - b1) / 2 + b1 - (pb + pt) / 2) < 1 and math.abs(t1 - b1 - 256 * u) < 1, "both centred on the bar, at its rails' scale")
+	local u = 76 / 110 * 0.85
+	-- drawn at 0.85 of the bar's scale; the emblem's middle (220 of its 512) 24 in from the panel's left
+	-- end, its ring (about 66 of its pixels round) clear of the first slot; the crest's (292) likewise
+	check(math.abs(l1 + 220 * u - (pl + 24)) < 1 and pl + 24 + 70 * u < sl, string.format("the emblem's middle just in from the panel's left end, its ring clear of the first slot (%.0f < %.0f)", pl + 24 + 70 * u, sl))
+	check(math.abs(l2 + 292 * u - (pr - 24)) < 1 and pr - 24 - 70 * u > sr, "the crest's middle just in from the right end, clear of the last")
+	check(math.abs((t1 - b1) / 2 + b1 - (pb + pt) / 2) < 1 and math.abs(t1 - b1 - 256 * u) < 1, "both centred on the bar")
+	check(l1 > pl - 120 and r2 < pr + 120 + 512 * u, "reaching less far past the bar's ends")
 	check(not e1.__vc and not e2.__vc, "painted in their own colors (no tint)")
 	check(t1 > pt + 20, "the emblem rising over the panel's top")
 	problems("bar emblems")

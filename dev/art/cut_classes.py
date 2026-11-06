@@ -66,14 +66,23 @@ def read_blp(path):
     return px[:, :, [2, 1, 0, 3]].astype(np.float64) / 255
 
 
-im = np.asarray(Image.open(SRC).convert("RGB")).astype(np.float64) / 255
+def load(path):
+    """a picture, or its 4x super-resolution copy (<name>_x4.png beside it, made by upscale.py) when
+    there is one: K is how many of its pixels make one of the picture's (every measure is multiplied)"""
+    up = os.path.splitext(path)[0] + "_x4.png"
+    if os.path.exists(up):
+        return np.asarray(Image.open(up).convert("RGB")).astype(np.float64) / 255, 4
+    return np.asarray(Image.open(path).convert("RGB")).astype(np.float64) / 255, 1
+
+
+im, K = load(SRC)
 PH, PW, _ = im.shape
 lift = np.clip(im - BG, 0, 1)
 # alpha off the black: light and glow by how far they rise above it, solid shapes (dark shields, the
 # bar's tinted glass) whole, their holes filled
 glow_a = np.clip(lift.max(axis=2) / 0.25, 0, 1)
-solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.05, iterations=1))
-solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7) * 1.2, 0, 1)
+solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.05, iterations=K))
+solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7 * K) * 1.2, 0, 1)
 alpha_all = np.maximum(glow_a, solid_a)
 yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float64)
 fill_mean = read_blp(os.path.join(ART, "PanelFill.blp"))[..., :3].mean()
@@ -93,8 +102,11 @@ def cut(name, cx, mid, s, keep, anchor_x):
     v = (np.arange(TH) + 0.5 - TH / 2) * s + mid
     V, U_ = np.meshgrid(v, u, indexing="ij")
     coords = np.array([V - 0.5, U_ - 0.5])
-    pa = ndimage.map_coordinates(a, coords, order=1, mode="constant", cval=0)
-    pc = np.dstack([ndimage.map_coordinates(col[..., i] * a, coords, order=1, mode="constant", cval=0) for i in range(3)])
+    # shrinking a big (super-resolution) picture: smoothed first to the texture's pixel, no jagged edges
+    k = 0.42 * s if s > 1.2 else 0
+    pre = (lambda m: ndimage.gaussian_filter(m, k)) if k else (lambda m: m)
+    pa = ndimage.map_coordinates(pre(a), coords, order=1, mode="constant", cval=0)
+    pc = np.dstack([ndimage.map_coordinates(pre(col[..., i] * a), coords, order=1, mode="constant", cval=0) for i in range(3)])
     with np.errstate(invalid="ignore", divide="ignore"):
         c = np.where(pa[..., None] > 1e-4, pc / pa[..., None], 0)
     write_blp(name, np.dstack([np.clip(c, 0, 1), np.clip(pa, 0, 1)]))
@@ -104,33 +116,32 @@ def Fade(gap, s):
     """where the picture's bar fades out past an emblem's middle (picture px): slowly, before its first
     slot and within Creed UI's room (118 texture px); where there's no room for that (a short bar), at
     the emblem's ring itself (None: the caller cuts round the ring), so Creed UI's own bar meets it"""
-    end = min(gap - 8, 118 * s)
-    if end - 30 * s >= 46:
-        return end, end - 30 * s
-    return None, None
+    return None, None  # 1.21.7: always at the ring (the emblems drawn smaller and further in)
 
 
 RAIL_H, RAIL_W = 16, 64
 for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
+    lx, rx, top, bot, gap_l, gap_r = lx * K, rx * K, top * K, bot * K, gap_l * K, gap_r * K
+    hg, rg = HALF_GAP * K, RING * K
     mid = (top + bot) / 2
     s = (bot - top) / RAIL               # picture pixels per texture pixel
-    near = ramp(np.abs(yy - mid), HALF_GAP, HALF_GAP - 4)                    # this row only
-    band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7, (bot - top) / 2 + 3)  # 1 within the bar's body
+    near = ramp(np.abs(yy - mid), hg, hg - 4 * K)                                    # this row only
+    band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7 * K, (bot - top) / 2 + 3 * K)  # 1 within the bar's body
     # left: all of the emblem; within the bar's band, the picture's bar runs on past it and fades out
     # slowly, before the first slot (Creed UI's own bar, painted as this one, carries on under it)
     out_l = OUTER.get(cls + "L", 140) * s
-    keep_l = near * ramp(xx, lx - out_l, lx - out_l + 8) * ramp(xx, lx + 150 * s, lx + 140 * s)
+    keep_l = near * ramp(xx, lx - out_l, lx - out_l + 8 * K) * ramp(xx, lx + 150 * s, lx + 140 * s)
     # (faded out by the picture's first slot, and within Creed UI's room at the bar's end: 118 texture px)
     end_l, start_l = Fade(gap_l, s)
-    ring = ramp(np.hypot(xx - lx, yy - mid), RING + 3, RING)
-    inner_l = ramp(xx, lx + end_l, lx + start_l) if end_l else np.maximum(ramp(xx, lx + 2, lx - 2), ring)
+    ring = ramp(np.hypot(xx - lx, yy - mid), rg + 3 * K, rg)
+    inner_l = ramp(xx, lx + end_l, lx + start_l) if end_l else np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ring)
     keep_l = keep_l * np.maximum(1 - band, inner_l)
     cut("PanelEmblem" + cls + "L", lx, mid, s, keep_l, ANCHOR_L)
     out_r = OUTER.get(cls + "R", 140) * s
-    keep_r = near * ramp(xx, rx + out_r, rx + out_r - 8) * ramp(xx, rx - 150 * s, rx - 140 * s)
+    keep_r = near * ramp(xx, rx + out_r, rx + out_r - 8 * K) * ramp(xx, rx - 150 * s, rx - 140 * s)
     end_r, start_r = Fade(gap_r, s)
-    ring = ramp(np.hypot(xx - rx, yy - mid), RING + 3, RING)
-    inner_r = ramp(xx, rx - end_r, rx - start_r) if end_r else np.maximum(ramp(xx, rx - 2, rx + 2), ring)
+    ring = ramp(np.hypot(xx - rx, yy - mid), rg + 3 * K, rg)
+    inner_r = ramp(xx, rx - end_r, rx - start_r) if end_r else np.maximum(ramp(xx, rx - 2 * K, rx + 2 * K), ring)
     keep_r = keep_r * np.maximum(1 - band, inner_r)
     cut("PanelEmblem" + cls + "R", rx, mid, s, keep_r, ANCHOR_R)
     # the rails: each one's line and glow, taken across the bar's clear middle, averaged into one
@@ -149,30 +160,31 @@ for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
     # the inside of the bar: its glass color
     # as a tint for Creed UI's glass texture (whose mean is fill_mean)
     # (the clear strips under the top rail and over the bottom one, past the XP bar's end)
-    xe = int(rx - gap_r + 10)
-    region = np.concatenate([im[top + 3:top + 7, xe:int(rx - 50)].reshape(-1, 3), im[bot - 6:bot - 2, x0:x1].reshape(-1, 3)])
+    xe = int(rx - gap_r + 10 * K)
+    region = np.concatenate([im[int(top + 3 * K):int(top + 7 * K), xe:int(rx - 50 * K)].reshape(-1, 3),
+        im[int(bot - 6 * K):int(bot - 2 * K), x0:x1].reshape(-1, 3)])
     tint = np.clip(np.median(region, axis=0) / fill_mean, 0, 1)
     print("%-8s fill = { %.2f, %.2f, %.2f }," % (cls, tint[0], tint[1], tint[2]))
 
 # the shaman's left emblem is the carved totem of the user's first picture (asked for: "I like this totem
 # face more"), source/class_bars_first.webp: its bar's rails at 975 and 1069, the totem's ring (about
-# 70 px round) at 257 across; everything outside the bar kept whole, the first picture's bar inside it
-# faded out before its first slot
+# 70 px round) at 257 across; everything outside the bar kept whole, inside it cut at the ring
 FIRST = os.path.join(os.path.dirname(os.path.abspath(SRC)), "class_bars_first.webp")
 if os.path.exists(FIRST):
-    im = np.asarray(Image.open(FIRST).convert("RGB")).astype(np.float64) / 255
+    im, K = load(FIRST)
     PH, PW, _ = im.shape
     lift = np.clip(im - np.array([0.035, 0.035, 0.04]), 0, 1)
     glow_a = np.clip(lift.max(axis=2) / 0.32, 0, 1)
-    solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.07, iterations=1))
-    solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7) * 1.2, 0, 1)
+    solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.07, iterations=K))
+    solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7 * K) * 1.2, 0, 1)
     alpha_all = np.maximum(glow_a, solid_a)
     yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float64)
-    top, bot, lx = 975, 1069, 257
+    top, bot, lx = 975 * K, 1069 * K, 257 * K
     mid, s = (top + bot) / 2, (bot - top) / RAIL
-    near = ramp(yy - mid, -76, -72) * ramp(yy - mid, 64, 60)
-    band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7, (bot - top) / 2 + 3)
-    keep = near * ramp(xx, lx - 150, lx - 142) * ramp(xx, lx + 150, lx + 140)
-    keep = keep * np.maximum(1 - band, ramp(xx, lx + 110, lx + 88))
-    cut("PanelEmblemShamanL", lx, mid, s, keep, ANCHOR_L)
+    near = ramp(yy - mid, -76 * K, -72 * K) * ramp(yy - mid, 64 * K, 60 * K)
+    band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7 * K, (bot - top) / 2 + 3 * K)
+    keep = near * ramp(xx, lx - 150 * K, lx - 142 * K) * ramp(xx, lx + 150 * K, lx + 140 * K)
+    keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ramp(np.hypot(xx - lx, yy - mid), 73 * K, 70 * K)))
+    # its ring is bigger than the others' (70 to their 43, at its rails' scale): drawn to their size
+    cut("PanelEmblemShamanL", lx, mid, s * (70 / (bot - top) * K) / (RING / 72.0), keep, ANCHOR_L)
 print("wrote", OUT_BLP)
