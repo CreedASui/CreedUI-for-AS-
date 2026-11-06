@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.20.5
+- **Loot pop-up: Ahn'Qiraj and Naxxramas gear in purple,** as in game; only their weapons are legendary orange.
+
 ## 1.20.4
 - **Crit backdrops redrawn, and they burst in.** Each now swells in with the crit, past its size and back, with a bright flash, and breathes softly while the number stays. **Fire** is a spray of flame tongues with flying embers, **Frost** a snowflake of ice shards with frost sparkles, **Arcane** a swirling vortex with sparks, **Holy** a brighter sunburst, **Shadow** a black void with tendrils in a violet glow, and new **Storm** a crackle of forked lightning. **Blood** is gone (a saved Blood choice turns to none).
 
