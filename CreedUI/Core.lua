@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.21.2"
+C.VERSION = "1.21.3"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -935,9 +935,12 @@ local GOLD = { 0.95, 0.79, 0.44 }
 local EYE_X, EYE_Y = 0.872, 0.236
 -- a class's emblem and crest (dev/art/cut_classes.py): square textures whose rails lie 110 of their 256
 -- pixels apart, scaled so they lie on the panel's (76 apart); the emblem's middle is at 160/256 across
--- its picture, the crest's at 70/256, on the line between the rails; the crest stands a little out
+-- its picture, on the line between the rails. The crest (asked for) is 1.8 times its picture's size,
+-- as big as the emblem's round, its face (70, 136 of 256) on the panel's right end, a little in and a
+-- little up, so it covers that end whole and stays off the screen's edge
 local EMBLEM_SIZE = 256 * 76 / 110
-local EMBLEM_L, EMBLEM_R, EMBLEM_OUT = 160 / 256, 70 / 256, 6
+local EMBLEM_L = 160 / 256
+local CREST_SIZE, CREST_X, CREST_Y, CREST_IN, CREST_UP = EMBLEM_SIZE * 1.8, 70 / 256, 136 / 256, 10, 5
 
 function C.Panel(frame, dragons)
 	local p = { frame = frame, metal = {} }
@@ -953,28 +956,29 @@ function C.Panel(frame, dragons)
 	end
 	Rail("PanelRailT", "TOPLEFT", P_CORNER, 0, "TOPRIGHT", -P_CORNER, 0):SetHeight(P_RAIL)
 	Rail("PanelRailB", "BOTTOMLEFT", P_CORNER, 0, "BOTTOMRIGHT", -P_CORNER, 0):SetHeight(P_RAIL)
-	-- the left end's pieces (its rail, corners and their diamonds), which a class's emblem stands over;
-	-- the right end stays, its crest hung over it
+	-- the end pieces (the end rails, corners and their diamonds), which a class's emblem and crest
+	-- stand over
 	p.ends = {}
 	local railL = Rail("PanelRailL", "TOPLEFT", 0, -P_CORNER, "BOTTOMLEFT", 0, P_CORNER)
 	railL:SetWidth(P_RAIL)
 	local railR = Rail("PanelRailR", "TOPRIGHT", 0, -P_CORNER, "BOTTOMRIGHT", 0, P_CORNER)
 	railR:SetWidth(P_RAIL)
 	table.insert(p.ends, railL)
+	table.insert(p.ends, railR)
 	for _, c in ipairs({ { "TOPLEFT", "TL", 1, -1 }, { "TOPRIGHT", "TR", -1, -1 }, { "BOTTOMLEFT", "BL", 1, 1 }, { "BOTTOMRIGHT", "BR", -1, 1 } }) do
 		local t = C.Tex(frame, "BORDER", C.ART .. "PanelCorner" .. c[2])
 		t:SetWidth(P_CORNER)
 		t:SetHeight(P_CORNER)
 		t:SetPoint(c[1], frame, c[1], 0, 0)
 		table.insert(p.metal, t)
-		if c[3] > 0 then table.insert(p.ends, t) end
+		table.insert(p.ends, t)
 		-- the timer's diamond on the corner
 		local d = C.Tex(frame, "ARTWORK", C.ART .. "Diamond")
 		d:SetWidth(13)
 		d:SetHeight(13)
 		d:SetPoint("CENTER", frame, c[1], c[3] * 2, c[4] * 2)
 		table.insert(p.metal, d)
-		if c[3] > 0 then table.insert(p.ends, d) end
+		table.insert(p.ends, d)
 	end
 	if dragons then
 		-- a dragon on each end, facing out, perched on the panel's end
@@ -993,12 +997,17 @@ function C.Panel(frame, dragons)
 				local t, e = p.dragons[i], p.eyes[i]
 				t:ClearAllPoints()
 				if emblem then
-					local ax = (k < 0) and EMBLEM_L or EMBLEM_R
 					t:SetTexture(C.ART .. "PanelEmblem" .. emblem .. ((k < 0) and "L" or "R"))
-					t:SetWidth(EMBLEM_SIZE)
-					t:SetHeight(EMBLEM_SIZE)
 					t:SetTexCoord(0, 1, 0, 1)
-					t:SetPoint("TOPLEFT", frame, side, -ax * EMBLEM_SIZE + k * EMBLEM_OUT, EMBLEM_SIZE / 2)
+					if k < 0 then
+						t:SetWidth(EMBLEM_SIZE)
+						t:SetHeight(EMBLEM_SIZE)
+						t:SetPoint("TOPLEFT", frame, side, -EMBLEM_L * EMBLEM_SIZE, EMBLEM_SIZE / 2)
+					else
+						t:SetWidth(CREST_SIZE)
+						t:SetHeight(CREST_SIZE)
+						t:SetPoint("TOPLEFT", frame, side, -CREST_IN - CREST_X * CREST_SIZE, CREST_Y * CREST_SIZE + CREST_UP)
+					end
 					e:Hide() -- they shine in their own paint
 				else
 					t:SetTexture(C.ART .. "PanelDragon")
