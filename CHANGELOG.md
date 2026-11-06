@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.20.3
+- **Loot pop-up: Tier 0.5 in purple,** as the game shows it (it was blue).
+
 ## 1.20.2
 - **Loot pop-up: each drop in its rarity's color.** The game's loot line doesn't say how rare a drop is, so Creed UI knows it by the piece's set or weapon name, in any of the game's languages: Common in white, Uncommon in green, Rare and Tier 0.5 in blue, Epic in purple, Legendary in orange.
 

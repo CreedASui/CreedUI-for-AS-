@@ -3320,7 +3320,7 @@ do
 	end
 	local g, b, o = colorOf("Dreadmist Mantle"), colorOf("Deathmist Robe"), colorOf("Ashbringer")
 	check(g and g[2] > 0.9 and g[1] < 0.3, "Dreadmist (Uncommon) in green")
-	check(b and b[3] > 0.8 and b[1] < 0.2, "Deathmist (Tier 0.5) in blue, not Dreadmist's green")
+	check(b and b[1] > 0.6 and b[3] > 0.9 and b[2] < 0.3, "Deathmist (Tier 0.5) in purple, as the game shows it")
 	check(o and o[1] > 0.9 and o[2] > 0.4 and o[2] < 0.6 and o[3] < 0.1, "Ashbringer (Legendary) in orange")
 	ChatFrame1:AddMessage("Melkor says: You receive loot: nothing, haha")
 	frames(5)
