@@ -5,7 +5,7 @@
 CreedUI = {}
 local C = CreedUI
 
-C.VERSION = "1.21.1"
+C.VERSION = "1.21.2"
 C.ART = "Interface\\AddOns\\CreedUI\\Art\\"
 C.FLAT = "Interface\\ChatFrame\\ChatFrameBackground"
 C.FONT = "Fonts\\FRIZQT__.TTF"
@@ -413,36 +413,36 @@ C.BRONZE = {
 }
 -- The UI's theme (1.21.0, asked for): the bronze gold, or a class's own metal in its class color,
 -- picked in the options. It recolors every part's rims, titles, gems, glows and glass, and puts the
--- class's emblem on the skill bar's ends (gemAt: its gem, as shares of the picture facing right);
+-- class's emblem and crest (from the user's own picture) on the skill bar's ends;
 -- the boss timer keeps the bronze (C.BRONZE) whatever the theme. "class" follows the hero's class.
 C.UI_THEMES = {
 	{ key = "bronze", name = "Bronze" },
 	{ key = "class", name = "Your class" },
-	{ key = "warrior", name = "Warrior", emblem = "Warrior", gemAt = { 0.580, 0.582 }, metal = { 0.80, 0.64, 0.46 },
+	{ key = "warrior", name = "Warrior", emblem = "Warrior", metal = { 0.80, 0.64, 0.46 },
 		title = { 0.92, 0.80, 0.64 }, rim = { 0.80, 0.64, 0.46 }, gem = { 0.92, 0.26, 0.18 },
 		glow = { 1.00, 0.55, 0.35 }, trough = { 0.08, 0.04, 0.03 }, mc = { 0.96, 0.82, 0.64 } },
-	{ key = "paladin", name = "Paladin", emblem = "Paladin", gemAt = { 0.580, 0.496 }, metal = { 0.96, 0.62, 0.78 },
+	{ key = "paladin", name = "Paladin", emblem = "Paladin", metal = { 0.96, 0.62, 0.78 },
 		title = { 1.00, 0.82, 0.90 }, rim = { 0.96, 0.62, 0.78 }, gem = { 1.00, 0.85, 0.40 },
 		glow = { 1.00, 0.75, 0.88 }, trough = { 0.07, 0.03, 0.05 }, mc = { 1.00, 0.86, 0.93 } },
-	{ key = "hunter", name = "Hunter", emblem = "Hunter", gemAt = { 0.407, 0.560 }, metal = { 0.64, 0.82, 0.42 },
+	{ key = "hunter", name = "Hunter", emblem = "Hunter", metal = { 0.64, 0.82, 0.42 },
 		title = { 0.82, 0.94, 0.62 }, rim = { 0.64, 0.82, 0.42 }, gem = { 0.56, 0.88, 0.30 },
 		glow = { 0.76, 0.96, 0.56 }, trough = { 0.03, 0.06, 0.02 }, mc = { 0.86, 0.97, 0.72 } },
-	{ key = "rogue", name = "Rogue", emblem = "Rogue", gemAt = { 0.580, 0.582 }, metal = { 0.94, 0.88, 0.40 },
+	{ key = "rogue", name = "Rogue", emblem = "Rogue", metal = { 0.94, 0.88, 0.40 },
 		title = { 1.00, 0.97, 0.62 }, rim = { 0.94, 0.88, 0.40 }, gem = { 1.00, 0.94, 0.34 },
 		glow = { 1.00, 0.97, 0.56 }, trough = { 0.06, 0.06, 0.02 }, mc = { 1.00, 0.98, 0.72 } },
-	{ key = "priest", name = "Priest", emblem = "Priest", gemAt = { 0.580, 0.465 }, metal = { 0.84, 0.86, 0.92 },
+	{ key = "priest", name = "Priest", emblem = "Priest", metal = { 0.84, 0.86, 0.92 },
 		title = { 0.97, 0.97, 1.00 }, rim = { 0.84, 0.86, 0.92 }, gem = { 0.90, 0.93, 1.00 },
 		glow = { 0.95, 0.96, 1.00 }, trough = { 0.05, 0.05, 0.07 }, mc = { 1.00, 1.00, 1.00 } },
-	{ key = "shaman", name = "Shaman", emblem = "Shaman", gemAt = { 0.580, 0.334 }, metal = { 0.30, 0.58, 0.95 },
+	{ key = "shaman", name = "Shaman", emblem = "Shaman", metal = { 0.30, 0.58, 0.95 },
 		title = { 0.58, 0.82, 1.00 }, rim = { 0.30, 0.58, 0.95 }, gem = { 0.32, 0.66, 1.00 },
 		glow = { 0.46, 0.76, 1.00 }, trough = { 0.02, 0.04, 0.08 }, mc = { 0.66, 0.86, 1.00 } },
-	{ key = "mage", name = "Mage", emblem = "Mage", gemAt = { 0.580, 0.472 }, metal = { 0.48, 0.82, 0.95 },
+	{ key = "mage", name = "Mage", emblem = "Mage", metal = { 0.48, 0.82, 0.95 },
 		title = { 0.72, 0.93, 1.00 }, rim = { 0.48, 0.82, 0.95 }, gem = { 0.56, 0.88, 1.00 },
 		glow = { 0.66, 0.92, 1.00 }, trough = { 0.02, 0.05, 0.07 }, mc = { 0.80, 0.95, 1.00 } },
-	{ key = "warlock", name = "Warlock", emblem = "Warlock", gemAt = { 0.580, 0.416 }, metal = { 0.64, 0.55, 0.86 },
+	{ key = "warlock", name = "Warlock", emblem = "Warlock", metal = { 0.64, 0.55, 0.86 },
 		title = { 0.84, 0.76, 1.00 }, rim = { 0.64, 0.55, 0.86 }, gem = { 0.64, 0.42, 0.96 },
 		glow = { 0.76, 0.64, 1.00 }, trough = { 0.04, 0.03, 0.07 }, mc = { 0.86, 0.80, 1.00 } },
-	{ key = "druid", name = "Druid", emblem = "Druid", gemAt = { 0.580, 0.698 }, metal = { 1.00, 0.58, 0.16 },
+	{ key = "druid", name = "Druid", emblem = "Druid", metal = { 1.00, 0.58, 0.16 },
 		title = { 1.00, 0.76, 0.44 }, rim = { 1.00, 0.58, 0.16 }, gem = { 1.00, 0.56, 0.10 },
 		glow = { 1.00, 0.68, 0.30 }, trough = { 0.07, 0.04, 0.01 }, mc = { 1.00, 0.82, 0.52 } },
 }
@@ -933,6 +933,11 @@ local GOLD = { 0.95, 0.79, 0.44 }
 -- the dragon's eye in its picture, as shares of it (the picture faces right; the left dragon is it
 -- mirrored, so both face out)
 local EYE_X, EYE_Y = 0.872, 0.236
+-- a class's emblem and crest (dev/art/cut_classes.py): square textures whose rails lie 110 of their 256
+-- pixels apart, scaled so they lie on the panel's (76 apart); the emblem's middle is at 160/256 across
+-- its picture, the crest's at 70/256, on the line between the rails; the crest stands a little out
+local EMBLEM_SIZE = 256 * 76 / 110
+local EMBLEM_L, EMBLEM_R, EMBLEM_OUT = 160 / 256, 70 / 256, 6
 
 function C.Panel(frame, dragons)
 	local p = { frame = frame, metal = {} }
@@ -948,50 +953,69 @@ function C.Panel(frame, dragons)
 	end
 	Rail("PanelRailT", "TOPLEFT", P_CORNER, 0, "TOPRIGHT", -P_CORNER, 0):SetHeight(P_RAIL)
 	Rail("PanelRailB", "BOTTOMLEFT", P_CORNER, 0, "BOTTOMRIGHT", -P_CORNER, 0):SetHeight(P_RAIL)
-	Rail("PanelRailL", "TOPLEFT", 0, -P_CORNER, "BOTTOMLEFT", 0, P_CORNER):SetWidth(P_RAIL)
-	Rail("PanelRailR", "TOPRIGHT", 0, -P_CORNER, "BOTTOMRIGHT", 0, P_CORNER):SetWidth(P_RAIL)
+	-- the left end's pieces (its rail, corners and their diamonds), which a class's emblem stands over;
+	-- the right end stays, its crest hung over it
+	p.ends = {}
+	local railL = Rail("PanelRailL", "TOPLEFT", 0, -P_CORNER, "BOTTOMLEFT", 0, P_CORNER)
+	railL:SetWidth(P_RAIL)
+	local railR = Rail("PanelRailR", "TOPRIGHT", 0, -P_CORNER, "BOTTOMRIGHT", 0, P_CORNER)
+	railR:SetWidth(P_RAIL)
+	table.insert(p.ends, railL)
 	for _, c in ipairs({ { "TOPLEFT", "TL", 1, -1 }, { "TOPRIGHT", "TR", -1, -1 }, { "BOTTOMLEFT", "BL", 1, 1 }, { "BOTTOMRIGHT", "BR", -1, 1 } }) do
 		local t = C.Tex(frame, "BORDER", C.ART .. "PanelCorner" .. c[2])
 		t:SetWidth(P_CORNER)
 		t:SetHeight(P_CORNER)
 		t:SetPoint(c[1], frame, c[1], 0, 0)
 		table.insert(p.metal, t)
+		if c[3] > 0 then table.insert(p.ends, t) end
 		-- the timer's diamond on the corner
 		local d = C.Tex(frame, "ARTWORK", C.ART .. "Diamond")
 		d:SetWidth(13)
 		d:SetHeight(13)
 		d:SetPoint("CENTER", frame, c[1], c[3] * 2, c[4] * 2)
 		table.insert(p.metal, d)
+		if c[3] > 0 then table.insert(p.ends, d) end
 	end
 	if dragons then
 		-- a dragon on each end, facing out, perched on the panel's end
 		p.dragons, p.eyes = {}, {}
 		p.eyeLayer = CreateFrame("Frame", nil, frame)
 		p.eyeLayer:SetAllPoints(frame)
-		local out = P_OUT
 		for i, side in ipairs({ "LEFT", "RIGHT" }) do
-			local k = (side == "LEFT") and -1 or 1
-			local t = C.Tex(frame, "OVERLAY", C.ART .. "PanelDragon")
-			t:SetWidth(P_DRAGON)
-			t:SetHeight(P_DRAGON)
-			t:SetPoint("BOTTOM" .. side, frame, "BOTTOM" .. side, k * out, -P_FOOT)
-			if k < 0 then t:SetTexCoord(1, 0, 0, 1) end
-			p.dragons[i] = t
-			local e = C.Tex(p.eyeLayer, "OVERLAY", C.ART .. "Glow", "ADD")
-			p.eyes[i] = e
+			p.dragons[i] = C.Tex(frame, "OVERLAY", C.ART .. "PanelDragon")
+			p.eyes[i] = C.Tex(p.eyeLayer, "OVERLAY", C.ART .. "Glow", "ADD")
 		end
-		p.PlaceEye = function(ex, ey, size)
+		-- the ends: the dragons, or (emblem) a class's emblem on the left end and its crest on the right
+		p.PlaceEnds = function(emblem)
+			for i = 1, table.getn(p.ends) do C.Vis(p.ends[i], not emblem) end
 			for i, side in ipairs({ "LEFT", "RIGHT" }) do
 				local k = (side == "LEFT") and -1 or 1
-				local x = (k < 0) and (-out + (1 - ex) * P_DRAGON) or (out - (1 - ex) * P_DRAGON)
-				local e = p.eyes[i]
-				e:ClearAllPoints()
-				e:SetWidth(size)
-				e:SetHeight(size)
-				e:SetPoint("CENTER", frame, "BOTTOM" .. side, x, -P_FOOT + P_DRAGON * (1 - ey))
+				local t, e = p.dragons[i], p.eyes[i]
+				t:ClearAllPoints()
+				if emblem then
+					local ax = (k < 0) and EMBLEM_L or EMBLEM_R
+					t:SetTexture(C.ART .. "PanelEmblem" .. emblem .. ((k < 0) and "L" or "R"))
+					t:SetWidth(EMBLEM_SIZE)
+					t:SetHeight(EMBLEM_SIZE)
+					t:SetTexCoord(0, 1, 0, 1)
+					t:SetPoint("TOPLEFT", frame, side, -ax * EMBLEM_SIZE + k * EMBLEM_OUT, EMBLEM_SIZE / 2)
+					e:Hide() -- they shine in their own paint
+				else
+					t:SetTexture(C.ART .. "PanelDragon")
+					t:SetWidth(P_DRAGON)
+					t:SetHeight(P_DRAGON)
+					if k < 0 then t:SetTexCoord(1, 0, 0, 1) else t:SetTexCoord(0, 1, 0, 1) end
+					t:SetPoint("BOTTOM" .. side, frame, "BOTTOM" .. side, k * P_OUT, -P_FOOT)
+					local x = (k < 0) and (-P_OUT + (1 - EYE_X) * P_DRAGON) or (P_OUT - (1 - EYE_X) * P_DRAGON)
+					e:ClearAllPoints()
+					e:SetWidth(8)
+					e:SetHeight(8)
+					e:SetPoint("CENTER", frame, "BOTTOM" .. side, x, -P_FOOT + P_DRAGON * (1 - EYE_Y))
+					e:Show()
+				end
 			end
 		end
-		p.PlaceEye(EYE_X, EYE_Y, 8)
+		p.PlaceEnds(nil)
 	end
 	return p
 end
@@ -1007,24 +1031,16 @@ function C.PanelTheme(p, pal)
 	for i = 1, table.getn(p.metal) do p.metal[i]:SetVertexColor(mr, mg, mb) end
 	p.fill:SetVertexColor(0.5 + tr[1] * 0.3, 0.47 + tr[2] * 0.3, 0.44 + tr[3] * 0.3, 0.95)
 	if p.dragons then
-		-- painted in its own gold; in a class's theme, the class's own emblem in their place (drawn
-		-- by dev/art/make_art21.py), its gem glowing in the class's light
-		local theme = C.UI_THEME and C.UI_THEME.emblem and C.UI_THEME
-		if p.emblem ~= (theme and theme.emblem) then
-			p.emblem = theme and theme.emblem
-			for i = 1, 2 do
-				p.dragons[i]:SetTexture(C.ART .. (theme and ("PanelEmblem" .. theme.emblem) or "PanelDragon"))
-			end
-			if theme then p.PlaceEye(theme.gemAt[1], theme.gemAt[2], 18) else p.PlaceEye(EYE_X, EYE_Y, 8) end
+		-- painted in its own gold; in a class's theme, the class's own emblem and crest in their place
+		-- (cut from the user's picture by dev/art/cut_classes.py, in their own paint)
+		local emblem = C.UI_THEME and C.UI_THEME.emblem
+		if p.emblem ~= emblem then
+			p.emblem = emblem
+			p.PlaceEnds(emblem)
 		end
 		for i = 1, 2 do
 			p.dragons[i]:SetVertexColor(1, 1, 1)
-			if theme then
-				local g = theme.glow
-				p.eyes[i]:SetVertexColor(g[1], g[2], g[3], 0.8)
-			else
-				p.eyes[i]:SetVertexColor(1, 0.62, 0.14, 0.95) -- the eyes glow amber, as painted
-			end
+			p.eyes[i]:SetVertexColor(1, 0.62, 0.14, 0.95) -- the eyes glow amber, as painted
 		end
 	end
 end

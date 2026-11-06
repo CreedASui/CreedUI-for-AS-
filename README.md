@@ -45,7 +45,7 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 
 Every part can be turned on or off, sized and moved (the chat too).
 
-**Themes:** Bronze, your class's, or any class's (Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid), picked from the options or with `/creed theme`. Each class's theme puts its own emblem on the skill bar's ends (a shield and axes, a bow, a horned skull...).
+**Themes:** Bronze, your class's, or any class's (Warrior, Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Druid), picked from the options or with `/creed theme`. Each class's theme puts its own emblem on the skill bar's left end and its crest on the right (crossed swords and a helm, a winged shield, a bow and a paw...).
 
 **Languages:** English, French, German, Spanish, Portuguese, Chinese, Russian, Japanese, Korean, Polish and Turkish, picked from the options or with `/creed language`.
 
@@ -75,4 +75,4 @@ Every part can be turned on or off, sized and moved (the chat too).
 
 ## Credits
 
-Original art made for Creed UI. The bundled fonts in `CreedUI/Fonts` are made from Lora and Noto Sans CJK, both under the SIL Open Font License (see `CreedUI/Fonts/LICENSE.txt`); the damage numbers' fonts (Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One) are under the same license (see `CreedUI/Fonts/NumberFonts-LICENSE.txt`). Tiny Plates is based on Valorless's MIT-licensed ASTinyPlates (see `CreedUI/TinyPlates-LICENSE.txt`), brought in by JamieeLee.
+Original art made for Creed UI; the skill bar's dragons and class emblems are cut from pictures made for the author. The bundled fonts in `CreedUI/Fonts` are made from Lora and Noto Sans CJK, both under the SIL Open Font License (see `CreedUI/Fonts/LICENSE.txt`); the damage numbers' fonts (Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One) are under the same license (see `CreedUI/Fonts/NumberFonts-LICENSE.txt`). Tiny Plates is based on Valorless's MIT-licensed ASTinyPlates (see `CreedUI/TinyPlates-LICENSE.txt`), brought in by JamieeLee.
