@@ -5,3 +5,4 @@ dev/cui/bg_*.png
 dev/cui/shot.png
 dev/out/
 __pycache__/
+dev/bt/art_png/
