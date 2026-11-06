@@ -153,4 +153,26 @@ for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
     region = np.concatenate([im[top + 3:top + 7, xe:int(rx - 50)].reshape(-1, 3), im[bot - 6:bot - 2, x0:x1].reshape(-1, 3)])
     tint = np.clip(np.median(region, axis=0) / fill_mean, 0, 1)
     print("%-8s fill = { %.2f, %.2f, %.2f }," % (cls, tint[0], tint[1], tint[2]))
+
+# the shaman's left emblem is the carved totem of the user's first picture (asked for: "I like this totem
+# face more"), source/class_bars_first.webp: its bar's rails at 975 and 1069, the totem's ring (about
+# 70 px round) at 257 across; everything outside the bar kept whole, the first picture's bar inside it
+# faded out before its first slot
+FIRST = os.path.join(os.path.dirname(os.path.abspath(SRC)), "class_bars_first.webp")
+if os.path.exists(FIRST):
+    im = np.asarray(Image.open(FIRST).convert("RGB")).astype(np.float64) / 255
+    PH, PW, _ = im.shape
+    lift = np.clip(im - np.array([0.035, 0.035, 0.04]), 0, 1)
+    glow_a = np.clip(lift.max(axis=2) / 0.32, 0, 1)
+    solid = ndimage.binary_fill_holes(ndimage.binary_opening(lift.max(axis=2) > 0.07, iterations=1))
+    solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7) * 1.2, 0, 1)
+    alpha_all = np.maximum(glow_a, solid_a)
+    yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float64)
+    top, bot, lx = 975, 1069, 257
+    mid, s = (top + bot) / 2, (bot - top) / RAIL
+    near = ramp(yy - mid, -76, -72) * ramp(yy - mid, 64, 60)
+    band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7, (bot - top) / 2 + 3)
+    keep = near * ramp(xx, lx - 150, lx - 142) * ramp(xx, lx + 150, lx + 140)
+    keep = keep * np.maximum(1 - band, ramp(xx, lx + 110, lx + 88))
+    cut("PanelEmblemShamanL", lx, mid, s, keep, ANCHOR_L)
 print("wrote", OUT_BLP)
