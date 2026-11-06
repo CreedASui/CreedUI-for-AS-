@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.23.4
+- **Rogue: a solid dark round behind the daggers,** so the bar no longer shows through around them.
+- **Warlock: a simpler crest,** the fel flame in its violet ring with its feathers (from the first class designs).
+
 ## 1.23.3
 - **Rogue: the two crossed daggers in purple smoke** (from the first class designs) on the skill bar's left end.
 - **Hunter: the bow in its ring of leaves** (from the first class designs) on the left end.
