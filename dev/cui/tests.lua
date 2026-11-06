@@ -336,18 +336,20 @@ local function onBar(file)
 	end
 	return n
 end
-check(onBar("PanelEmblemMage") == 2 and onBar("PanelDragon") == 0, "the bar's dragons give way to the mage's emblem, one on each end")
+check(onBar("PanelEmblemMageL") == 1 and onBar("PanelEmblemMageR") == 1 and onBar("PanelDragon") == 0, "the bar's dragons give way to the mage's emblem on the left end and crest on the right")
 check(findText(CreedUIOptions, "^Theme: Mage$") ~= nil, "the hub names the theme")
 M.Slash("theme class")
 frames(5)
 check(CreedUI.uiTheme == "class" and near(CreedUI.Pal().rim[1], 0.94), "your class (a rogue): the rogue's yellow metal")
-check(onBar("PanelEmblemRogue") == 2, "and the rogue's daggers on the bar")
+check(onBar("PanelEmblemRogueL") == 1 and onBar("PanelEmblemRogueR") == 1, "and the rogue's daggers on the bar")
+check(onBar("PanelRailL") == 0 and onBar("PanelCornerTL") == 0, "the panel's end pieces step aside under the emblems")
 M.Slash("theme nonsense")
 check(CreedUI.uiTheme == "class", "an unknown theme changes nothing")
 M.Slash("theme bronze")
 frames(5)
 check(near(CreedUI.Pal().rim[1], 0.95), "back to bronze")
-check(onBar("PanelDragon") == 2 and onBar("PanelEmblem") == 0, "the dragons back on the bar's ends")
+check(onBar("PanelDragon") == 2 and onBar("PanelEmblem%u%l+[LR]") == 0, "the dragons back on the bar's ends")
+check(onBar("PanelRailL") == 1 and onBar("PanelCornerTL") == 1, "and the panel's end pieces back")
 problems("themes")
 
 ------------------------------------------------------------------ 8. moving frames

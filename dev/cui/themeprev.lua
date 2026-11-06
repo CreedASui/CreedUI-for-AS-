@@ -22,7 +22,7 @@ target("boss", "Kirtonos the Herald", 72000, 100000)
 SIM.Advance(2, 1 / 30)
 M.Dump(OUT .. "/theme_bronze.txt")
 target("guardian", "Risen Construct", 5000, 6000)
-for _, key in ipairs({ "warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid" }) do
+for _, key in ipairs({ "warrior", "paladin", "hunter", "rogue", "mage", "druid", "shaman", "priest", "warlock" }) do
 	M.Slash("theme " .. key)
 	SIM.Advance(2, 1 / 30)
 	M.Dump(OUT .. "/theme_" .. key .. ".txt")
