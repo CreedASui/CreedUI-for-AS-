@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.21.3
+- **Class themes: a bigger crest on the skill bar's right end,** as big as the emblem on its left, covering the bar's whole right end.
+
 ## 1.21.2
 - **New class emblems on the skill bar,** from the class bar designs: each class theme now has a large emblem on the bar's left end and a round crest with a ribbon on its right. **Warrior:** crossed swords on a shield with a red cape, and a helm. **Paladin:** a winged shield with a cross, and a star. **Hunter:** a bow in leaves, and a paw. **Rogue:** crossed daggers in shadow, and a hood. **Mage:** an arcane staff in blue light, and a rune star. **Druid:** antlers round a paw, and a tree. **Shaman:** a carved totem in lightning, and a storm crest. **Priest:** a winged holy shield, and a light crest. **Warlock:** a horned fel mask in violet flame, and a fel fire crest. Each is blended into the bar, not pasted on: the emblem fades softly round its own shape over the bar's left end, with a soft shadow under it, and the crest hangs over the bar's right end; both have solid round faces, so the bar never shows through them (inside the bow, for one). They replace 1.21.1's drawn emblems; Bronze keeps its dragons.
 

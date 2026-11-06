@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.21.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.21.3**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -148,8 +148,8 @@ README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two
   colors (`C.UI_THEME`), `C.PanelMetal` its `metal`, the panel dragons give way to the class's emblem
   (1.21.2: `Art/PanelEmblem<Class>L` on the left end, `...R` on the right, cut from the user's picture
   `dev/art/source/class_bars.webp` by `dev/art/cut_classes.py`; each fades round its own shape (no straight
-  cut) with a baked shadow; the panel's left end rail, corners and diamonds hide under the emblem, the
-  right end stays under the crest, `p.PlaceEnds`; 1.21.1's drawn emblems were replaced, asked for); the
+  cut) with a baked shadow; the panel's end rails, corners and diamonds hide under them (1.21.3: the
+  crest drawn 1.8x, covering the right end), `p.PlaceEnds`; 1.21.1's drawn emblems were replaced, asked for); the
   timer reads `C.BRONZE` and stays bronze. `C.THEMES` and `C.themeKey` are the timer's own (zones).
 - The look: dark glass, a gold rail, the timer's metal, diamonds on corners (`C.Panel`). Smooth,
   "eye candy", but calm.
