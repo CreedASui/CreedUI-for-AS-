@@ -8,5 +8,6 @@ __pycache__/
 dev/bt/art_png/
 dev/art/source/*_x4.png
 
-# the player's own songs (never shipped)
-CreedUI/Music/
+# the player's own songs (never shipped): the folder ships with its note only
+CreedUI/Music/*
+!CreedUI/Music/README.txt

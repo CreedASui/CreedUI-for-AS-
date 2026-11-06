@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.23.2
+- **The Music folder comes with Creed UI** (`CreedUI/Music`, with a short note on how to use it): drop your songs in as `1.mp3`, `2.mp3`... and play them from the minimap's music button. It holds no songs.
+
 ## 1.23.1
 - **Class emblems and crests whole again:** their round faces are solid (nothing shows through around the rogue's hood, for one), their dark parts (cloaks, shadows) no longer half see-through, and the flags and capes keep every piece (only loose bits on the bar's side are tidied away).
 
