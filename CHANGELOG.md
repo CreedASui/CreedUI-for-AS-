@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.24.0
+- **The music button is gone,** with its volume row, its `/creed music` command and its Music folder (players have their own music players).
+- **Shaman: the lightning crest** in its gold ring with blue feathers and a star (from the first class designs) on the skill bar's right end.
+
 ## 1.23.4
 - **Rogue: a solid dark round behind the daggers,** so the bar no longer shows through around them.
 - **Warlock: a simpler crest,** the fel flame in its violet ring with its feathers (from the first class designs).

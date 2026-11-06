@@ -302,4 +302,23 @@ if os.path.exists(FIRST):
     keep = keep * np.maximum(ramp(np.abs(yy - 1239 * K), 5 * K, 8 * K), ramp(xx, cx + 70 * K, cx + 76 * K))
     keep = keep * np.maximum(ramp(yy, cy + 28 * K, cy + 24 * K), np.maximum(rk, ramp(xx, cx, cx + 6 * K)))
     cut("PanelEmblemWarlockR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R, 0.06, r - 3 * K, 0)
+    # the shaman's crest too (asked for): the lightning in its gold ring (about 36 px round, at 960,
+    # 1035), its blue feathers and the star flying out; the first picture's rails (975, 1069) and its
+    # bracket stay behind
+    cx, cy, r = 960 * K, 1035 * K, 36 * K
+    near = ramp(yy - cy, -64 * K, -60 * K) * ramp(yy - cy, 52 * K, 48 * K)
+    band = ramp(np.abs(yy - cy), 44 * K, 40 * K)
+    rk = ramp(np.hypot(xx - cx, yy - cy), r + 3 * K, r)
+    keep = near * ramp(xx, cx + 140 * K, cx + 132 * K)
+    keep = keep * np.maximum(ramp(xx, cx - 14 * K, cx - 10 * K), rk)
+    keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, cx - 2 * K, cx + 2 * K), rk))
+    keep = keep * np.maximum(1 - RailLines(lift, 975 * K, 1069 * K, K), rk)
+    keep = keep * np.maximum(ramp(yy, cy + 28 * K, cy + 24 * K), np.maximum(rk, ramp(xx, cx, cx + 6 * K)))
+    # (its dark glow outside the ring isn't solid: the feathers and the star stand on their own)
+    whole = alpha_all
+    own = ndimage.binary_opening(lift.max(axis=2) > 0.09, iterations=1)    # no gaps filled between them
+    own = np.clip(ndimage.gaussian_filter(own.astype(np.float64), 0.7 * K) * 1.2, 0, 1)
+    alpha_all = np.maximum(glow_a, np.maximum(own, solid_a * ramp(np.hypot(xx - cx, yy - cy), r + 8 * K, r + 2 * K)))
+    cut("PanelEmblemShamanR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R, 0.06, r - 3 * K, -1)
+    alpha_all = whole
 print("wrote", OUT_BLP)

@@ -1878,50 +1878,6 @@ do
 	problems("stats window")
 end
 
------------------------------------------------------------------- 11n3. the music button: your own songs, play and pause, the volume
-do
-	local b = CreedUIMusicButton
-	check(b ~= nil and M.Visible(b), "a music button on the minimap's edge")
-	local function crest() return b.crest.__tex or "" end
-	check(string.find(crest(), "MusicPlay$") ~= nil, "showing play")
-	M.cvars.EnableMusic = "0"
-	this, arg1 = b, "LeftButton"
-	b.__scripts.OnClick()
-	check(M.music == "Interface\\AddOns\\CreedUI\\Music\\1.mp3", "a click plays your first song: " .. tostring(M.music))
-	check(M.cvars.EnableMusic == "1" and tonumber(M.cvars.MusicVolume) == 0.6, "with the game's music on, at its volume")
-	check(string.find(crest(), "MusicPause$") ~= nil, "and turns into a pause button")
-	arg1 = "RightButton"
-	b.__scripts.OnClick()
-	check(M.music == "Interface\\AddOns\\CreedUI\\Music\\2.mp3", "a right click: the next song")
-	arg1 = "LeftButton"
-	b.__scripts.OnClick()
-	check(M.music == nil and string.find(crest(), "MusicPlay$") ~= nil, "a click again pauses it, back to play")
-	arg1 = "RightButton"
-	b.__scripts.OnClick()
-	b.__scripts.OnClick()
-	check(M.music == nil and CreedUIDB.music.track == 1, "paused, the right click only moves along the list (round to the first of three)")
-	M.Slash("music 5")
-	check(CreedUIDB.music.count == 5 and chatHas("music: 5 songs"), "/creed music 5: five songs")
-	-- the volume, in the options beside the language
-	if not (CreedUIOptions and CreedUIOptions.__shown) then M.Slash("") end
-	frames(2)
-	check(findText(CreedUIOptions, "^Music volume: 60%%$") ~= nil, "the options show the music volume")
-	this = CreedUI.musicRow.plus
-	CreedUI.musicRow.plus:Click()
-	frames(2)
-	check(findText(CreedUIOptions, "^Music volume: 70%%$") ~= nil and tonumber(M.cvars.MusicVolume) == 0.7, "+ makes it louder")
-	M.Slash("")
-	-- turned off, it stops and goes
-	this, arg1 = b, "LeftButton"
-	b.__scripts.OnClick()
-	M.Slash("music off")
-	frames(3)
-	check(M.music == nil and not M.Visible(b), "the part off: the song stops and the button goes")
-	M.Slash("music on")
-	frames(3)
-	problems("music")
-end
-
 ------------------------------------------------------------------ 11o. the chat stops short of the skill bar's emblem
 do
 	SIM.StartRun("naxx", { killAfter = 120 })
