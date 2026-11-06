@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.23.3
+- **Rogue: the two crossed daggers in purple smoke** (from the first class designs) on the skill bar's left end.
+- **Hunter: the bow in its ring of leaves** (from the first class designs) on the left end.
+- **Shaman: the totem 10% bigger,** hiding the bar's ends behind it.
+- **Mage: the rune circle bright again** round the staff.
+- **Warlock: both horns** on the emblem (one had gone).
+- **Druid: the antler whole** where it crosses the bar's line, and no stray bits of the designs' own bar lines left beside any emblem.
+
 ## 1.23.2
 - **The Music folder comes with Creed UI** (`CreedUI/Music`, with a short note on how to use it): drop your songs in as `1.mp3`, `2.mp3`... and play them from the minimap's music button. It holds no songs.
 
