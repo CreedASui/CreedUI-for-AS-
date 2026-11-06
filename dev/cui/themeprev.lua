@@ -1,5 +1,5 @@
 -- The target's dragons and the UI themes (1.21.0): a boss targeted in bronze (out/theme_bronze.txt),
--- then a guardian targeted in the Mage, Druid, Warlock and Paladin themes (out/theme_<key>.txt).
+-- then a guardian targeted in each class's theme (out/theme_<key>.txt).
 MOCK_SCRATCH = arg[1]
 local DIR, OUT = arg[2], arg[3]
 dofile(MOCK_SCRATCH .. "/cui/mock_cui.lua")
@@ -22,7 +22,7 @@ target("boss", "Kirtonos the Herald", 72000, 100000)
 SIM.Advance(2, 1 / 30)
 M.Dump(OUT .. "/theme_bronze.txt")
 target("guardian", "Risen Construct", 5000, 6000)
-for _, key in ipairs({ "mage", "druid", "warlock", "paladin" }) do
+for _, key in ipairs({ "warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid" }) do
 	M.Slash("theme " .. key)
 	SIM.Advance(2, 1 / 30)
 	M.Dump(OUT .. "/theme_" .. key .. ".txt")
