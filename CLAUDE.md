@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.24.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.24.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -149,7 +149,7 @@ README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two
   `actors[context.localOwnerId].classKey`; the character's class needn't be the run's hero's).
   `C.HeroClass()`: that, else the last run's (`CreedUIDB.heroClass`), else `UnitClass("player")`, else
   warrior. `C.Pal()` is the timer's zone palette with the class's metal over it; `C.PanelMetal` is the
-  class's `metal`. The skill bar (`C.Panel(frame, true)`, `p.emblems`, `p.PlaceEnds`): the class's emblem
+  class's `metal`. Every `C.Panel` is kept in `C.panels` and re-dressed when `C.palStamp` changes (1.24.2). The skill bar (`C.Panel(frame, true)`, `p.emblems`, `p.PlaceEnds`): the class's emblem
   (`Art/PanelEmblem<Class>L`, 512x256) and crest (`...R`), drawn at 0.85 of the panel's scale with their
   middles 24 in from its ends, their rings as tall as the panel, cut at their rings inside the bar's band
   (nothing above or below it is cut); the panel's rails (`Art/PanelRail<Class>T/B`) are the picture's; its glass is `Art/PanelGlass`
