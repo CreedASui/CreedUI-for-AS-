@@ -510,3 +510,14 @@ Pick the stats to show
 Hide the stats window (Creed UI Options brings it back)
 the stats window stopped after an error: 
 Your run's stats at a glance, grouped (Offense, Survival, Area and DoTs, Run); a change flashes green going up, red going down. The + in its head picks the stats it shows.
+Music
+Song {1} of {2}
+Click: play
+Click: pause (the song starts over)
+Right-click: next song
+Put your songs in Interface\AddOns\CreedUI\Music, named 1.mp3, 2.mp3 and so on
+Music volume: {1}
+music: {1} songs
+/creed music followed by how many songs there are (now {1})
+Music button
+A play button on the minimap's edge for your own songs: click to play or pause, right-click for the next one. Put them in Interface\AddOns\CreedUI\Music named 1.mp3, 2.mp3...; /creed music <number> says how many. The volume is beside the language.
