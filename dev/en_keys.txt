@@ -486,3 +486,5 @@ None
 Blood
 font: 
 /creed numbers font <name> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...
+Storm
+/creed numbers backdrop none, fire, frost, arcane, holy, shadow or storm - behind crits

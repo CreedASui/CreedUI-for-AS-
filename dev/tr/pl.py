@@ -295,4 +295,6 @@ T = {
 486: "Krew",
 487: "czcionka: ",
 488: "/creed numbers font <nazwa> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...",
+489: "Burza",
+490: "/creed numbers backdrop none, fire, frost, arcane, holy, shadow lub storm - za krytykami",
 }

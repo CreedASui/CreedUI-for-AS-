@@ -295,4 +295,6 @@ T = {
 486: "鲜血",
 487: "字体：",
 488: "/creed numbers font <名称> - Friz Quadrata、Cinzel、Bangers、Creepster、Uncial Antiqua、Black Ops One、Pirata One……",
+489: "风暴",
+490: "/creed numbers backdrop none、fire、frost、arcane、holy、shadow 或 storm - 暴击背后",
 }

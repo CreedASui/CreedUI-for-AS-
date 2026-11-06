@@ -295,4 +295,6 @@ T = {
 486: "Kan",
 487: "yazı tipi: ",
 488: "/creed numbers font <ad> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...",
+489: "Fırtına",
+490: "/creed numbers backdrop none, fire, frost, arcane, holy, shadow veya storm - kritiklerin arkasında",
 }

@@ -295,4 +295,6 @@ T = {
 486: "血",
 487: "フォント: ",
 488: "/creed numbers font <名前> - Friz Quadrata、Cinzel、Bangers、Creepster、Uncial Antiqua、Black Ops One、Pirata One など",
+489: "嵐",
+490: "/creed numbers backdrop none、fire、frost、arcane、holy、shadow、storm - クリティカルの背後",
 }

@@ -489,4 +489,6 @@ CreedUI.AddLanguage("ru", "Русский", CreedUI.FACE_LETTERS, {
 	["Blood"] = "Кровь",
 	["font: "] = "шрифт: ",
 	["/creed numbers font <name> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One..."] = "/creed numbers font <название> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...",
+	["Storm"] = "Гроза",
+	["/creed numbers backdrop none, fire, frost, arcane, holy, shadow or storm - behind crits"] = "/creed numbers backdrop none, fire, frost, arcane, holy, shadow или storm - за критами",
 })

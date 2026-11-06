@@ -295,4 +295,6 @@ T = {
 486: "Кровь",
 487: "шрифт: ",
 488: "/creed numbers font <название> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...",
+489: "Гроза",
+490: "/creed numbers backdrop none, fire, frost, arcane, holy, shadow или storm - за критами",
 }
