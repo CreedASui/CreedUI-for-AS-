@@ -42,7 +42,9 @@ BARS = [
     ("Shaman", 90, 517, 465, 536, 85, 69), ("Priest", 703, 1062, 465, 535, 72, 57),
     ("Warlock", 1232, 1626, 465, 536, 72, 65),
 ]
-OUTER = {"ShamanR": 122, "PriestL": 122}   # how far out each piece reaches (texture px; else 140)
+OUTER = {"ShamanR": 122, "PriestL": 122}
+# emblems whose round reaches past the usual ring (picture px): the mage's rune circle (1.23.3, asked for)
+RINGS = {"MageL": 60}   # how far out each piece reaches (texture px; else 140)
 RING = 43                           # the emblems' and crests' rings' outer edge (picture px round them)
 HALF_GAP = 68                       # half the space between rows (picture px): the neighbours cut away
 BG = np.array([0.02, 0.02, 0.02])   # the picture's black
@@ -80,7 +82,7 @@ PH, PW, _ = im.shape
 lift = np.clip(im - BG, 0, 1)
 # alpha off the black: light and glow by how far they rise above it, solid shapes (dark shields, the
 # bar's tinted glass) whole, their holes filled
-glow_a = np.clip(lift.max(axis=2) / 0.25, 0, 1)
+glow_a = np.clip(lift.max(axis=2) / 0.20, 0, 1)   # (1.23.3: 0.25 left the mage's runes faint)
 # (dark cloaks and shadows count as solid too: anything above the black, its gaps closed first, then
 # only single stray pixels opened away, at any size of picture; 1.23.1, asked for: no holes in the flags)
 solid = ndimage.binary_opening(ndimage.binary_fill_holes(ndimage.binary_closing(lift.max(axis=2) > 0.035, iterations=K)), iterations=1)
@@ -88,6 +90,23 @@ solid_a = np.clip(ndimage.gaussian_filter(solid.astype(np.float64), 0.7 * K) * 1
 alpha_all = np.maximum(glow_a, solid_a)
 bright = np.clip((lift.max(axis=2) - 0.14) / 0.16, 0, 1)   # clearly brighter than the bars' dark glass
 yy, xx = np.mgrid[0:PH, 0:PW].astype(np.float64)
+
+
+def RailLines(lift, top, bot, K):
+    """1 where the picture shows its bar's own rail: a thin bright horizontal line at a rail's row,
+    darker a few pixels above and below; an antler or a blade crossing that row is no such line
+    (1.23.3: erasing the whole row left a notch in the druid's antler)"""
+    L = lift.max(axis=2)
+    d, h = int(7 * K), int(10 * K)
+    # bright along the row (left and right of it), dimmer above and below: a horizontal line, glowing
+    # or not; a diagonal antler or blade is dark to its left or right
+    along = np.minimum(np.roll(L, h, axis=1), np.roll(L, -h, axis=1))
+    around = np.maximum(np.roll(L, d, axis=0), np.roll(L, -d, axis=0))
+    thin = np.clip((np.minimum(L, along) - around - 0.02) / 0.06, 0, 1)
+    rows = np.maximum(ramp(np.abs(yy - top), 8 * K, 5 * K), ramp(np.abs(yy - bot), 8 * K, 5 * K))
+    return ndimage.gaussian_filter(np.clip(thin * rows * 1.5, 0, 1), 1.0 * K)
+
+
 fill_mean = read_blp(os.path.join(ART, "PanelFill.blp"))[..., :3].mean()
 
 
@@ -125,8 +144,10 @@ def cut(name, cx, mid, s, keep, anchor_x, stray=0.02, face=None, bar_side=0):
         if bar_side:
             # only on the bar's side: on the outer side, a flag's or a cape's own pieces are the design
             cols = ndimage.center_of_mass(np.ones_like(pa), lab, index=np.arange(1, n + 1))
-            for j, (_, ccol) in enumerate(cols):
-                if (ccol - anchor_x) * bar_side < 0:
+            for j, (crow, ccol) in enumerate(cols):
+                # kept: the outer side's pieces, and anything above or below the bar (a horn, a tip):
+                # only pieces sitting on the bar itself go (1.23.3: the warlock's horn went)
+                if (ccol - anchor_x) * bar_side < 0 or (abs(crow - TH / 2) > RAIL * 0.45 and sizes[j] >= 300):
                     big[j + 1] = True
         keepm = ndimage.binary_dilation(big[lab], iterations=2) | (pa <= 0.12) & ndimage.binary_dilation(big[lab], iterations=4)
         pa = pa * ndimage.gaussian_filter(keepm.astype(np.float64), 0.6)
@@ -154,16 +175,17 @@ for cls, lx, rx, top, bot, gap_l, gap_r in BARS:
     keep_l = near * ramp(xx, lx - out_l, lx - out_l + 8 * K) * ramp(xx, lx + 150 * s, lx + 140 * s)
     # (faded out by the picture's first slot, and within Creed UI's room at the bar's end: 118 texture px)
     end_l, start_l = Fade(gap_l, s)
-    ring = ramp(np.hypot(xx - lx, yy - mid), rg + 3 * K, rg)
+    rl = RINGS.get(cls + "L", RING) * K
+    ring = ramp(np.hypot(xx - lx, yy - mid), rl + 3 * K, rl)
     # (the picture's own rail lines left out there: they'd double Creed UI's)
-    norail = ramp(np.abs(yy - top), 2 * K, 5 * K) * ramp(np.abs(yy - bot), 2 * K, 5 * K)
+    norail = 1 - RailLines(lift, top, bot, K)
     near_ring = ramp(np.hypot(xx - lx, yy - mid), rg + 20 * K, rg + 4 * K) * norail
     # and what of the emblem reaches over the bar (a dagger, an antler, the bow): everything clearly
     # brighter than the bar's dark glass, up to where Creed UI's slots begin (1.21.8, asked for)
     reach = min(gap_l - 12 * K, 72 * K)
     over_l = bright * norail * ramp(xx, lx + reach, lx + reach - 8 * K)
     # (no margin of the picture's own dark glass round the ring: Creed UI's bar has its class's glass)
-    inner_l = np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ring), over_l)
+    inner_l = np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ring * norail), over_l)
     keep_l = keep_l * np.maximum(1 - band, inner_l)
     cut("PanelEmblem" + cls + "L", lx, mid, s, keep_l, ANCHOR_L, 0.06, rg - 4 * K, 1)
     out_r = OUTER.get(cls + "R", 140) * s
@@ -215,8 +237,12 @@ if os.path.exists(FIRST):
     band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7 * K, (bot - top) / 2 + 3 * K)
     keep = near * ramp(xx, lx - 150 * K, lx - 142 * K) * ramp(xx, lx + 150 * K, lx + 140 * K)
     keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ramp(np.hypot(xx - lx, yy - mid), 73 * K, 70 * K)))
+    keep = keep * np.maximum(1 - RailLines(lift, top, bot, K), ramp(xx, lx + 40 * K, lx + 34 * K))   # its bar's rail line
+    # and that bar's glowing line just over its top rail (at 965), past the totem's round
+    keep = keep * np.maximum(ramp(np.abs(yy - 965 * K), 10 * K, 14 * K), ramp(xx, lx + 50 * K, lx + 44 * K))
     # its ring is bigger than the others' (70 to their 43, at its rails' scale): drawn to their size
-    cut("PanelEmblemShamanL", lx, mid, s * (70 / (bot - top) * K) / (RING / 72.0), keep, ANCHOR_L, 0.06, 66 * K, 1)
+    # (10% bigger than the others' size, to hide the bar's ends behind it: asked for)
+    cut("PanelEmblemShamanL", lx, mid, s * (70 / (bot - top) * K) / (RING / 72.0) / 1.1, keep, ANCHOR_L, 0.06, 66 * K, 1)
     # the priest's crest is the first picture's too (asked for): the gold winged light in its ring (about
     # 38 px round, at 957, 1160), its feathers flying out; inside the bar's band cut at the ring, the
     # first picture's bar bracket left behind; drawn to the other crests' size, its ring on the bar's middle
@@ -230,4 +256,34 @@ if os.path.exists(FIRST):
     # (and the stub of that bar's top rail and spike over the ring, 1104 to 1122: asked for)
     keep = keep * np.maximum(ramp(np.abs(yy - 1113 * K), 6 * K, 9 * K), ramp(xx, cx + 16 * K, cx + 22 * K))
     cut("PanelEmblemPriestR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R, 0.06, r - 3 * K, -1)
+    # the rogue's left emblem is the first picture's too (asked for: its two crossed daggers in purple
+    # smoke): they cross at 257, 590 over a bar whose rails are at 512 and 620; everything above and
+    # below the bar kept whole, and over the bar what's brighter than its glass (the blades), up to
+    # where the slots begin; its dark smoky round kept solid
+    top, bot, lx = 512 * K, 620 * K, 257 * K
+    mid, s = (top + bot) / 2, (bot - top) / RAIL
+    bright = np.clip((lift.max(axis=2) - 0.14) / 0.16, 0, 1)
+    near = ramp(yy - mid, -82 * K, -78 * K) * ramp(yy - mid, 70 * K, 66 * K)
+    band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7 * K, (bot - top) / 2 + 3 * K)
+    norail = 1 - RailLines(lift, top, bot, K)
+    keep = near * ramp(xx, lx - 200 * K, lx - 192 * K) * ramp(xx, lx + 120 * K, lx + 110 * K)
+    keep = keep * np.maximum(norail, ramp(xx, lx + 30 * K, lx + 24 * K))   # the bar's rail stubs go
+    over = bright * norail * ramp(xx, lx + 100 * K, lx + 90 * K)
+    smoke = ramp(np.hypot(xx - lx, yy - mid + 14 * K), 62 * K, 56 * K)   # the smoky round behind them
+    keep = keep * np.maximum(1 - band, np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), over), smoke))
+    cut("PanelEmblemRogueL", lx, mid, s, keep, ANCHOR_L, 0.06, None, 1)
+    # and the hunter's: the first picture's bow in its ring of leaves (asked for), the ring (about 64 px
+    # round) at 255, 405 over a bar whose rails are at 355 and 462; its leaves and the bow's tips that
+    # reach over the bar kept, as the rogue's blades
+    top, bot, lx = 355 * K, 462 * K, 255 * K
+    mid, s = (top + bot) / 2, (bot - top) / RAIL
+    near = ramp(yy - mid, -80 * K, -76 * K) * ramp(yy - mid, 76 * K, 72 * K)
+    band = ramp(np.abs(yy - mid), (bot - top) / 2 + 7 * K, (bot - top) / 2 + 3 * K)
+    norail = 1 - RailLines(lift, top, bot, K)
+    keep = near * ramp(xx, lx - 200 * K, lx - 192 * K) * ramp(xx, lx + 120 * K, lx + 110 * K)
+    keep = keep * np.maximum(norail, ramp(xx, lx + 30 * K, lx + 24 * K))   # the bar's rail stubs go
+    over = bright * norail * ramp(xx, lx + 100 * K, lx + 90 * K)
+    ringk = ramp(np.hypot(xx - lx, yy - (mid - 3 * K)), 68 * K, 64 * K)
+    keep = keep * np.maximum(1 - band, np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), over), ringk))
+    cut("PanelEmblemHunterL", lx, mid - 3 * K, s, keep, ANCHOR_L, 0.06, 58 * K, 1)
 print("wrote", OUT_BLP)
