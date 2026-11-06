@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.24.1
+- **Shaman: a tidier crest:** just the lightning in its gold ring with its feathers sweeping down; the top wing that reached far over the bar, the flying crystal and the sparks are gone.
+
 ## 1.24.0
 - **The music button is gone,** with its volume row, its `/creed music` command and its Music folder (players have their own music players).
 - **Shaman: the lightning crest** in its gold ring with blue feathers and a star (from the first class designs) on the skill bar's right end.
