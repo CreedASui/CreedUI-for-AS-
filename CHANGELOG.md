@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.21.6
+- **Shaman: the carved wooden totem in its crackling lightning is back on the skill bar's left end** (from the first class designs), fitted to the new bar.
+
 ## 1.21.5
 - **New class designs on the skill bar, blended in as in the designs:** every class has a new emblem on the bar's left end and crest on its right, and the bar runs naturally into them: the emblem carries the design's own bar a little way in, fading softly into Creed UI's bar, which is now painted as the design's (its gold rail lines and its inside in the class's tint: red-brown for warriors, olive for hunters, gold-brown for paladins, plum for rogues, deep blue for mages, green for druids, night blue for shamans, dark for priests, violet for warlocks). Nothing is cropped any more: everything above and below the bar (the rogue's daggers, wings, capes, horns) stays whole.
 - **The XP bar is gold again for every class,** as in the designs.

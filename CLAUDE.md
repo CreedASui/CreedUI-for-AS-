@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.21.5**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.21.6**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -151,7 +151,8 @@ README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two
   in the texture, 76 on the panel); each carries the picture's bar a little way in, fading out over the
   panel, whose rails (`Art/PanelRail<Class>T/B`) and glass tint (the theme's `fill`) are the picture's, so
   no seam shows (1.21.5, asked for: new designs, `dev/art/source/class_bars.webp`, 1740x606; on short bars
-  the picture's bar is cut round the ring; nothing above or below the bar is cut). The XP bar is gold.
+  the picture's bar is cut round the ring; nothing above or below the bar is cut; 1.21.6: the shaman's left
+  emblem is the totem of the first picture, `source/class_bars_first.webp`, asked for). The XP bar is gold.
   The boss timer reads `C.BRONZE` and stays bronze. `C.THEMES` and
   `C.themeKey` are the timer's own (zones).
 - The look: dark glass, a gold rail, the timer's metal, diamonds on corners (`C.Panel`). Smooth,
