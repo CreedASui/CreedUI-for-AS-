@@ -187,4 +187,15 @@ if os.path.exists(FIRST):
     keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), ramp(np.hypot(xx - lx, yy - mid), 73 * K, 70 * K)))
     # its ring is bigger than the others' (70 to their 43, at its rails' scale): drawn to their size
     cut("PanelEmblemShamanL", lx, mid, s * (70 / (bot - top) * K) / (RING / 72.0), keep, ANCHOR_L)
+    # the priest's crest is the first picture's too (asked for): the gold winged light in its ring (about
+    # 38 px round, at 957, 1160), its feathers flying out; inside the bar's band cut at the ring, the
+    # first picture's bar bracket left behind; drawn to the other crests' size, its ring on the bar's middle
+    cx, cy, r = 957 * K, 1160 * K, 38 * K
+    near = ramp(yy - cy, -66 * K, -62 * K) * ramp(yy - cy, 52 * K, 48 * K)
+    band = ramp(np.abs(yy - cy), 44 * K, 40 * K)
+    keep = near * ramp(xx, cx + 140 * K, cx + 132 * K)
+    # (left of the ring only the ring itself: the first picture's bracket and its diamonds stay behind)
+    keep = keep * np.maximum(ramp(xx, cx - 14 * K, cx - 10 * K), ramp(np.hypot(xx - cx, yy - cy), r + 3 * K, r))
+    keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, cx - 2 * K, cx + 2 * K), ramp(np.hypot(xx - cx, yy - cy), r + 3 * K, r)))
+    cut("PanelEmblemPriestR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R)
 print("wrote", OUT_BLP)

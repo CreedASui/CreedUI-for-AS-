@@ -3,6 +3,7 @@
 ## 1.21.7
 - **The look is the class you start the run with.** Creed UI reads the run's hero class as the run begins (the game's character class isn't always the run's hero), and changes look with each new run. Until a run starts it wears the last run's class.
 - **The skill bar fits the screen:** its emblem and crest are smaller (their rings as tall as the bar) and sit on the bar's ends instead of reaching far past them.
+- **Priest: the winged light crest** from the first class designs on the skill bar's right end.
 - **Sharper emblems and crests:** cut again from the class designs enlarged four times by a super-resolution upscaler, so they stay crisp in game.
 
 ## 1.21.6
