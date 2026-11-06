@@ -489,4 +489,6 @@ CreedUI.AddLanguage("ja", "日本語", CreedUI.FACE_CJK, {
 	["Blood"] = "血",
 	["font: "] = "フォント: ",
 	["/creed numbers font <name> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One..."] = "/creed numbers font <名前> - Friz Quadrata、Cinzel、Bangers、Creepster、Uncial Antiqua、Black Ops One、Pirata One など",
+	["Storm"] = "嵐",
+	["/creed numbers backdrop none, fire, frost, arcane, holy, shadow or storm - behind crits"] = "/creed numbers backdrop none、fire、frost、arcane、holy、shadow、storm - クリティカルの背後",
 })

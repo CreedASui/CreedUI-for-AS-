@@ -1497,6 +1497,18 @@ local ROWS = {
 		"/creed numbers font <nombre> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...",
 		"/creed numbers font <nome> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One..." },
 
+	-- the Storm backdrop (1.20.4)
+	{ "Storm",
+		"Orage",
+		"Sturm",
+		"Tormenta",
+		"Tempestade" },
+	{ "/creed numbers backdrop none, fire, frost, arcane, holy, shadow or storm - behind crits",
+		"/creed numbers backdrop none, fire, frost, arcane, holy, shadow ou storm - derrière les critiques",
+		"/creed numbers backdrop none, fire, frost, arcane, holy, shadow oder storm - hinter kritischen Treffern",
+		"/creed numbers backdrop none, fire, frost, arcane, holy, shadow o storm - detrás de los críticos",
+		"/creed numbers backdrop none, fire, frost, arcane, holy, shadow ou storm - atrás dos críticos" },
+
 	-- what stops after an error says so
 	{ "the skill bar stopped after an error, so the game's own is back: ", "la barre de sorts s'est arrêtée après une erreur, celle du jeu est revenue : ", "die Fähigkeitenleiste hat nach einem Fehler gestoppt, die des Spiels ist zurück: ", "la barra de habilidades se detuvo tras un error; vuelve la del juego: ", "a barra de habilidades parou após um erro; a do jogo voltou: " },
 	{ "boss bars stopped after an error, so the game's own are back: ", "les barres de boss se sont arrêtées après une erreur, celles du jeu sont revenues : ", "die Boss-Leisten haben nach einem Fehler gestoppt, die des Spiels sind zurück: ", "las barras de jefes se detuvieron tras un error; vuelven las del juego: ", "as barras de chefes pararam após um erro; as do jogo voltaram: " },

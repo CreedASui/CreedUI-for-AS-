@@ -489,4 +489,6 @@ CreedUI.AddLanguage("tr", "Türkçe", CreedUI.FACE_LETTERS, {
 	["Blood"] = "Kan",
 	["font: "] = "yazı tipi: ",
 	["/creed numbers font <name> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One..."] = "/creed numbers font <ad> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...",
+	["Storm"] = "Fırtına",
+	["/creed numbers backdrop none, fire, frost, arcane, holy, shadow or storm - behind crits"] = "/creed numbers backdrop none, fire, frost, arcane, holy, shadow veya storm - kritiklerin arkasında",
 })

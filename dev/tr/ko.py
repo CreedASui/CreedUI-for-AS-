@@ -295,4 +295,6 @@ T = {
 486: "피",
 487: "글꼴: ",
 488: "/creed numbers font <이름> - Friz Quadrata, Cinzel, Bangers, Creepster, Uncial Antiqua, Black Ops One, Pirata One...",
+489: "폭풍",
+490: "/creed numbers backdrop none, fire, frost, arcane, holy, shadow, storm - 치명타 뒤",
 }

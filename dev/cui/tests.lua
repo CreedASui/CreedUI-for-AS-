@@ -3387,14 +3387,14 @@ do
 		end
 		return n
 	end
-	M.Slash("numbers backdrop blood")
-	check(CreedUIDB.numbers.backdrop == "blood", "/creed numbers backdrop blood picks it")
+	M.Slash("numbers backdrop fire")
+	check(CreedUIDB.numbers.backdrop == "fire", "/creed numbers backdrop fire picks it")
 	local e = M.Enemy("Crit dummy", 3, 3)
 	M.Hit(e, 4321, "strike", false, true)
 	local e2 = M.Enemy("Plain dummy", -3, -3)
 	M.Hit(e2, 1234, "strike", false, false)
 	frames(6)
-	check(backs("Art\\NumBlood") == 1, "a crit wears the blood splatter, a plain hit doesn't: " .. backs("Art\\NumBlood"))
+	check(backs("Art\\NumFlame") == 1, "a crit wears the fire burst, a plain hit doesn't: " .. backs("Art\\NumFlame"))
 	CreedUIDB.numbers.backdrop = "frost"
 	local e3 = M.Enemy("Crit dummy 2", 5, -2)
 	M.Hit(e3, 999, "strike", false, true)
@@ -3402,7 +3402,29 @@ do
 	check(backs("Art\\NumFrost") >= 1, "another backdrop: the ice star")
 	CreedUIDB.numbers.backdrop = "none"
 	frames(6)
-	check(backs("Art\\NumFrost") == 0 and backs("Art\\NumBlood") == 0, "None: no backdrop")
+	check(backs("Art\\NumFrost") == 0 and backs("Art\\NumFlame") == 0, "None: no backdrop")
+	-- the burst: it swells past its size in a sixth of a second, then settles
+	frames(150) -- the earlier numbers gone
+	local function backW(name)
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, name .. "$") and under(o, CreedUINumbersLayer) and M.Visible(o) then return o.__w end
+		end
+	end
+	CreedUIDB.numbers.backdrop = "storm"
+	local e5 = M.Enemy("Crit dummy 3", -4, 1)
+	M.Hit(e5, 2468, "strike", false, true)
+	frames(2)
+	local early = backW("Art\\NumStorm")
+	frames(4)
+	local peak = backW("Art\\NumStorm")
+	frames(12)
+	local settled = backW("Art\\NumStorm")
+	check(early and peak and settled and early < peak and settled < peak,
+		string.format("the backdrop bursts in and settles (%s, %s, %s)", tostring(early), tostring(peak), tostring(settled)))
+	CreedUIDB.numbers.backdrop = "blood" -- a choice from before 1.20.4: gone, so none
+	M.Reload(DIR, true)
+	frames(3)
+	check(CreedUIDB.numbers.backdrop == "none", "a saved Blood backdrop (removed) falls back to none")
 	-- a font of Creed UI's own, from the addon's folder
 	local was = CreedUIDB.numbers.font
 	M.Slash("numbers font cinzel")
