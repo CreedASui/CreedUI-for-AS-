@@ -40,6 +40,7 @@ Click the **C** on the minimap's edge (or type `/creed`) for the options.
 
 **Everything else**
 - **Minimap:** a metal ring, your local time, the caches and the guardians' lairs.
+- **Music button:** play your own songs from the minimap's edge (put them in `CreedUI/Music` as `1.mp3`, `2.mp3`...), with a volume in the options.
 - **Character window:** gear slots lit in their rarity color and your run's stats grouped beside it.
 - **Tiny Plates:** compact nameplates for regular enemies, full-size ones for bosses and guardians.
 - **Chat:** dressed to match, and kept clear of the skill bar's emblem.
@@ -61,6 +62,7 @@ Every part can be turned on or off, sized and moved (the chat too).
 | `/creed timer ...`, `/creed numbers ...` | The boss timer's and damage numbers' own settings |
 | `/creed <part> on/off` | Turns a part on or off |
 | `/creed talents` | Opens the talent window |
+| `/creed music <number>` | How many songs are in `CreedUI/Music` (`1.mp3`, `2.mp3`...) |
 | `/creed probe` | Prints what the game gives addons, for reporting what's missing |
 
 ## What's in this repository

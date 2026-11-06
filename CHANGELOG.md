@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.23.0
+- **New: a music button on the minimap's edge** for your own songs. Click it to play, and it turns into a pause button; click again to pause; right-click for the next song. Put your songs in `Interface\AddOns\CreedUI\Music`, named `1.mp3`, `2.mp3` and so on (Creed UI comes with none), and tell it how many with `/creed music <number>` (3 to begin with). The game's own music fades out under your song and comes back when it stops. The game can't truly pause a song, so a paused song starts over when played again.
+- **Music volume** in Creed UI Options, beside the language: − and + in steps of 10%.
+
 ## 1.22.0
 - **Fix: the skill bar's class glass showed as a flat bright color in game** (its texture was too big for the game); now it shows its design.
 - **New: the Stats window.** Your run's stats at a glance, in Creed UI's glass: grouped as Offense, Survival, Area and DoTs, and Run, each under a fine header in its own color. A stat that changes glows green as it rises and red as it falls. The **+** in its head opens the list of every stat (all 29 the game keeps: damage, crit, crit damage, haste, echo, armor, lifesteal, execute, pet damage, speed, luck...) to tick the ones it shows; the **x** hides it, and Creed UI Options brings it back. Drag it to move it, and size it in the options.
