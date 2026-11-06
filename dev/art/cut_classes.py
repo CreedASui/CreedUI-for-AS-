@@ -271,7 +271,9 @@ if os.path.exists(FIRST):
     over = bright * norail * ramp(xx, lx + 100 * K, lx + 90 * K)
     smoke = ramp(np.hypot(xx - lx, yy - mid + 14 * K), 62 * K, 56 * K)   # the smoky round behind them
     keep = keep * np.maximum(1 - band, np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), over), smoke))
-    cut("PanelEmblemRogueL", lx, mid, s, keep, ANCHOR_L, 0.06, None, 1)
+    # a solid dark round behind the daggers, as the other emblems have (1.23.4, asked for: the bar showed
+    # through around them)
+    cut("PanelEmblemRogueL", lx, mid, s, keep, ANCHOR_L, 0.06, 66 * K, 1)
     # and the hunter's: the first picture's bow in its ring of leaves (asked for), the ring (about 64 px
     # round) at 255, 405 over a bar whose rails are at 355 and 462; its leaves and the bow's tips that
     # reach over the bar kept, as the rogue's blades
@@ -286,4 +288,18 @@ if os.path.exists(FIRST):
     ringk = ramp(np.hypot(xx - lx, yy - (mid - 3 * K)), 68 * K, 64 * K)
     keep = keep * np.maximum(1 - band, np.maximum(np.maximum(ramp(xx, lx + 2 * K, lx - 2 * K), over), ringk))
     cut("PanelEmblemHunterL", lx, mid - 3 * K, s, keep, ANCHOR_L, 0.06, 58 * K, 1)
+    # the warlock's crest is the first picture's too (asked for: simpler): the fel flame in its violet ring
+    # (about 35 px round, at 960, 1295), its feathers flying out; left of the ring and over the bar only
+    # the ring itself (the first picture's bracket, diamonds and rails stay behind)
+    cx, cy, r = 960 * K, 1295 * K, 36 * K
+    near = ramp(yy - cy, -62 * K, -58 * K) * ramp(yy - cy, 50 * K, 46 * K)
+    band = ramp(np.abs(yy - cy), 44 * K, 40 * K)
+    rk = ramp(np.hypot(xx - cx, yy - cy), r + 3 * K, r)
+    keep = near * ramp(xx, cx + 140 * K, cx + 132 * K)
+    keep = keep * np.maximum(ramp(xx, cx - 14 * K, cx - 10 * K), rk)
+    keep = keep * np.maximum(1 - band, np.maximum(ramp(xx, cx - 2 * K, cx + 2 * K), rk))
+    # (the first picture's top rail running into the feathers, at 1239, and its bracket under the ring)
+    keep = keep * np.maximum(ramp(np.abs(yy - 1239 * K), 5 * K, 8 * K), ramp(xx, cx + 70 * K, cx + 76 * K))
+    keep = keep * np.maximum(ramp(yy, cy + 28 * K, cy + 24 * K), np.maximum(rk, ramp(xx, cx, cx + 6 * K)))
+    cut("PanelEmblemWarlockR", cx, cy, r / (RING / 72.0 * RAIL), keep, ANCHOR_R, 0.06, r - 3 * K, 0)
 print("wrote", OUT_BLP)

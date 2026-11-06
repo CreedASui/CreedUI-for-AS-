@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.23.3**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.23.4**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -163,7 +163,7 @@ README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two
   the slots; crests are cut at the ring; small loose pieces are dropped, on the bar's side only
   (1.23.1: each round face is solid, `face`; dark cloaks count as solid: closing scaled with the
   upscale, opening by one pixel; asked for: holes in the rogue crest's flag). Source: `dev/art/source/class_bars.webp` (1.21.5,
-  asked for); the shaman's, rogue's and hunter's left emblems and the priest's crest from `source/class_bars_first.webp` (1.21.6,
+  asked for); the shaman's, rogue's and hunter's left emblems and the priest's and warlock's crests (1.23.4) from `source/class_bars_first.webp` (1.21.6,
   1.23.3, asked for); the pictures' own rail lines are found as thin horizontal lines (`RailLines`) and
   left out, never a whole row (a crossing antler stays). Cut by
   `dev/art/cut_classes.py`, from 4x EDSR upscales of the pictures when present (`<name>_x4.png`, made
