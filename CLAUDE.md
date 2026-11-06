@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.23.0**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.23.1**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -159,7 +159,9 @@ README.md, CHANGELOG.md   (the top level holds only these, CLAUDE.md and the two
   (nothing above or below it is cut); the panel's rails (`Art/PanelRail<Class>T/B`) are the picture's; its glass is `Art/PanelGlass`
   (`dev/art/make_art22.py`, 1.21.8, asked for) tinted with the theme's `fill` (the class's color). On the
   bar's side the left emblem keeps what's brighter than the picture's glass (daggers, antlers) up to
-  the slots; crests are cut at the ring; small loose pieces are dropped. Source: `dev/art/source/class_bars.webp` (1.21.5,
+  the slots; crests are cut at the ring; small loose pieces are dropped, on the bar's side only
+  (1.23.1: each round face is solid, `face`; dark cloaks count as solid: closing scaled with the
+  upscale, opening by one pixel; asked for: holes in the rogue crest's flag). Source: `dev/art/source/class_bars.webp` (1.21.5,
   asked for); the shaman's left emblem from `source/class_bars_first.webp` (1.21.6, asked for). Cut by
   `dev/art/cut_classes.py`, from 4x EDSR upscales of the pictures when present (`<name>_x4.png`, made
   by `dev/art/upscale.py`, not kept in the repository; 1.21.7, asked for: sharper). The XP bar is gold.

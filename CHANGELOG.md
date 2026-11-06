@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.23.1
+- **Class emblems and crests whole again:** their round faces are solid (nothing shows through around the rogue's hood, for one), their dark parts (cloaks, shadows) no longer half see-through, and the flags and capes keep every piece (only loose bits on the bar's side are tidied away).
+
 ## 1.23.0
 - **New: a music button on the minimap's edge** for your own songs. Click it to play, and it turns into a pause button; click again to pause; right-click for the next song. Put your songs in `Interface\AddOns\CreedUI\Music`, named `1.mp3`, `2.mp3` and so on (Creed UI comes with none), and tell it how many with `/creed music <number>` (3 to begin with). The game's own music fades out under your song and comes back when it stops. The game can't truly pause a song, so a paused song starts over when played again.
 - **Music volume** in Creed UI Options, beside the language: − and + in steps of 10%.
