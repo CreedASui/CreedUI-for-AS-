@@ -206,11 +206,30 @@ check(dragon("UI%-TargetingFrame%-Elite") == 0 and dragon("UI%-TargetingFrame%-R
 AZS_TARGET = { kind = "boss", id = 9, name = "Kirtonos the Herald", hp = 9000, hpm = 10000, state = 0 }
 M.unit.target = { exists = true, name = "Kirtonos the Herald", hp = 9000, hpm = 10000, level = 63, hostile = true }
 frames(10)
-check(dragon("UI%-TargetingFrame%-Elite") == 3, "a boss: the gold elite dragon round its portrait (three pieces)")
+check(dragon("UI%-TargetingFrame%-Elite") >= 3, "a boss: the gold elite dragon round its portrait")
+-- the ring whole (asked for: it was cut on the bars' side): every row of the ring between the game's old
+-- bar lines drawn from left of the ring's edge (x 144 of the texture), only those lines' rows cut short
+local function ringWhole(file)
+	local rows = { 28, 33, 37, 47, 58, 60 }
+	local ok = true
+	for _, row in ipairs(rows) do
+		local covered = false
+		for _, o in ipairs(M.All()) do
+			if o.__kind == "Texture" and o.__tex and string.find(o.__tex, file .. "$") and under(o, CreedUITarget) and M.Visible(o) and o.__tc then
+				local x0, y0, y1 = o.__tc[2] * 256, o.__tc[3] * 128, o.__tc[4] * 128
+				if row >= y0 and row < y1 and x0 <= 142 then covered = true end
+			end
+		end
+		if not covered then ok = false end
+	end
+	return ok
+end
+check(ringWhole("UI%-TargetingFrame%-Elite"), "the gold dragon's ring whole on the bars' side")
 AZS_TARGET = { kind = "guardian", id = 10, name = "Risen Construct", hp = 5000, hpm = 6000, state = 0 }
 M.unit.target = { exists = true, name = "Risen Construct", hp = 5000, hpm = 6000, level = 62, hostile = true }
 frames(10)
-check(dragon("UI%-TargetingFrame%-Rare") == 3 and dragon("UI%-TargetingFrame%-Elite") == 0, "a guardian: the silver dragon")
+check(dragon("UI%-TargetingFrame%-Rare") >= 3 and dragon("UI%-TargetingFrame%-Elite") == 0, "a guardian: the silver dragon")
+check(ringWhole("UI%-TargetingFrame%-Rare"), "the silver dragon's ring whole too")
 M.unit.target = { exists = false }
 AZS_TARGET = { kind = "none" }
 M.Fire("PLAYER_TARGET_CHANGED")
