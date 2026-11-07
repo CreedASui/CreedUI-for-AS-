@@ -13,7 +13,7 @@ picture of the change.
   in Rust ([github.com/samwhosung/benilla](https://github.com/samwhosung/benilla)). The game adds its
   own addon API (`AZS_*`, see section 6).
 - Addon language: **Lua 5.0** with the **1.12 widget API**.
-- Current version: **1.24.2**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
+- Current version: **1.24.3**. Repository: <https://github.com/CreedASui/CreedUI-for-AS->.
 - 11 languages: en, fr, de, es, pt, zh, ru, ja, ko, pl, tr.
 
 ## 2. Releases
@@ -47,7 +47,8 @@ CreedUI/            the addon (this folder name is the install folder; never ren
   Hurt.lua          damage taken as red numbers by the hero (new hits on AZS_TAKEN; the combat text
                     API carries outgoing hits only), heals got as green ones (AZS_HEALING; 1.16.1)
   Bosses.lua        boss and mini-boss bars        Units.lua    player and target frames (a boss targeted: the game's
-                    UI-TargetingFrame-Elite dragon round its portrait, a guardian: -Rare; 1.21.0)
+                    UI-TargetingFrame-Elite dragon round its portrait, a guardian: -Rare; 1.21.0; cut in
+                    row bands, only the game's bar-line rows short, so the ring stays whole, 1.24.3)
   Skulls.lua        a skull over each boss (horned, red eyes) and guardian, a gold chest over each cache
                     (world anchors, kind `cache`; 1.15.0), sized by distance
   Party.lua         party frames; a friend's shield on their health (1.20.1: UnitBuff by icon, SHIELDS; the

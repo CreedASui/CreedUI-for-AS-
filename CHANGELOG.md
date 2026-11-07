@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.24.3
+- **Target frame: the gold and silver dragons' rings whole again.** Their ring was cut off on the side facing the health bar; now only the game's old bar lines are left out.
+
 ## 1.24.2
 - **Fix: the Level Up! button, the loot pop-up, the pet bar, the run summary and the talent window now follow your class's colors.** They kept the colors of the class they were first drawn in (a warrior's run could show a mage's blue Level Up! button).
 

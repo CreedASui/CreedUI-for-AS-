@@ -233,7 +233,12 @@ end
 -- one, as the classic target frame showed them: the game's texture, turned to face out to the left,
 -- in three pieces (its head, its coils by the ring, its claws) so the old frame's bars stay out.
 local DRAGONS = { boss = "UI-TargetingFrame-Elite", final = "UI-TargetingFrame-Elite", guardian = "UI-TargetingFrame-Rare" }
-local DRAGON_PIECES = { { 130, 0, 19 }, { 149, 19, 70 }, { 130, 70, 100 } } -- texture x from, y from, y to (of 256 x 128)
+-- texture x from, y from, y to (of 256 x 128): the game's frame has four bar lines running into the
+-- ring (rows 20-25, 39-44, 50-55, 62-67); only those rows start at the ring's edge (x 145), every other
+-- row from left of it, so the ring stays whole (1.24.3, asked for: one tall cut at x 149 took its
+-- edge off on the bars' side)
+local DRAGON_PIECES = { { 130, 0, 20 }, { 145, 20, 26 }, { 140, 26, 39 }, { 145, 39, 45 }, { 140, 45, 50 },
+	{ 145, 50, 56 }, { 140, 56, 62 }, { 145, 62, 68 }, { 130, 68, 100 } }
 local DRAGON_SCALE = 66 / 72 -- the texture's ring is 72 across; the portrait's 66
 
 local function SetDragon(u, kind)
